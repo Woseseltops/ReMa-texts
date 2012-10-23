@@ -43,6 +43,16 @@ The ConfusibleCheckers work similar to the WOPRChecker, with the only difference
 A ConfusibleChecker trained on the difference between 'then' and 'than' for example filters out these two words and their contexts, sends these contexts to a Timblserver running somewhere. This Timblserver then says which of the two it would predict on the basis of the context. If this prediction is different from the actual word and the server is very sure about this, the word is flagged as an error. Training new ConfusibleModules has been a large part of my internship.
 
 \subsection{Problems encountered}
+
+\subsubsection{The original confusiblemodule could only handle two confusibles}
+Most confusibles consist of two words only, but English has two that consist of three: they're-there-their and to-too-two. The original c-code could not handle confusibles with more than two words, so while the original plan was to either use Valkuil's c-code or rewrite it in Python, the quickest solution here was me diving into the c-code of my supervisor and add support for three.
+
+\subsubsection{Problems with Ucto}
+Although Ucto includes a configuration file for English, it didn't produce the correct output right out of the box. For example, for the It's-ItsModule to work, it is essential that "it's" is recognized as one word, which is not the case in original English configuration file. After a lot of tweaking of the regular expressions, I now have a tokenizer that produces output which can be used by all modules.
+
+\subsubsection{The ConfusibleModules weren't good enough}
+I didn't only train the ConfusibleModules, I also tested them with a program written by my supervisor. This program takes 10\% from the training data and saves it in a seperate file, trains TiMBL on the remaining 90\%, and then returns the percentage of correct predictions the resulting language can make about the 10\%. The results differed for the various confusibles, but the models were correct roughly 85-90\% of the time. This may seem a lot, but for a spellingchecker to be useful it's essential that a model can have an accuracy of over 99\%. Following the advice of my supervisor, I did two things to accomplish this: (1) I retrained TiMBL on the balanced training sets, which entails that there is an even amount of examples for each word the confusible consists of, and (2) I made the ConfusibleChecker only add a correction when it is very sure. Especially the latter solution increases the accuracy dramatically, but at the price of finding a lot less errors.
+
 \subsection{Results}
 
 \section{What I have learned}
