@@ -1,6 +1,9 @@
 \documentclass[12pt]{article}
+
 \title{Research training portfolio}
 \author{Wessel Stoop}
+
+\renewcommand{\familydefault}{\sfdefault}
 
 \begin{document}
 \maketitle
@@ -14,26 +17,31 @@
 \subsection{Results}
 
 \section{What I have learned}
-Although I did have some experience with both programming and language technology, and even with some software co-developed by my supervisor, this internship turned out to be a adventures full of novelty: no single semester in my Radboud University career had such a high skills-acquired/day-ratio as this one.
+Although had some experience with both programming and language technology, and even with some software co-developed by my supervisor, this internship turned out to be an adventure full of novelty: no single semester in my Radboud University career had such a high skills-acquired/day-ratio as this one. In the following sections, I give a non-exhaustive overview of what I learned while working on Fowlt.
 
 \subsection{Working with Linux and SSH}
-The novelty already started with something as non-trivial as the choice of operating system. As a Microsoft Windows user, I was surprised to find out all machine learning software I needed was developed and best used on Linux (see the next section). I only had a few hours of experience with Ubuntu, so I had to invest several hours into installing and getting more familiar with it. Most time went into learning the terminal commands - its GUI turned out to be almost identical to Windows'. Windows of course has a command prompt as well, but it is rarely used. Ubuntu's commands on the other hand are essential for having full control. The first hours of the internship were therefore spent figuring out basic actions like \emph{ls} (showing folders and files in a directory) and \emph{mv} (renaming and moving files). This knowledge later turned out to be incredibly handy when I needed to control external servers over an SSH connection, as the Linux machines can be controller with commands only. Here again, it took some time to figure out how to do this properly. 
+The novelty already started with something as non-trivial as the choice of operating system. As a Microsoft Windows user, I was surprised to find out all machine learning software I needed was developed and best used on Linux (see the next section). I only had a few hours of experience with Ubuntu, so I had to invest several hours into installing and getting more familiar with it. Ubuntu's GUI turned out to be almost identical to Windows', so most time went into learning the terminal commands. Unlike the commands for Windows' command prompt, Linux commands are essential for having full control. The first hours of the internship were therefore spent figuring out basic actions like \emph{ls} (showing folders and files in a directory) and \emph{mv} (renaming and moving files). This knowledge was also essential later, when I needed to control external servers over an SSH connection, as the Linux machines can be controlled with commands only. Here again, it took some time to figure out how to make the servers do what I wanted - transferring a python script from my machine to a server, for instance. Fortunately, working with Linux became routine quickly.
 
-% Maar.... nu kan ik het heel goed?
 % Voordelen Linux?
 
 \subsection{Working with machine learning software}
-Fowlt uses the machine learning software TiMBL, TiMBLserver and WOPR.
+Fowlt uses the machine learning software TiMBL, TiMBLserver and WOPR. TiMBL is consists of several memory-based learning algorithms, among which IB1-IG, an implementation of k-nearest neighbor classification with feature weighting suitable for symbolic feature spaces, and IGTree, a decision-tree approximation of IB1-IG. TiMBLserver adds server functionality to TiMBL. WOPR is a wrapper around the k-nearest neighbor classifier in TiMBL, offering word prediction and language modeling functionalities. Trained on a text corpus, WOPR can predict missing words, report perplexities at the word level and the text level, and generate spelling correction hypotheses. For Fowlt, only WOPR's spelling modus is used, of course.
+\\\indent
+Unfortunately, all three programs have very little documentation, and documentation that does exist often assumes background knowledge. With the help of my supervisor and Maarten van Gompel I learned how to (1) how to make language models by training the algorithms on large amounts of texts, (2) how to use these models to predict new words (and in my case, find spelling errors) and (3) how to test the model's accuracy. During my steps, I've repeated these three steps numerous times.
+\\\indent
+Besides TiMBL, TiMBLserver and WOPR, I also learned to use Ucto, software to tokenize texts so TiMBL and WOPR can handle them, and the PyNLPl Python library, which can read and create FoLiA-XML. FoLiA-XML is the XML-format used by Fowlt's output.
 
-% Namen ontwikkelaars.
 % With the help of my supervisors
 
 \subsection{Working with GitHub}
-Working with multiple people on the same software can cause quite a lot of practical problems. Version control system Git solves these problems by keeping track of which version everyone of working on, providing tools to easily merge the work when done, and to remember older versions of the project, among other things. Although I had used Git for the latter function in personal hobby projects, I'd never worked together with other people on programming tasks. During this internship I learned (1) this can be done easily with GitHub and (2) how to handle GitHub. GItHub is a website that offers open source project a free, central and always reachable place for a Git repository, and also provides tools to look into this repo and its history online.
+Working with multiple people on the same software can cause quite a lot of practical problems. Version control system Git solves these problems by keeping track of which version everyone of working on, providing tools to easily merge the work when done, and to remember older versions of the project, among other things. Although I had used Git for the latter function in personal hobby projects, I'd never worked together with other people on programming tasks. During this internship I learned (1) this can be done easily with GitHub and (2) how to handle GitHub. GitHub is a website that offers open source project a free, central and always reachable place for a Git repository, and also provides tools to look into this repo and its history online.
 
 \subsection{Working with CLAM, setting up a NLP webservice}
 
 \subsection{General}
+
+% Python stuff
+% C compilen
 
 \section{Research paper}
 
