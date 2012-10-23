@@ -14,8 +14,34 @@ Fowlt is the English version of the Dutch spelling checker Valkuil.net. Both Val
 To be able to make these kinds of correction suggestion, Fowlt makes use of language models. These models are made with the help of machine learning software TiMBL and WOPR and very large datasets. However, this also means that if the context of a particular error is very different from what the model has seen in the training data, it won't be able to correct the error. This means users should be aware of the fact that, although Fowlt can much kinds of errors than regular spell checkers, it might still miss a few. This is particularly true because we told Fowlt to only flag a word as an error if the algorithms are really sure about it.
 
 \section{What I have done}
+The best way to get a good overview of what I have done is probably to look at Fowlt's internal structure, so that's what I present in the next section. The first part of my internship basically consisted of adding these modules one by one. To get a better idea of what parts took more time to 'get right', I also added a section about problems I encountered.
 
 \subsection{Project structure}
+Fowlt exist of multiple little spelling checkers, specialized in doing one thing. These spelling checkers are called 'modules'. Fowlt consists of four context-free modules (relatively similar to normal spelling checkers' functionality) and, as I write this, sixteen context-based modules. This number will probably be different when you read this, though, as new context-based modules are created easily, and can be removed if it turns out they're not accurate enough.
+
+\subsubsection{The processchain}
+In Fowlt's main script, fowlt\_processchain.py, all modules are started up, and their outputs are collected. Making changes in this script (based on the one for Valkuil, written by Maarten van Gompel) to make sure the new English based modules worked correctly, is one of the main things I did during my internship.
+
+\subsubsection{ErrorlistChecker (context-free)}
+Martin Reynaert provided us with a large list of common typos and their corrections. This module, written by me, checks for every word in the input whether it's in the errorlist, and adds the correction when it is.
+
+\subsubsection{LexiconChecker (context-free)}
+Google provided us with an enormous list of word frequencies on the internet in 2008. The LexiconChecker checks for every word in the input whether there's a word on the lexiconchecker that is very similar to it, but is much more frequent.
+
+\subsubsection{RunonChecker (context-free)}
+The RunonChecker also uses Google's list, but uses it check if any spaces where forgotten in the input. This is done by looking if splitting up long words produces two words which both are much more frequent that the original word.
+
+\subsubsection{SplitChecker (context-free)}
+The SplitChecker is the exact opposite of the RunonChecker: instead of looking whether any spaces are forgotten, it checks whether any spaces have to be added. This is done by looking whether each combination of two words, when combined, produces a word which is much more frequent than the two original words.
+
+\subsubsection{WOPRChecker (context-based)}
+The WOPRChecker contacts WOPR, running on a server on localhost or elsewhere. It gives it the context of each word, but not the words themselves. If WOPR predicts another word with much certainty, this word is added as a correction.  
+
+\subsubsection{The ConfusibleCheckers (context-based)}
+The ConfusibleCheckers work similar to the WOPRChecker, with the only difference that they are trained on one specific language problem, instead of on language in general. As I write this, there are fifteen active ConfusibleCheckers, all focussing on their own expertise: lose-loose, it's-its, you're-your, than-then, who-which-that, whether-weather, effect-affect, lie-lay, they're-their-there, don't-doesn't,to-too-two, advice-advise, any-some, less-fewer, practice-practise and chose-choose.
+\\\indent
+A ConfusibleChecker trained on the difference between 'then' and 'than' for example filters out these two words and their contexts, sends these contexts to a Timblserver running somewhere. This Timblserver then says which of the two it would predict on the basis of the context. If this prediction is different from the actual word and the server is very sure about this, the word is flagged as an error. Training new ConfusibleModules has been a large part of my internship.
+
 \subsection{Problems encountered}
 \subsection{Results}
 
@@ -37,7 +63,7 @@ Besides TiMBL, TiMBLserver and WOPR, I also learned to use Ucto, software to tok
 \subsection{Working with GitHub}
 Working with multiple people on the same software can cause quite a lot of practical problems. Version control system Git solves these problems by keeping track of which version everyone of working on, providing tools to easily merge the work when done, and to remember older versions of the project, among other things. Although I had used Git for the latter function in personal hobby projects, I'd never worked together with other people on programming tasks. During this internship I learned (1) this can be done easily by using Git in combination with GitHub and (2) how to handle GitHub. GitHub is a website that offers open source projects a free, central and always reachable place for a Git repository, and also provides tools to look into this repo and its history online.
 
-\subsection{Working with CLAM, setting up a NLP webservice}
+\subsection{Working with CLAM, setting up an NLP webservice}
 
 \subsection{General}
 
@@ -54,6 +80,6 @@ Working with multiple people on the same software can cause quite a lot of pract
 
 \subsection{Conclusion}
 
-\section{General onclusion}
+\section{General conclusion}
 
 \end{document}
