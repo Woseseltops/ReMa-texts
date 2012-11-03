@@ -1,7 +1,9 @@
 \documentclass[12pt]{article}
 
 \title{Research paper}
-\author{Wessel Stoop}
+\author{Wessel Stoop, s0808709}
+
+\usepackage{covington}
 
 \renewcommand{\familydefault}{\sfdefault}
 
@@ -9,9 +11,60 @@
 \maketitle
 
 \section{Introduction}
-\section{The goal of the project}
+
+In this paper, I will give a detailed overview of the research project Colibri. Colibri, carried out a the Radboud University Nijmegen by Maarten van Gompel and Antal van den Bosch, investigates the identification and extraction of constructions in natural language, and the usage of such constructions in Machine Translation. These constructions can be a various lengths, and, importantly, can also contain one or more gaps. The constructions are not identified on the basis of explicit 'human' knowledge about language and grammar ('linguistic theory'), but are distilled from large amounts of text ('text corpora') with the help of context-sensitive machine-learning techniques. 
+
+\section{Project description}
+
+%Stukje over dat het software is, dus tekst over wat de software inhoudt is tegelijkertijd een beschrijving van wat het softwarepakket inhoudt
+
+\subsection{Pattern extraction}
+
+Colibri, 'Constructions as Linguistics Bridges', investigates constructions (or patterns), as its name suggests. A construction can be any combination of multiple words (a so-called 'n-gram') in any natural language that in some way forms an entity. An example is 'on the basis of' in the following sentence:
+
+\begin{examples}
+\item On the basis of these ideas, software can be developed.
+\end{examples}
+
+Importantly, constructions can also have one or more gaps (so-called 'skip-grams'). '\_\_ have been \_\_' in the following example, is a construction with two such gaps. 
+
+\begin{examples}
+\item I have been working
+\end{examples}
+
+The first gap is usually filled with a noun phrase, the second one verb phrase. Of course, not every possible combination of words is a construction; what makes some combinations special? The exact nature of linguistic constructions has been the subject of many publications and even an entire linguistic framework (construction grammar). For this project however, it suffices to say that constructions emerge because some combinations of words are more frequent than others.
+
+% Drie vormen freq: raw frequency, context frequency, multilingual alignmetn
+% Blabla, want freq is waar mach learning gebriuk van maakt
+
+\subsection{Pattern querying} Interactively query generated models for specific patterns.
+\subsection{Pattern/corpus comparison} Match patterns generated from one corpus to another corpus.
+\subsection{Graph computation \& visualisation} Compute graph relations between pattern models and visualise graphs
+\subsection{Alignment algorithms} Algorithms to extract and align patterns accross languages; resulting in translation pairs for constructions.
+\subsection{Machine Translation Decoding} Reassembles translated fragments into one coherent sentence in the target-language; seeking the best (statistically most probably) solution in a vast search space of possible search hypotheses.
+\subsection{Memory-based Machine Translation} Machine learning algorithms can be used to consider source-side context in translations. Classifiers can be built and directly used by the decoder.
+\subsection{Experiment Framework} Colibri comes with an extensive experiment framework for conducting Machine Translation experiments.\
+
+\subsection{Hypotheses} %Of moet dit bij main outstanding questions?
+
+Constructions can be found efficiently in corpus data
+Graph-based relations can be used to constrain to good constructions
+Constructions can be aligned without resorting to word alignments as a basis
+In MT, constructions (i.e. possibly with gaps) result in better translation than mere consecutive phrases
+
 \section{Scientific importance and relevance for society}
+
+% Hier dingen zeggen over hoe er eerst vertaald werd. Of is dat theoretical framework?
+% Ook lingusitic relevance: Abstracting fully lexicalised constructions
+%Finding semantic subclasses in constructions: from time-expression to time-expression"
+%Collapsing constructions with word disjunctions (\he/she/it") or part-of-speech tags
+% Correlations with experimental findings
+% Switch tasks, cloze tests, reaction times, ...
+
 \section{Methodology}
+
+% C++, Python
+
 \section{Theoretical framework}
 \section{Achievements so far}
 \section{Main outstanding questions}
