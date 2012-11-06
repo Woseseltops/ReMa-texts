@@ -3,6 +3,9 @@
 \title{Research training portfolio}
 \author{Wessel Stoop}
 
+\usepackage{graphicx}
+\usepackage{natbib}
+
 \renewcommand{\familydefault}{\sfdefault}
 
 \begin{document}
@@ -100,22 +103,37 @@ Working with multiple people on the same software can cause quite a lot of pract
 
 \subsubsection{Evaluation}
 
-In this section, I describe the various evaluation measures I used. This is necessary because evaluation of spelling corrector has not been very uniform in the spelling checker literature so far; whereas various scholars only measured how many errors their algorithm can detect in an error list and called it accuracy (e.g. Agirre et al., 1998; Brill \& Moore, 2000; Toutanova \& Moore, 2002; Van Delden et al., 2004), others use or argue for the precision-recall terminology (Reynaert, 2008; Pollock \& Zamora, 1984, although they use other terms for the two concepts) or argue against it (Starlander \& Popescu-Belis, 2002).\\\indent
+In this section, I describe the various evaluation measures I used. This is necessary because evaluation of spelling corrector has not been very uniform in the spelling checker literature so far; whereas various scholars only measured how many errors their algorithm can detect in an error list and called it accuracy (e.g. Agirre et al., 1998; Brill \& Moore, 2000; Toutanova \& Moore, 2002; \citet{tm02,vandelden04}), others use or argue for the precision-recall terminology (Reynaert, 2008; Pollock \& Zamora, 1984, although they use other terms for the two concepts) or argue against it \citep{sp02}.\\\indent
 
 Although most of the evaluation measures used can be useful and informative, they only tell part of the story. I think it is important to recognize that spelling correction is a multi-step process, and each step comes with its own measures. Using a confusible corrector as part of a spelling corrector, there are three steps: word prediction, error detection and error correction. I'll go through these steps and their evaluation measures one by one.
 
 \paragraph{Word prediction}
 
 \begin{itemize}
-\item Accuracy. Although word prediction may be the most complicated part of the confusible corrector, its evaluation is actually the simplest. Calculating rediction accuracy entails removing all confusibles from a text, and see in how many of the cases the language model can correctly predict which word was removed. This percentage can be increased by only counting predictions that are above a certain threshold. Results with multiple thresholds (i.e. to what extent does the prediction improve if the threshold is raised) can be visualized easily with a graph, as shown in the result section.
+\item Prediction accuracy. Although word prediction may be the most complicated part of the confusible corrector, its evaluation is actually the simplest. Calculating prediction accuracy entails removing all confusibles from a text, and see in how many of the cases the language model can correctly predict which word was removed. This percentage can be increased by only counting predictions that are above a certain threshold. Results with multiple thresholds (i.e. to what extent does the prediction accuracy improve if the threshold is raised) can be visualized with a graph, as shown in the result section.
 \end{itemize}
 
 \paragraph{Error detection}
+
 \begin{itemize}
-\item The confusion matrix.
-\item Recall.
-\item Precision.
-\item Accuracy.
+\item The confusion matrix. From this step onwards, we concentrate on spelling errors. This means that our input no longer is errorless text (like in the previous step). We also interpret the results of the prediction differently now: whereas incorrectly predicted words were considered errors of the system in the previous task, lowering the accuracy, they will now be considered corrections. This means that the system can do two things right (correct incorrect words in the text and don't correct correct words), and two things wrong (correct correct words and don't correct incorrect words). This can be summarized in a confusion matrix (taken from \citet{fawcett04}):
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.8\textwidth]{confusion_matrix.png}
+\caption{The confusion matrix}
+\label{fig:confusion}
+\end{figure}
+
+
+\item Detection accuracy. Detection accuracy only indicates how many mistakes the confusible detector makes, not what kind of mistakes. It can be calculated with the following formula:
+
+%formula
+
+It is similar to prediction accuracy in that it indicates how well the sytem does in general, but keep in mind that they're measuring two completely different concepts. Although a system with a good prediction accuracy also has a good detection accuracy, it might be possible that a system very good at predicting confusibles in errorless texts behaves differently in texts that do contain errors.
+ 
+\item Detection recall.
+\item Detection precision.
 \end{itemize}
 
 \paragraph{Error correction} Some text.
@@ -123,17 +141,36 @@ Although most of the evaluation measures used can be useful and informative, the
 
 \paragraph{Problems with precision and recall.} Some text.
 
+Waarom geen AUC?
+
 \subsection{Results}
 
 \subsection{Conclusion}
 
 \section{General conclusion}
 
-\section{References}
+\begin{thebibliography}{99}
+
+\bibitem[Agirre et al., 1998]{agirre98}
+Agirre et al., 1998
+\bibitem[Brill \& Moore, 2000]{bm00}
+Brill \& Moore, 1998
+\bibitem[Van Delden et al., 2004]{vandelden04}
+Van Delden et al, 2004.
+\bibitem[Fawcett, 2004]{fawcett04}
+Fawcett, 2004.
+\bibitem[Pollock \& Zamora, 1984]{pz84}
+Pollock \& Zamora, 1984
+\bibitem[Reynaert, 2008]{reynaert08}
+Reyneart, 2008.
+\bibitem[Starlander \& Popescu-Belis, 2002]{sp02}
+Starlander \& Popescu-Belis, 2002
+\bibitem[Toutanova \& Moore, 2002]{tm02}
+Toutanova \& Moore, 2002.
+
+\end{thebibliography}
+
 % Ene paper Antal
 % roc101
-% (e.g. Agirre et al., 1998; Brill & Moore, 2000; Toutanova & Moore, 2002; Van Delden et al., 2004)
-% (Reynaert, 2008; Pollock & Zamora, 1984, although they use other terminology)
-% (Starlander & Popescu-Belis, 2002)
 
 \end{document}
