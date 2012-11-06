@@ -96,10 +96,44 @@ Working with multiple people on the same software can cause quite a lot of pract
 
 \subsection{Method}
 
+% Hier moet ergens een beetje beschreven worden hoe zo'n Timblmodule werkt.
+
+\subsubsection{Evaluation}
+
+In this section, I describe the various evaluation measures I used. This is necessary because evaluation of spelling corrector has not been very uniform in the spelling checker literature so far; whereas various scholars only measured how many errors their algorithm can detect in an error list and called it accuracy (e.g. Agirre et al., 1998; Brill \& Moore, 2000; Toutanova \& Moore, 2002; Van Delden et al., 2004), others use or argue for the precision-recall terminology (Reynaert, 2008; Pollock \& Zamora, 1984, although they use other terms for the two concepts) or argue against it (Starlander \& Popescu-Belis, 2002).\\\indent
+
+Although most of the evaluation measures used can be useful and informative, they only tell part of the story. I think it is important to recognize that spelling correction is a multi-step process, and each step comes with its own measures. Using a confusible corrector as part of a spelling corrector, there are three steps: word prediction, error detection and error correction. I'll go through these steps and their evaluation measures one by one.
+
+\paragraph{Word prediction}
+
+\begin{itemize}
+\item Accuracy. Although word prediction may be the most complicated part of the confusible corrector, its evaluation is actually the simplest. Calculating rediction accuracy entails removing all confusibles from a text, and see in how many of the cases the language model can correctly predict which word was removed. This percentage can be increased by only counting predictions that are above a certain threshold. Results with multiple thresholds (i.e. to what extent does the prediction improve if the threshold is raised) can be visualized easily with a graph, as shown in the result section.
+\end{itemize}
+
+\paragraph{Error detection}
+\begin{itemize}
+\item The confusion matrix.
+\item Recall.
+\item Precision.
+\item Accuracy.
+\end{itemize}
+
+\paragraph{Error correction} Some text.
+
+
+\paragraph{Problems with precision and recall.} Some text.
+
 \subsection{Results}
 
 \subsection{Conclusion}
 
 \section{General conclusion}
+
+\section{References}
+% Ene paper Antal
+% roc101
+% (e.g. Agirre et al., 1998; Brill & Moore, 2000; Toutanova & Moore, 2002; Van Delden et al., 2004)
+% (Reynaert, 2008; Pollock & Zamora, 1984, although they use other terminology)
+% (Starlander & Popescu-Belis, 2002)
 
 \end{document}
