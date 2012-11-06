@@ -28,19 +28,20 @@ Besides an attempt to discover more about the possibilities for machine translat
 
 \subsection{Pattern extraction}
 
-Colibri, 'Constructions as Linguistics Bridges', investigates constructions (or patterns), as its name suggests. A construction can be any combination of multiple words (a so-called 'n-gram') in any natural language that in some way forms an entity. An example is 'on the basis of' in the following sentence:
+Colibri, 'Constructions as Linguistics Bridges', investigates constructions (or patterns), as its name suggests. A construction can be any group of consecutive words (a so-called 'n-gram') in any natural language that in some way forms an entity. An example is 'on the basis of' in the following sentence:
 
 \begin{examples}
 \item On the basis of these ideas, software can be developed.
 \end{examples}
 
-Importantly, constructions can also have one or more gaps (so-called 'skip-grams'). '\_\_ have been \_\_' in the following example, is a construction with two such gaps. 
+Importantly, constructions can also have one or more gaps (so-called 'skip-grams'). 'from \_\_ point of view' in the following example, is a construction with one such gap. 
 
 \begin{examples}
-\item I have been working
+\item I understand things better when I look at them from his point of view.
 \end{examples}
 
-The first gap is usually filled with a noun phrase, the second one with a verb phrase. Of course, not every possible combination of words is a construction; what makes some combinations special? The exact nature of linguistic constructions has been the subject of many publications and even an entire linguistic framework (construction grammar). For this project however, it suffices to say that constructions emerge because some combinations of words are more frequent than others.
+The gap is filled here is filled with 'his', but the construction 'from \_\_ point of view' can also be filled with many other words ('my', 'the', 'another', 'Obama's', etc.). This shows the advantage of skip-grams over n-grams for machine translation: whereas n-grams would only have been able to capture the construction 'point of view', because the word directly before 'point of view' is variable, skip-grams are also able to recognize that the word 'for' is part of the construction.\\\indent
+Of course, not every possible group of consecutive words is a construction; what makes some groups special? The exact nature of linguistic constructions has been the subject of many publications and even an entire linguistic framework (construction grammar). For this project however, it suffices to say that constructions emerge because some combinations of words are more frequent than others.
 
 % Drie vormen freq: raw frequency, context frequency, multilingual alignmetn
 % Blabla, want freq is waar mach learning gebriuk van maakt
