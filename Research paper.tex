@@ -1,5 +1,3 @@
-%u
-
 \documentclass[12pt]{article}
 
 \title{Research paper}
@@ -69,11 +67,13 @@ In MT, constructions (i.e. possibly with gaps) result in better translation than
 
 
 
-\section{Theoretical background and framework}
+\section{Theoretical background / framework}
 
-\subsection{Classical Machine Translation}
+In this section I will try to give a short overview of the various approaches in machine translation, with special attention to the example-based approach, as that is the approach used in this project. This section is mainly based on %Maartens thesis.
 
-Classical Machine Translation is best characterized by the use of human created rules. That is, authors of translation algorithms tried to include their knowledge about the languages and translation. There have been four main approaches, summarized in the Vauquois triangle: \\
+\subsection{The rule-based approach}
+
+The rule-based approach, also known as Classical Machine Translation, is best characterized by the use of human created rules. That is, authors of translation algorithms tried to include their knowledge about the languages and translation. The rule-based approache can be subdivided into four subapproaches, summarized in the Vauquois triangle: \\
 
 \begin{figure}[htb]
 \centering
@@ -82,26 +82,39 @@ Classical Machine Translation is best characterized by the use of human created 
 \label{fig:vauquois}
 \end{figure}
 
-The horizontal arrows represent the approaches, I'll go through them from bottom to top:
+The horizontal arrows represent the approaches. I'll go through them from bottom to top:
 
 \begin{itemize}
-\item The direct approach does very little source language analysis, and could thus be viewed as the automatical version of looking up every word in the source language in a dictionary and replacing it with the corresponding word in the target language. This often doesn't yield very good results: if I for example would have translated this paper from my mother tongue Dutch to English word for word, 'would we now not real a good result have'. It should be noted, however, that direct approach can be a little more intelligent than that: %wwat dan?
-\item The syntactic approach
-\item The semantic approach
-\item All of the approaches so far have in common that they require a seperate rule set for each language pair; no or very few rules included for translations from English to German can also be used for translations from English to French. The Interlingua approach is an attempt to solve this problem, by pairing up every language with one general language, the Interlingua. This means a translation from English to German would entail a translation from English to the Interlingua (using the ruleset English $\rightarrow$ Interlingua) and then a translation from the Interlingua to German (using the ruleset Interlingua $\rightarrow$ German). When translating from English to French, the same two steps would be taken, and the same ruleset English $\rightarrow$ Interlingua can be used. This Interlingua is a formal representation.
+\item \emph{The direct approach} does very little source language analysis, and could thus be viewed as the automatical version of looking up every word in the source language in a dictionary and replacing it with the corresponding word in the target language. This often doesn't yield very good results: if I for example would have translated this paper from my mother tongue Dutch to English word for word, 'would we now not real a good result have'. It should be noted, however, that the direct approach mostly is more complicated than this; for example, in some cases morphological analysis is needed before it can be looked up in a dictionary, and more morphological analysis is needed for the translation word to fit in the sentence. Word reordering rules can also be included.
+\item \emph{The syntactic approach} tries to find out the syntactic structure of the source sentence before it starts translating, using a parser. This structure is then translated to the target language, and filled with translated words.
+\item \emph{The semantic approach} goes even one step further and also tries to grasp the meaning of a sentence, roughly. For a sentence like /emph{Mummy kisses daddy} this for example entails that mummy is the agent, and daddy the patient of the sentence. After having identified these semantic roles, the algorithm would then look how this meaning is expressed in the target language, find the approriate syntactic structure for that, and fill it with the translated words.
+\item \emph{The interlingua approach}. All of the approaches so far have in common that they require a seperate rule set for each language pair; no or very few rules included for translations from English to German can also be used for translations from English to French. The Interlingua approach is an attempt to solve this problem, by pairing up every language with a formal representation of meaning, the Interlingua. This means a translation from English to German would entail a translation from English to the Interlingua (using the ruleset English $\rightarrow$ Interlingua) and then a translation from the Interlingua to German (using the ruleset Interlingua $\rightarrow$ German). When translating from English to French, the same two steps would be taken, and the same ruleset English $\rightarrow$ Interlingua can be used. 
 \end{itemize}
 
-% Voorbeelden?
+An advantage of the rule-based approach is that one has a lot of control over the output. In theory, if something has gone wrong, all one has to do is find out which rule or dictionary item caused the problem and improve it. In practice, however, it is almost impossible to have a dictionary and rule system good enough for more complicated sentences, and things like rule interactions and ambiguity make everything even more complicated. The next two approaches therefore replace hand-crafted rules with automatically generated ones.
 
-\subsection{Statistical Machine Translation}
+% Voorbeelden? References?
 
+\subsection{The statistical approach}
 
+Unlike the ruled-based approach, the statistical approach creates its own 'knowledge', using bilingual text corpora. With this knowledge, the algorithm is able to generate various translation hypotheses, from which the best one is chosen with various statistical measures. I'll explain these stages in more detail in the following subsections.
 
+\subsubsection{Corpus alignment} 
 
+Having a bilingual corpus does not mean one . 
 
+\subsubsection{Hypothesis generation}
 
+\subsubsection{Hypothesis evaluation}
 
+\paragraph{The translation model}
 
+\paragraph{The language model}
+
+\subsection{The example-based approach}
+
+In this section, I'll give an overview of the example-based approach. I'll focus on the memory-based version of the example-based approach in particular, because that is the version the Colibri project uses. Other versions of example-based machine translation might vary slightly. \\\indent
+The memory-based approach is in many ways similar to the statistical approach - it too generates translations on the basis of large bilingual corpora, for instance. The main difference, however, is that it is context-sensitive; the idea is that the system will find another translation for \emph{left} in the sentence \emph{The toilets are at your left hand} than \emph{left} in the sentence \emph{Elvis has left the building}.
 
 
 
