@@ -5,6 +5,7 @@
 
 \usepackage{covington}
 \usepackage{graphicx}
+\usepackage{natbib}
 
 \renewcommand{\familydefault}{\sfdefault}
 
@@ -16,7 +17,7 @@
 When one of Starfleet's vessels meets an alien ship in areas where no man has gone before, they can (almost) always communicate with these aliens (almost) instantly; they speak to them in English, and these aliens answer in English. This is possible because, according to the Star Trek lore, the protagonists make use of a so-called Universal Translator. This Universal Translator can (1) recognize speech in every language, (2) translate what it has 'heard' to any other language, (3) make its results audible with speech synthesis and (4) learn itself new languages when needed. Unfortunately, like many technologies in Star Trek, this is far from reality: there is lots of active research at the first three tasks in particular, but no software currently in existence can do this as perfect as the Universal Translator. \\\indent
 In this paper, I will give a detailed overview of the research project Colibri, which basically is an attempt to improve the technology needed for the second task: automatically translating text from one language to another. More specifically, the project investigates the identification and extraction of constructions in natural language, and how these can be used in Machine Translation. These constructions can be of various lengths, and, importantly, can also contain one or more gaps. The constructions are not identified on the basis of explicit 'human' knowledge about language and grammar ('linguistic theory'), but are distilled from large amounts of text ('text corpora') with the help of context-sensitive machine-learning techniques. The Colibri project is carried out by Maarten van Gompel and supervised by Antal van den Bosch.
 
-
+%Beschrijving van ik ga doen.
 
 
 
@@ -97,27 +98,44 @@ An advantage of the rule-based approach is that one has a lot of control over th
 
 \subsection{The statistical approach}
 
-Unlike the ruled-based approach, the statistical approach creates its own 'knowledge', using bilingual text corpora. With this knowledge, the algorithm is able to generate various translation hypotheses, from which the best one is chosen with various statistical measures. I'll explain these stages in more detail in the following subsections.
+Unlike the ruled-based approach, the statistical approach creates its own 'knowledge', using bilingual text corpora. With this knowledge, the algorithm is able to generate various translation hypotheses, from which the best one is chosen with various statistical measures. I will explain these stages in more detail:
 
-\subsubsection{Corpus alignment} 
+\begin{itemize}
+\item \emph{Corpus alignment.} Only having a bilingual corpus is not enough: for such corpus to be useful one also needs to know which parts of the sentence in language A correspond to which part of the sentence B. This is not only complicated by different word orders, but also by concepts that in language A take more or less words than in language B. A well-known word alignment algorithm is the Expectation Maximisation algorithm \citep{dempster77}. 
 
-Having a bilingual corpus does not mean one . 
+%GIZA++?
 
-\subsubsection{Hypothesis generation}
+\item \emph{Hypothesis generation.} We now have some sort of automatically generated dictionary: for each word in language A, we know which words in language B are often used for it. On the basis of this knowledge, we can generate various possible translations. 
 
-\subsubsection{Hypothesis evaluation}
+\item \emph{Hypothesis evaluation.} Which one of these possible translation is the best one is determined on the basis of two measures: faithfulness and fluency (which can also be called grammaticality). These measures often are in conflict: a solution to get an optimally fluent translation would be to always return the same well-formed sentence, but that would not be faithful to the source language at all, while a very faithful translation, for example translating a sentence word by word, is usually not considered very fluent. Faithfulness and fluency are measured by the translation model and the language model respectively:
 
-\paragraph{The translation model}
+\begin{itemize}
+\item \emph{The translation model.} The translation model returns a probability of source sentence given the target sentence; it thus looks back whether what has been created fits the original. This probability is calculated on the basis of statistical word alignment algorithms like the IBM models \citep{brown93}.
 
-\paragraph{The language model}
+\item \emph{The language model.} The language model predicts to what extent the generated sentence is expected for the target language; in other words, is this sentence a well-formed sentence or not? Because the unlimited number of ways words can be combined into sentences, it is unlikely the sentence under investigation will actually be found in a corpus, so the language model tries to do this prediction on the basis of how often smaller parts of the sentence (n-grams) occur in a corpus.
+
+\end{itemize}
+
+\end{itemize}
 
 \subsection{The example-based approach}
 
 In this section, I'll give an overview of the example-based approach. I'll focus on the memory-based version of the example-based approach in particular, because that is the version the Colibri project uses. Other versions of example-based machine translation might vary slightly. \\\indent
-The memory-based approach is in many ways similar to the statistical approach - it too generates translations on the basis of large bilingual corpora, for instance. The main difference, however, is that it is context-sensitive; the idea is that the system will find another translation for \emph{left} in the sentence \emph{The toilets are at your left hand} than \emph{left} in the sentence \emph{Elvis has left the building}.
+The memory-based approach is in many ways similar to the statistical approach - it too generates translations on the basis of large bilingual corpora, for instance. The main difference, however, is that it is context-sensitive; the idea is that the system will find another translation for \emph{left} in the sentence \emph{The toilets are at your left hand} than \emph{left} in the sentence \emph{Elvis has left the building}. \\\indent
+In the memory-based approach, this context-sensitivy is achieved with the help of machine learning: by showing a so-called classifier lots of examples of something, and telling it in which class it belongs, it is able to predict the class of new examples. For example, we can give a classifier the external characteristics of 10.000 humans (for example length, type of cloths, length of hair), and also tell it whether these humans are male or female. If we then ask for the sex of a relatively short human, wearing a dress, with long hair, it will probably be able to tell us this is a woman. While this example only has two classes, it is in principle possible to use an unlimited number of classes. This is exactly what the memory-based approach does: on the basis of a particular word and its context (for example, its direct neighbours), a classifier in machine translation returns as a class the most likely n-gram. Thus, instead of human characteristics the classifiers are trained on words and their context from the source language, and instead of sex it uses n-grams from the target language as classes. \\\indent
+There are two types of classifaction methods: \emph{eager learning} and \emph{lazy learning}. Whereas eager learning algorithms try to creating a small, abstract, general model, filtering out infrequent cases, lazy learning algorithms take into account everything they encounter. According to \citet{dvdb05}, for natural language processing the lazy learning approach works best, because infrequent cases are an important part of the knowledge needed. \\\indent
+Like I did with statistical machine translation, I will now give an overview of the memory-based machine translation process, based on \citet{vdbb09}. For this example, I will describe a translator that uses trigrams, but it should be noted that the Colibri system uses n-grams of various lengths.
 
+\begin{itemize}
+\item \emph{Local phase.} In the description of \citet{vdbb09}, the local phase entails both training the classifier and actual classification, but I think it is important to make a sharp distinction here: whereas the training is done only once and \emph{before} actual translation, and could therefore be seen as 'preparing' the translation software for its task, the classification is done every time the user asks for a translation. Training consists of (1) aligning the bilingual corpus, using the word alignment algorithms described in the previous sections, (2) decomposing the corpus into trigrams, and (3) giving the results to the classifier as training material. The trigrams of the source language constitute the examples, the trigrams of the target language are the classes. Classification means (1) decomposing the source text into trigrams and (2) classifying each trigram. We end up with a list of trigrams in the target language.
 
+\item \emph{Global phase.} In the global phase we try to merge the trigrams into one text. The part of the translation software responsible for this is called the \emph{decoder}. There might be a lot of overlap in the resulting trigram (for example: '\emph{\_ I love}', '\emph{I love you}' and '\emph{love you \_}'), making the decoder's task relatively easy. Such overlap might even give hints for the word order of the target language. In many cases, unfortunately, such overlap does not exist or is even misleading. As with statistical translation, here too we can pick the best translation hypothesis by using a language model and a translation model. 
 
+% Constraint Satisfaction Inference
+
+\end{itemize}
+
+%Moet ik hier iets zeggen over phrase based?
 
 \section{Scientific importance and relevance for society}
 
@@ -137,8 +155,21 @@ The memory-based approach is in many ways similar to the statistical approach - 
 \section{Possibilities for future research}
 \section{Conclusion}
 
-\section{References}
+\begin{thebibliography}{99}
 
+\bibitem[Van den Bosch \& Berk, 2009]{vdbb09}
+Van den Bosch \& Berk, 2009
+
+\bibitem[Brown et al., 1993]{brown93}
+Brown et al., 1993
+
+\bibitem[Daelemans \& van den Bosch, 2005]{dvdb05}
+Daelemans \& van den Bosch, 2005
+
+\bibitem[Dempster et al., 1997]{dempster77}
+Dempster et al., 1997
+
+\end{thebibliography}
 % Documentatie Colibri
 % Maartens thesis
 
