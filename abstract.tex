@@ -1,0 +1,13 @@
+\documentclass[12pt]{article}
+
+\title{The inside of an English context-sensitive spell checker}
+\author{Wessel Stoop, Antal van den Bosch\\ \emph{Radboud University Nijmegen}}
+
+\renewcommand{\familydefault}{\sfdefault}
+
+\begin{document}
+\maketitle
+
+In this talk, we explain the workings of fowlt.net, an online spell checker freely available on the internet. Fowlt, just like it's Dutch equivalent Valkuil, is a context-sensitive spell checker, using memory based learning software Timbl and word prediction software WOPR; the general idea is that a certain word is flagged as an error if our language models expected another word there and are very certain about it. This makes detection of errors like the one in the second sentence of this abstract possible. Fowlt consist of multiple modules, all approaching the task of detecting and correcting errors from a different viewpoint. We will explain these modules, how they work together, and discuss the practical problems we encountered while preparing them for their task. 
+
+\end{document}
