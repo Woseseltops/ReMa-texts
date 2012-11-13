@@ -101,7 +101,7 @@ Working with multiple people on the same software can cause quite a lot of pract
 
 \subsection*{Abstract}
 
-For many confusibles, like "\emph{you're} versus \emph{your}", one option is much more frequent than the other. This poses a problem when one tries to create a context-sensitive memory-based confusible corrector, as having more data for one option will make it more likely that the confusible corrector will predict that option. In some cases this can be solved by balancing the training data so that it has exactly the same amount of examles for each option, but in other cases this means a very large part of the data have to be thrown away, making the corrector even worse. In this paper I investigate in which cases it is better to use a balanced training set, and in which cases it is better to train the modules on the larger, unbalanced set. I do this by building x confusible correctors and evaluating their results.
+For many confusibles, like "\emph{you're} versus \emph{your}", one option is much more frequent than the other. This poses a problem when one tries to create a context-sensitive memory-based confusible corrector, as having more data for one option will make it more likely that the confusible corrector will predict that option. In some cases this can be solved by balancing the training data so that it has exactly the same amount of examples for each option, but in other cases this means a very large part of the data have to be thrown away, making the corrector even worse. In this paper I investigate in which cases it is better to use a balanced training set, and in which cases it is better to train the modules on the larger, unbalanced set. I do this by building x confusible correctors and evaluating their results.
 
 %hoeveel?
 
@@ -117,11 +117,12 @@ This paper results from my attempts to solve a rather practical issue while buil
 
 \end{examples}
 
-These errors, in which one word is confused with another (often homophone) word, are called \emph{confusible errors}. For the most common confusible errors, Fowlt contains a specialized modules. Unlike typos, confusible errors cannot be detected by simply looking at the text word for word, because the error is in the relation of a particular word with the other words in the sentence. Therefore, the confusible modules detect them by looking at the context of the word, and see if that differs from the contexts they have seen in the past for that word. If it, on the basis of the context, would predict another word in that position, and is really certain about it, it flags the word as an error. This means, for example, that Fowlt is able to replace the incorrect "there" in the last example into "they're", simply because "there" usually isn't followed by "really nice people", while "they're" is. \\\indent
-This knowledge was not inserted manually, but was created with the help of Machine Learning software TiMBL. A more detailed account of its workings will be given in the next section. For now it is important to understand that TiMBL extracts this knowledge from large text corpora. From these corpora, all examples of the confusible have been extracted together with their content. The confusible corrector's results improve when TiMBL has seen more training material to base its decision on.\\\indent
+These errors, in which one word is confused with another (often homophone) word, are called \emph{confusible errors}. For most common confusible errors, Fowlt contains specialized modules. Unlike typos, confusible errors cannot be detected by simply looking at the text word for word, because the error is in the relation of a particular word with the other words in the sentence. Therefore, the confusible modules detect them by looking at the context of the word, and see if that differs from the contexts they have seen in the past for that word. If it, on the basis of the context, would predict another word in that position, and is really certain about it, it flags the word as an error. This means, for example, that Fowlt is able to replace the incorrect "there" in the last example into "they're", simply because "there" usually isn't followed by "really nice people", while "they're" is. \\\indent
+This knowledge was not inserted manually, but was created with the help of Machine Learning software TiMBL. A more detailed account of its workings will be given in the next section. For now it is important to understand that TiMBL extracts this knowledge from large text corpora. From these corpora, all examples of the confusible have been extracted together with their context. The confusible corrector's results improve when TiMBL has seen more training material to base its language models on.\\\indent
 Fowlt contains language models, and thus specialized confusible correctors, for the following confusibles (among others):
 
-Dit is Fowlt. Dit is een confusible. Zo kan je ze herkennen. Dit hebben andere mensen gedaan. Dit zijn de confusibles waarnaar ik ga kijken. Dit zijn de verdelingen in mijn testset... kijk ze zijn scheef. Ik kan ze niet altijd weggooien, want dat wordt het nog erger. 
+What the confusible modules within Fowlt for each of these confusibles do is removing the confusible words and predicting which word was removed on the basis of the context. If they predicted the word incorrectly, BUT are very certain about it, they assume the original word was wrong and flag it as an error. \\\indent
+Ideally, a language model is created on the basis of a balanced training set, i.e. a training set that consists of roughly the same amount of examples for each confusible option. If we would use a training set with much more contexts for option A than for option B, which may bias the model to option A. For example, if the word 'cookie' can occur perfectly both in the context of option A and option B, when seeing 'cookie' in a particular context the confusible corrector should not be able to make a prediction on the basis of this word alone. However, if the language model is based on an unbalanced set it will predict option A, simply because A occured together with 'cookie' more often. \\\indent
 
 \subsection{Method}
 
@@ -220,6 +221,5 @@ Toutanova \& Moore, 2002.
 \end{thebibliography}
 
 % Ene paper Antal
-% roc101
 
 \end{document}
