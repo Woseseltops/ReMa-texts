@@ -155,21 +155,37 @@ When reporting the results of a confusible module, the names of the various cell
 
 \item Detection accuracy. Detection accuracy only indicates how many mistakes the confusible detector makes, not what kind of mistakes. It can be calculated with the following formula:
 
-%formula
+\[
+\frac{tp+tn}{tp+tn+fp+fn}
+\]
 
 It is similar to prediction accuracy in that it indicates how well the sytem does in general, but keep in mind that prediction and detection accuracy measure two completely different concepts. Although a system with a good prediction accuracy is very likely to also have a good detection accuracy, it might be possible that a system very good at predicting confusibles in errorless texts behaves differently in texts that do contain errors.
  
-\item Detection recall.
-\item Detection precision.
+\item Detection recall and detection precision. 
+
+\[
+\frac{tp}{tp+fn}
+\]
+
+\[
+\frac{tp}{tp+fp}
+\]
+
+\item Detection F-score. 
+
+\[
+2 * \frac{precision * recall}{precision + recall}
+\]
+
 \end{itemize}
 
 \paragraph{Error correction}
 
 \begin{itemize}
 \item Confusion matrix.
-\item Detection accuracy.
-\item Detection recall.
-\item Detection precision.
+\item Correction accuracy.
+\item Correction recall and correction precision.
+\item Correction F-score.
 \end{itemize}
 
 \paragraph{Problems with precision and recall.} Some text.
