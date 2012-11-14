@@ -14,7 +14,7 @@
 
 \section{Introduction}
 
-When one of Starfleet's vessels meets an alien ship in areas where no man has gone before, they can (almost) always communicate with these aliens (almost) instantly; they speak to them in English, and these aliens answer in English. This is possible because, according to the Star Trek lore, the protagonists make use of a so-called Universal Translator. This Universal Translator can (1) recognize speech in every language, (2) translate what it has 'heard' to any other language, (3) make its results audible with speech synthesis and (4) learn itself new languages when needed. Unfortunately, like many technologies in Star Trek, this is far from reality: there is lots of active research at the first three tasks in particular, but no software currently in existence can do this as perfect as the Universal Translator. \\\indent
+When one of Starfleet's vessels meets an alien ship in areas where no man has gone before, they can (almost) always communicate with these aliens (almost) instantly; they speak to them in English, and these aliens answer in English. This is possible because, according to the Star Trek lore, the protagonists make use of a so-called Universal Translator. This Universal Translator can (1) recognize speech in every language, (2) translate what it has 'heard' to any other language, (3) make its results audible with speech synthesis and (4) learn itself new languages when needed. Unfortunately, like many technologies in Star Trek, this is far from reality: there is lots of active research at the first three tasks in particular (and even some of the fourth, see \citet{biemann11}), but no software currently in existence can do this as perfect as the Universal Translator. \\\indent
 In this paper, I will give a detailed overview of the research project Colibri, which basically is an attempt to improve the technology needed for the second task: automatically translating text from one language to another. More specifically, the project investigates the identification and extraction of constructions in natural language, and how these can be used in Machine Translation. These constructions can be of various lengths, and, importantly, can also contain one or more gaps. The constructions are not identified on the basis of explicit 'human' knowledge about language and grammar ('linguistic theory'), but are distilled from large amounts of text ('text corpora') with the help of context-sensitive machine-learning techniques. The Colibri project is carried out by Maarten van Gompel and supervised by Antal van den Bosch.
 \\\indent
 In section 2, I'll give a short overview of what has been achieved in machine translation, and in section 3 the current project will be described. This order was chosen to show that Colibri builds on previous research directly.
@@ -80,13 +80,15 @@ Unlike the ruled-based approach, the statistical approach creates its own 'knowl
 \subsection{The example-based approach}
 
 In this section, I'll give an overview of the example-based approach. I'll focus on the memory-based version of the example-based approach in particular, because that is the version the Colibri project uses. Other versions of example-based machine translation might vary slightly. \\\indent
-The memory-based approach is in many ways similar to the statistical approach - it too generates translations on the basis of large bilingual corpora, for instance. The main difference, however, is that it is context-sensitive; the idea is that the system will find another translation for \emph{left} in the sentence \emph{The toilets are at your left hand} than \emph{left} in the sentence \emph{Elvis has left the building}. \\\indent
-In the memory-based approach, this context-sensitivy is achieved with the help of machine learning: by showing a so-called classifier lots of examples of something, and telling it in which class it belongs, it is able to predict the class of new examples. For example, we can give a classifier the external characteristics of 10.000 humans (for example length, type of cloths, length of hair), and also tell it whether these humans are male or female. If we then ask for the sex of a relatively short human, wearing a dress, with long hair, it will probably be able to tell us this is a woman. While this example only has two classes, it is in principle possible to use an unlimited number of classes. This is exactly what the memory-based approach does: on the basis of a particular word and its context (for example, its direct neighbours), a classifier in machine translation returns as a class the most likely n-gram. Thus, instead of human characteristics the classifiers are trained on words and their context from the source language, and instead of sex it uses n-grams from the target language as classes. \\\indent
-There are two types of classifaction methods: \emph{eager learning} and \emph{lazy learning}. Whereas eager learning algorithms try to creating a small, abstract, general model, filtering out infrequent cases, lazy learning algorithms take into account everything they encounter. According to \citet{dvdb05}, for natural language processing the lazy learning approach works best, because infrequent cases are an important part of the knowledge needed. \\\indent
-Like I did with statistical machine translation, I will now give an overview of the memory-based machine translation process, based on \citet{vdbb09}. For this example, I will describe a translator that uses trigrams, but it should be noted that the Colibri system uses n-grams of various lengths.
+The memory-based approach is in many ways similar to the statistical approach - it too generates translations on the basis of large bilingual corpora, for instance. The main difference, however, is that it is context-sensitive; the idea is that the system will find another translation for \emph{left} in the sentence \emph{The toilets are at your left hand} than for \emph{left} in the sentence \emph{Elvis has left the building}. \\\indent
+In the memory-based approach, this context-sensitivy is achieved with the help of machine learning: by showing a so-called classifier lots of examples of something, and telling it to which class it belongs, the classifier is able to predict the class of new examples. For example, we can give a classifier the external characteristics of 10.000 humans (length, type of cloths, length of hair, etc.), and also tell it whether these humans are male or female. If we then ask for the sex of a relatively short human, wearing a dress, with long hair, the classifier will probably be able to tell us this is a woman. While this example only has two classes, it is in principle possible to use an unlimited number of classes. This is exactly what the memory-based approach to machine translation does: on the basis of a particular word and its context (for example, its direct neighbours), a classifier in machine translation returns as a class the most likely n-gram. Thus, instead of on human characteristics the classifiers are trained on words and their context from the source language, and instead of sex it uses n-grams from the target language as classes. \\\indent
+There are two types of classifaction methods: \emph{eager learning} and \emph{lazy learning}. Whereas eager learning algorithms try to create a small, abstract, general model, filtering out infrequent cases, lazy learning algorithms take into account everything they encounter. According to \citet{dvdb05}, for natural language processing the lazy learning approach works best, because infrequent cases are an important part of the knowledge needed. \\\indent
+Like I did with statistical machine translation, I will now give an overview of the memory-based machine translation process, based on \citet{vdbb09}. For this example, I will describe a translator that uses trigrams, but all kinds of n-grams could be used here, even n-grams of variable length. In fact, \citet{vangompel09}, \citet{vangompelea09} and \citet{vangompel11} showed that better results can be achieved using phrases of variable length; investigating the nature of multi-word units in translation therefore is one of the main goals of the Colibri project.
 
 \begin{itemize}
-\item \emph{Local phase.} In the description of \citet{vdbb09}, the local phase entails both training the classifier and actual classification, but I think it is important to make a sharp distinction here: whereas the training is done only once and \emph{before} actual translation, and could therefore be seen as 'preparing' the translation software for its task, the classification is done every time the user asks for a translation. Training consists of (1) aligning the bilingual corpus, using the word alignment algorithms described in the previous sections, (2) decomposing the corpus into trigrams, and (3) giving the results to the classifier as training material. The trigrams of the source language constitute the examples, the trigrams of the target language are the classes. Classification means (1) decomposing the source text into trigrams and (2) classifying each trigram. We end up with a list of trigrams in the target language.
+\item \emph{Local phase.} In the description of \citet{vdbb09}, the local phase entails both training the classifier and actual classification, but I think it is important to make a sharp distinction here: whereas the training is done only once and \emph{before} actual translation, and could therefore be seen as 'preparing' the translation software for its task, the classification is done every time the user asks for a translation. Training consists of (1) aligning the bilingual corpus, using the word alignment algorithms described in the previous sections, (2) decomposing the complete corpus into trigrams, and (3) giving the results to the classifier as training material. The trigrams of the source language constitute the examples, the trigrams of the target language are the classes. Classification means (1) decomposing the source text into trigrams and (2) classifying each trigram. We end up with a list of trigrams in the target language.
+
+%vdb b 09 ook echt lezen
 
 \item \emph{Global phase.} In the global phase we try to merge the trigrams into one text. The part of the translation software responsible for this is called the \emph{decoder}. There might be a lot of overlap in the resulting trigram (for example: '\emph{\_ I love}', '\emph{I love you}' and '\emph{love you \_}'), making the decoder's task relatively easy. Such overlap might even give hints for the word order of the target language. In many cases, unfortunately, such overlap does not exist or is even misleading. As with statistical translation, here too we can pick the best translation hypothesis by using a language model and a translation model. 
 
@@ -94,7 +96,7 @@ Like I did with statistical machine translation, I will now give an overview of 
 
 \end{itemize}
 
-On a final note, it should be added that although I focussed word-based translation (as described in \citet{stroppa07} and \citet{vdbb09}) in the previous examples,  \citet{vangompel09}, \citet{vangompelea09} and \citet{vangompel11} showed that even better results can be achieved using phrases of variable length. Investigating the advantage of multi-word translation units is one of the main goals of the Colibri project, as will be explained in the next section.
+
 
 
 
@@ -102,36 +104,44 @@ On a final note, it should be added that although I focussed word-based translat
 
 \section{Project description}
 
-Besides an attempt to discover more about the possibilities for machine translation technology, Colibri is also an attempt to actually develop this technology. The following project overview therefore necessarily also is an overview of the software.
+In this section, I will describe the main idea behind the project (subsection 1), and how this is operationalized (section 2). Where possible, I will add information of the current status of the project.
 
-\subsection{Pattern extraction}
+\subsection{The building blocks: constructions}
 
-Colibri, 'Constructions as Linguistics Bridges', investigates constructions (or patterns), as its name suggests. A construction can be any group of consecutive words (a so-called 'n-gram') in any natural language that in some way forms an entity. An example is 'on the basis of' in the following sentence:
+Colibri, 'Constructions as Linguistics Bridges', investigates constructions (or patterns), as its name suggests. A construction can be any group of consecutive words in any natural language that in some way forms an entity. An example is 'on the basis of' in the following sentence:
 
 \begin{examples}
 \item On the basis of these ideas, software can be developed.
 \end{examples}
 
-Importantly, constructions can also have one or more gaps (so-called 'skip-grams'). 'from \_\_ point of view' in the following example, is a construction with one such gap. 
+Note that a simple trigram approach couldn't have discoverd this construction. Importantly, constructions can also have one or more gaps (so-called 'skip-grams'). 'From \_\_ point of view' in the following example, is a construction with one such gap. 
 
 \begin{examples}
 \item I understand things better when I look at them from his point of view.
 \end{examples}
 
 The gap is filled here is filled with 'his', but the construction 'from \_\_ point of view' can also be filled with many other words ('my', 'the', 'another', 'Obama's', etc.). This shows the advantage of skip-grams over n-grams for machine translation: whereas n-grams would only have been able to capture the construction 'point of view', because the word directly before 'point of view' is variable, skip-grams are also able to recognize that the word 'for' is part of the construction.\\\indent
-Of course, not every possible group of consecutive words is a construction; what makes some groups special? The exact nature of linguistic constructions has been the subject of many publications and even an entire linguistic framework (construction grammar). For this project however, it suffices to say that constructions emerge because some combinations of words are more frequent than others.
+Of course, not every possible group of consecutive words is a construction; what makes some groups special? The exact nature of linguistic constructions has been the subject of many lignuistic publications and even an entire linguistic framework (construction grammar). For this project, however, it suffices to say that constructions emerge because some combinations of words are more frequent than others.
 
+% Referentie construction grammar
 % Drie vormen freq: raw frequency, context frequency, multilingual alignmetn
 % Blabla, want freq is waar mach learning gebriuk van maakt
 
-\subsection{Pattern querying} Interactively query generated models for specific patterns.
-\subsection{Pattern/corpus comparison} Match patterns generated from one corpus to another corpus.
-\subsection{Graph computation \& visualisation} Compute graph relations between pattern models and visualise graphs
-\subsection{Alignment algorithms} Algorithms to extract and align patterns accross languages; resulting in translation pairs for constructions.
-\subsection{Machine Translation Decoding} Reassembles translated fragments into one coherent sentence in the target-language; seeking the best (statistically most probably) solution in a vast search space of possible search hypotheses.
-\subsection{Memory-based Machine Translation} Machine learning algorithms can be used to consider source-side context in translations. Classifiers can be built and directly used by the decoder.
-\subsection{Experiment Framework} Colibri comes with an extensive experiment framework for conducting Machine Translation experiments.\
+\subsection{The builder: machine translation}
+Besides an attempt to discover more about the possibilities for machine translation technology, Colibri is also an attempt to actually develop this technology. A project overview should be complete without an overview of what the software developed. Colibri's functionality can be split in four parts: (1) identifying and extracting constructions in a language, (2) identifying aligned constructions between language-pairs, (3) memory-based classification using construction experts and (4) reassembling constructions into a coherent target sentence. If we look at these parts int he light of the light of the memory-based machine translation process as described in the previous section, the first three parts would constitute the local phase, while part 4 would constitute the global phase. I will discuss the four parts in more detail consecutively:
 
+\subsubsection{Identifying and extracting constructions in a language}
+When using large corpora, the process of discovering simple n-grams might already take quite a lot of time; adding variability in lenght and one or multiple gaps to the n-grams makes the process even more - in fact, many times more - complex. However, as I write this, this problem has been solved by using two techniques: (1) by optimizing how save the various tokens and the n-grams and skipgrams they are part of in memory, and (2) by using an iterative counting algorithm to limit storage.\\\indent
+Besides identifying the constructions, various frequency statistics can be given. These frequencies can then be used to create graphs which display the relations between the various constructions.
+
+%Hoe is dit probleem precies opgelost?
+
+\subsubsection{Identifying aligned constructions between language-pairs}
+The classical approach for aligning constructions from a bilingual corpus is to first align the individual words, and then align the construction themselves \citep{koehn03}. As part of the Colibri project, it was attempted to skip the first step, and try to align the construction directly. To achieve this, it was simply measured how often the constructions occur together, among other things. Because at this stage the decoder was not yet ready (see subsection 4), the decoder from translation system MOSES was used. This showed that the approach using constructions for alignment could not provide results as good as the approach using words can; therefore, it was decided to go back to the classical method. It should be noted that, because the MOSES decoder was used, the influence of skipgrams on alignment could not be measured. However, because they increase complexity, they are not expected to improve the alignments.\\\indent
+
+
+\subsubsection{Memory-based classification using construction experts}
+\subsubsection{Reassembling constructions into a coherent target sentence}
 \subsection{Hypotheses} %Of moet dit bij main outstanding questions?
 
 Constructions can be found efficiently in corpus data
@@ -166,10 +176,26 @@ In MT, constructions (i.e. possibly with gaps) result in better translation than
 \section{Achievements so far}
 \section{Main outstanding questions}
 \section{Strengths and weaknesses}
+
+\subsection{Weaknesses}
+
+\subsubsection{Machine translation and the status of translators}
+
+Machine translation is far from perfect, and although this project is an interesting attempt to bring the technology closer to the 'perfect'-end, it will almost certainly not result in an application which is able to replace human translators. However, when non-perfect software like this is made available to the public, ignorant users might however treat it as such. A similar critisism can be heard in the field of spell checkers: 
+
+%Overzicht kritiek, zie Wikipedia
+
+Since the release of Google Translate, various examples can be found on the internet of websites and other texts translated with this service. 
+
+\subsubsection{Translation as an art}
+
 \section{Possibilities for future research}
 \section{Conclusion}
 
 \begin{thebibliography}{99}
+
+\bibitem[Biemann, 2011]{biemann11}
+Biemann, C. (2011). Structure discovery in natural language. New York / Dordrecht: Springer.
 
 \bibitem[Van den Bosch \& Berck, 2009]{vdbb09}
 Van den Bosch, A., \& Berck, P. (2009). Memory-based machine translation and language
@@ -198,6 +224,9 @@ Van Gompel, M., Van den Bosch, A., \& Berck, P. (2011). Extending memory-based
 machine translation to phrases. In T. Markus, P. Monachesi, \& E. Westerhout (Eds.),
 Computational linguistics in the netherlands 2010: Selected papers from the twentieth
 clin meeting (pp. 45\-58). Utrecht, the Netherlands: LOT.
+
+\bibitem[Koehn et al, 2003]{koehn03}
+Koehn et al, 2003
 
 \bibitem[Stroppa et al., 2007]{stroppa07}
 Stroppa, N., Van den Bosch, A., \& Way, A. (2007). Exploiting source similarity for SMT
