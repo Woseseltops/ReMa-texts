@@ -163,6 +163,7 @@ When reporting the results of a confusible module, the names of the various cell
 It is similar to prediction accuracy in that it indicates how well the sytem does in general, but keep in mind that prediction and detection accuracy measure two completely different concepts. Although a system with a good prediction accuracy is very likely to also have a good detection accuracy, it might be possible that a system very good at predicting confusibles in errorless texts behaves differently in texts that do contain errors.
  
 \item Detection recall and detection precision. 
+Precision and recall are concepts well-known within the field of Information Retrieval; precision reflects how much of the retrieved things were relevant, while recall reflects how much of the the relevant things were retrieved. Often there is a inverse relationship between precision and recall: if you change an algorithm so that its recall increases, its precision decreases, and the other way around. In case of spelling checkers, this means you either have a system that catches a lot of errors, but also has a lot of false alarms, or a system that only finds true errors, but also misses a lot; you can't have the best of both.
 
 \[
 \frac{tp}{tp+fn}
@@ -173,6 +174,7 @@ It is similar to prediction accuracy in that it indicates how well the sytem doe
 \]
 
 \item Detection F-score. 
+Although you mostly cannot have an optimal precision \emph{and} recall at the same time, you can of course try to have them both as high as possible. Calculating the mean does not help here, because the mean can be relatively high if one of the two is high, but what you want to know is whether \emph{both} are high.
 
 \[
 2 * \frac{precision * recall}{precision + recall}
