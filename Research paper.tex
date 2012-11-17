@@ -128,26 +128,24 @@ Of course, not every possible group of consecutive words is a construction; what
 % Blabla, want freq is waar mach learning gebriuk van maakt
 
 \subsection{The builder: machine translation}
-Besides an attempt to discover more about the possibilities for machine translation technology, Colibri is also an attempt to actually develop this technology. A project overview should be complete without an overview of what the software developed. Colibri's functionality can be split in four parts: (1) identifying and extracting constructions in a language, (2) identifying aligned constructions between language-pairs, (3) memory-based classification using construction experts and (4) reassembling constructions into a coherent target sentence. If we look at these parts int he light of the light of the memory-based machine translation process as described in the previous section, the first three parts would constitute the local phase, while part 4 would constitute the global phase. I will discuss the four parts in more detail consecutively:
+Besides an attempt to discover more about the possibilities for machine translation technology, Colibri is also an attempt to actually develop this technology. A project overview therefore should not be complete without an overview of the software's functionality. Colibri's functionality can be split in four parts: (1) identifying and extracting constructions in a language, (2) identifying aligned constructions between language-pairs, (3) memory-based classification using construction experts and (4) reassembling constructions into a coherent target sentence. If we look at these parts int he light of the light of the memory-based machine translation process as described in the previous section, the first three parts would constitute the local phase, while part 4 would constitute the global phase. I will discuss the four parts in more detail consecutively:
 
 \subsubsection{Identifying and extracting constructions in a language}
-When using large corpora, the process of discovering simple n-grams might already take quite a lot of time; adding variability in lenght and one or multiple gaps to the n-grams makes the process even more - in fact, many times more - complex. However, as I write this, this problem has been solved by using two techniques: (1) by optimizing how save the various tokens and the n-grams and skipgrams they are part of in memory, and (2) by using an iterative counting algorithm to limit storage.\\\indent
-Besides identifying the constructions, various frequency statistics can be given. These frequencies can then be used to create graphs which display the relations between the various constructions.
+When using large corpora, the process of discovering simple n-grams might already take quite a lot of time; adding variability in lenght and one or multiple gaps to the n-grams makes the process even more - in fact, many times more - complex. However, as I write this, this problem has been solved by using two techniques: (1) by optimizing how the various tokens and the n-grams and skipgrams they are part of are saved in memory, and (2) by using an iterative counting algorithm to limit storage. Besides identifying the constructions, various frequency statistics can be given. These frequencies can then be used to create graphs which display the relations between the various constructions.
 
 %Hoe is dit probleem precies opgelost?
 
 \subsubsection{Identifying aligned constructions between language-pairs}
-The classical approach for aligning constructions from a bilingual corpus is to first align the individual words, and then align the construction themselves \citep{koehn03}. As part of the Colibri project, it was attempted to skip the first step, and try to align the construction directly. To achieve this, it was simply measured how often the constructions occur together, among other things. Because at this stage the decoder was not yet ready (see subsection 4), the decoder from translation system MOSES was used. This showed that the approach using constructions for alignment could not provide results as good as the approach using words can; therefore, it was decided to go back to the classical method. It should be noted that, because the MOSES decoder was used, the influence of skipgrams on alignment could not be measured. However, because they increase complexity, they are not expected to improve the alignments.\\\indent
-
+The classical approach for aligning constructions from a bilingual corpus is to first align the individual words, and then align the construction themselves \citep{koehn03}. As part of the Colibri project, it was attempted to skip the first step, and to try to align the constructions directly. To achieve this, you can for example simply measured how often the constructions found in both languages occur together.\\\indent
+Because at this stage the decoder was not yet ready (see subsection 4), the decoder from translation system MOSES was used to evaluate the results. These results showed that the approach using constructions for alignment could not provide results as good as the approach using words; therefore, it was decided to go back to the classical method. It should be noted that, because the MOSES decoder was used, the influence of skipgrams on alignment could not be measured. However, because they increase complexity, they are not expected to improve the alignments.\\\indent
+Although first aligning the words and after that aligning the construction is a good way to do this task, this does not solve the problems with the skipgrams: including skipgrams in the alignment process has negative effects on the results. To fix this, a algorithm specialized for skipgrams was developed, which indeed was able to find good translations. Unfortunately, when investigating the effects in a full translation setting, it turned out the skipgrams do not seem to improve the translation quality, because the decoder often picks the translation hypotheses consisting of sentences formed without skipgrams.
 
 \subsubsection{Memory-based classification using construction experts}
-\subsubsection{Reassembling constructions into a coherent target sentence}
-\subsection{Hypotheses} %Of moet dit bij main outstanding questions?
+As may have become clear from the previous sections, the Colibri project uses machine learning techniques to get from the source language construction to the target language constructions. More specifically, Colibri uses little expert classifiers, trained for only one construction, inspired by the effectivity of this approach in word sense ambiguation \citep{vangompel10}. The results of this approach are compared to the results of a combined classifier approach and statistical machine translation. So far, the experiments have not yet shown an improvement in translation quality, but the researchers are hopeful in achieving this in the future. They also want to add support for skipgrams.
 
-Constructions can be found efficiently in corpus data
-Graph-based relations can be used to constrain to good constructions
-Constructions can be aligned without resorting to word alignments as a basis
-In MT, constructions (i.e. possibly with gaps) result in better translation than mere consecutive phrases
+\subsubsection{Reassembling constructions into a coherent target sentence}
+A decoder was developed from scratch, following state-of-the-art techniques as described by \citet{koehn03}. On top of that, support of skip-grams was added.
+
 
 
 
@@ -173,21 +171,33 @@ In MT, constructions (i.e. possibly with gaps) result in better translation than
 
 % C++, Python
 
-\section{Achievements so far}
 \section{Main outstanding questions}
 \section{Strengths and weaknesses}
 
+\subsection{Strenghts}
+
+\subsubsection{Easily extensible to other languages}
+
+When describing the rule-based approaches to machine translation, I pointed out that for most approaches one needs a specific ruleset for each language pair. The Interlingua is an attempt to solve this problem by adding a language in between, so that only a ruleset for every language-Interlingua pair is needed. Statistical and memory-based approaches solve this problem in an even more elegant way: the only thing needed are computational power, time, and a lot of data. As digital texts are available in large quantities for the more important languages of the world, adding more languages to Colibri should not be that problematic. And also less important languages, even languages of which the grammar has not yet been investigated, can be added easily, as long as there is enough data to train the classifiers (but also see the first two weaknesses). Obviously, the opposite is true for the rule-based approach.
+
+\subsubsection{Improving communication between the world's communities}
+
 \subsection{Weaknesses}
 
-\subsubsection{Machine translation and the status of translators}
+\subsubsection{Memory based learning and the quantity/quality of the data}
 
-Machine translation is far from perfect, and although this project is an interesting attempt to bring the technology closer to the 'perfect'-end, it will almost certainly not result in an application which is able to replace human translators. However, when non-perfect software like this is made available to the public, ignorant users might however treat it as such. A similar critisism can be heard in the field of spell checkers: 
+%Lack of control
+
+\subsubsection{Existension possibilities to non-European languages?}
+
+\subsubsection{Machine translation and the societal status of translators}
+
+I'd like to close this section with a more general critique of machine translation. Machine translation is far from perfect. Colibri of course is an interesting attempt to bring the technology closer to the 'perfect'-end, it will almost certainly not result in an application which is able to replace human translators. However, when non-perfect software like this is made available to the public, ignorant users might treat it as if it was perfect software, thereby turning off their own intelligence, as it were. A similar critisism can be heard in the field of spell checkers: 
 
 %Overzicht kritiek, zie Wikipedia
 
-Since the release of Google Translate, various examples can be found on the internet of websites and other texts translated with this service. 
-
-\subsubsection{Translation as an art}
+And although giving a detailed analysis of the validity of these arguments is beyond the scope of this paper, I'd like to point out that something similar already seems to be happening: since the release of Google Translate, various examples of websites, street signs, restaurant menus and other texts translated by the service can be found all over the internet. The authors of the text, apparently not skilled in the target language, have relied on machine translation only and didn't check the quality translation in any other way, and have put this incorrect (and often funny) language in a place for the world to see.\\\indent
+An to make the problem even more complicated, there probably is no such thing as a 'correct' translation, in contrast to what the previous paragraph may have suggested. That is, if you ask n translators to translate a long text in language A to language B, n different translations will result. Translation is a problem for which no clearly defined answer exists. Instead, what one considers a good translation is largely a matter of taste, beliefs, cultural preference, etc., making translation much closer to an art. Viewing translation as something a computer can do might be a huge underestimation of the task, and giving the ignorant user this impression could be argued to be very misleading.
 
 \section{Possibilities for future research}
 \section{Conclusion}
@@ -219,6 +229,11 @@ Van Gompel, M., Van den Bosch, A., \& Berck, P. (2009). Extending memory-based
 machine translation to phrases. In M. Forcada \& A. Way (Eds.), Proceedings of the
 third workshop on example-based machine translation (pp. 79\-86). Dublin, Ireland.
 
+\bibitem[Van Gompel, 2010]{vangompel10}
+Van Gompel, M. (2010). Uvt-wsd1: A cross-lingual word sense disambiguation system.
+In Semeval '10: Proceedings of the 5th international workshop on semantic evaluation
+(pp. 238\-241). Morristown, NJ, USA: Association for Computational Linguistics.
+
 \bibitem[Van Gompel et al., 2011]{vangompel11}
 Van Gompel, M., Van den Bosch, A., \& Berck, P. (2011). Extending memory-based
 machine translation to phrases. In T. Markus, P. Monachesi, \& E. Westerhout (Eds.),
@@ -239,3 +254,11 @@ using context-informed features. In A. Way \& B. Gawronska (Eds.), Proceedings o
 % Maartens thesis
 
 \end{document}
+
+%\subsection{Hypotheses} 
+
+%Constructions can be found efficiently in corpus data
+%Graph-based relations can be used to constrain to good constructions
+%Constructions can be aligned without resorting to word alignments as a basis
+%In MT, constructions (i.e. possibly with gaps) result in better translation than mere consecutive phrases
+
