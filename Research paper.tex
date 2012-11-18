@@ -169,35 +169,53 @@ A decoder was developed from scratch, following state-of-the-art techniques as d
 
 \section{Methodology}
 
-% C++, Python
+Because of Colibri's practical nature, its methodology forms the core of the project and has been explained in detail in the previous sections, making this section largely superfluous. However, this might be the right place to note that Colibri's unusual methodology also makes its time planning quite different from more conventional research projects: whereas other projects would go through stages like (1) reading the previous literature, (2) building a theoretical model, (3) testing the model, for example with experiments and (4) refining the model on the basis of the results, Colibri takes an entirely different approach. The first year has been devoted to implementing ideas developed previously, resulting in a fully functional machine translation system. With this technology in place, the years after that can be used refining (and possibly extending) this technology, as well as evaluating its results.
+
+
+
+
 
 \section{Main outstanding questions}
+
+
+
+
+
+
 \section{Strengths and weaknesses}
 
 \subsection{Strenghts}
 
-\subsubsection{Easily extensible to other languages}
+\subsubsection{The example-based approach makes the system easily extensible to other languages}
 
-When describing the rule-based approaches to machine translation, I pointed out that for most approaches one needs a specific ruleset for each language pair. The Interlingua is an attempt to solve this problem by adding a language in between, so that only a ruleset for every language-Interlingua pair is needed. Statistical and memory-based approaches solve this problem in an even more elegant way: the only thing needed are computational power, time, and a lot of data. As digital texts are available in large quantities for the more important languages of the world, adding more languages to Colibri should not be that problematic. And also less important languages, even languages of which the grammar has not yet been investigated, can be added easily, as long as there is enough data to train the classifiers (but also see the first two weaknesses). Obviously, the opposite is true for the rule-based approach.
+When describing the rule-based approaches to machine translation, I pointed out that for most approaches one needs a specific ruleset for each language pair. The Interlingua approach is an attempt to solve this problem by adding a language in between, so that only a ruleset for every language-Interlingua pair is needed. Statistical and memory-based approaches solve this problem in an even more elegant way: the only things needed are computational power, time, and a lot of data. As digital translated texts are available in large quantities for the more important languages of the world, adding more languages to Colibri should not be that problematic. But even less important languages can be added easily, as long as there is enough data to train the classifiers (but see the first two weaknesses). Obviously, the opposite is true for the rule-based approach.
 
-\subsubsection{Improving communication between the world's communities}
+\subsubsection{Machines translation improves communication between the world's communities}
 
 \subsection{Weaknesses}
 
-\subsubsection{Memory based learning and the quantity/quality of the data}
+\subsubsection{Memory based learning depends on quantity and quality of the data}
 
-%Lack of control
+Memory-based learning takes the rule-creating process out of the hands of the authors. This can be a good thing, because it means translation systems can be made without any knowledge of the source or the target language, but it also means the authors loses control over what the system produces. That is, if the system makes errors, solving this problem is not as simple as changing how the system works. \\\indent
+Instead, the task of the creator now is to provide enough bilingual texts for training - preferably as much as possible - as this improves the change of finding a matching n-gram. And importantly, to avoid errors, this data should be high quality. One incorrect translation, if not found anywhere else in the corpus, can already end up in the translation results. For example, when translating \emph{Will Justin Bieber ever hit puberty} from English to Vietnamese with Google Translate, which is also based on bilingual corpora, the result is \emph{Justin Bieber se bao gio den tuoi day thi}, which means as much as 'Justin Bieber will never hit puberty'.
 
-\subsubsection{Existension possibilities to non-European languages?}
+\subsubsection{It is unclear how well the memory-based approach works for non-European languages}
 
-\subsubsection{Machine translation and the societal status of translators}
+Memory-based learning generated a translation on the basis of context. This works well for languages in which word order is largely fixed, like English: for these languages, if you change the order (and thus the context) of a particular word, you also change the meaning. There are languages, however, what happens for languages with free word order; so a word can have roughly the same meaning on various places in the sentence, and thus with various contexts. In other words, in these languages the main source of the knowledge of memory-based learning isn't fully available.
 
-I'd like to close this section with a more general critique of machine translation. Machine translation is far from perfect. Colibri of course is an interesting attempt to bring the technology closer to the 'perfect'-end, it will almost certainly not result in an application which is able to replace human translators. However, when non-perfect software like this is made available to the public, ignorant users might treat it as if it was perfect software, thereby turning off their own intelligence, as it were. A similar critisism can be heard in the field of spell checkers: 
+% Uitzoeken
 
-%Overzicht kritiek, zie Wikipedia
+\subsubsection{Machine translation is not good for common view on translation}
 
-And although giving a detailed analysis of the validity of these arguments is beyond the scope of this paper, I'd like to point out that something similar already seems to be happening: since the release of Google Translate, various examples of websites, street signs, restaurant menus and other texts translated by the service can be found all over the internet. The authors of the text, apparently not skilled in the target language, have relied on machine translation only and didn't check the quality translation in any other way, and have put this incorrect (and often funny) language in a place for the world to see.\\\indent
-An to make the problem even more complicated, there probably is no such thing as a 'correct' translation, in contrast to what the previous paragraph may have suggested. That is, if you ask n translators to translate a long text in language A to language B, n different translations will result. Translation is a problem for which no clearly defined answer exists. Instead, what one considers a good translation is largely a matter of taste, beliefs, cultural preference, etc., making translation much closer to an art. Viewing translation as something a computer can do might be a huge underestimation of the task, and giving the ignorant user this impression could be argued to be very misleading.
+I'd like to close this section with a more general critique of machine translation. Machine translation is far from perfect. Colibri of course is an interesting attempt to bring the technology closer to the 'perfect'-end, it will almost certainly not result in an application which is able to replace human translators. However, when non-perfect software like this is made available to the public, ignorant users might treat it as if it was perfect software, thereby turning off their own intelligence, as it were. A similar critisism can be heard in the field of spell checkers: the invention of automated  spell checkers would have caused a general trend in relying on the technology too much, an regarding work as finished without even proofreading it. \citet{galletta05} for example show that people deliver texts with more false-positive and false-negative errors in it when a spell checker was present, and that this even holds for people with good verbal skills. \\\indent
+And although giving a detailed analysis of the validity of these arguments is beyond the scope of this paper, I'd like to point out that something similar already seems to be happening for machine translation: since the release of Google Translate, various examples of websites, street signs, restaurant menus and other texts incorrectly translated by the service can be found all over the internet. The authors of the text, apparently not skilled in the target language, have relied on machine translation only and didn't check the quality translation in any other way.\\\indent
+And to make the problem even more complicated, there probably is no such thing as a 'correct' translation, in contrast to what the previous paragraphs may have suggested. That is, if you ask \emph{n} translators to translate a long text from language A to language B, \emph{n} different translations will be produced. Translation is a problem for which no clearly defined answer exists. Instead, what one considers a good translation is largely a matter of taste, beliefs, cultural preference, etc., making translation much closer to an art. Viewing translation as something a computer can do might be a huge underestimation of the task, and giving the ignorant user this impression could be argued to be very misleading.
+
+
+
+
+
+
 
 \section{Possibilities for future research}
 \section{Conclusion}
@@ -219,6 +237,9 @@ Daelemans \& van den Bosch, 2005
 
 \bibitem[Dempster et al., 1997]{dempster77}
 Dempster et al., 1997
+
+\bibitem[Galletta et al., 2005]{galletta05}
+Galletta, D. F., Durcikova, A., Everard, A. \& B. M. Jones. Does spelling checker software need warning label? Communications of the ACM, 48 (7), 82 - 86.
 
 \bibitem[Van Gompel, 2009]{vangompel09}
 Van Gompel, M. Phrase-based memory-based machine translation. Unpublished
@@ -251,7 +272,6 @@ using context-informed features. In A. Way \& B. Gawronska (Eds.), Proceedings o
 
 \end{thebibliography}
 % Documentatie Colibri
-% Maartens thesis
 
 \end{document}
 
