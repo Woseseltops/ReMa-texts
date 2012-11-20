@@ -81,7 +81,8 @@ Unlike the ruled-based approach, the statistical approach creates its own 'knowl
 
 For my overview of the example-based approach, I'll focus on the memory-based version of the example-based approach in particular, because that is the version the Colibri project uses. Other versions of example-based machine translation might vary slightly. \\\indent
 The memory-based approach is in many ways similar to the statistical approach - it too generates translations on the basis of large bilingual corpora, for instance. The main difference, however, is that it is context-sensitive; the idea is that the system will find another translation for \emph{left} in the sentence \emph{The toilets are at your left hand} than for \emph{left} in the sentence \emph{Elvis has left the building} simply because they occur in different contexts. \\\indent
-In the memory-based approach, this context-sensitivy is achieved with the help of machine learning: by showing a so-called classifier lots of examples of something, and telling it to which class it belongs, the classifier is able to predict the class of new examples. For example, we can give a classifier the external characteristics of 10.000 humans (length, type of cloths, length of hair, etc.), and also tell it whether these humans are male or female. If we then ask for the sex of a relatively short human, wearing a dress, with long hair, the classifier will probably be able to tell us this is a woman. While this example only has two classes, it is in principle possible to use an unlimited number of classes. This is exactly what the memory-based approach to machine translation does: on the basis of a particular word and its context (for example, its direct neighbours), a classifier in machine translation returns as a class the most likely n-gram. Thus, instead of on human characteristics the classifiers are trained on words and their context from the source language, and instead of sex it uses n-grams from the target language as classes. \\\indent
+In the memory-based approach, this context-sensitivy is achieved with the help of machine learning: by showing a so-called classifier lots of examples of something, and telling it to which class it belongs, the classifier is able to predict the class of new examples. For example, we can give a classifier the external characteristics of 10.000 humans (length, type of cloths, length of hair, etc.), and also tell it whether these humans are male or female. If we then ask for the sex of a relatively short human, wearing a dress, with long hair, the classifier will probably be able to tell us this is a woman, because most of the examples with similar features also were women. It thus is frequency that plays a central role here.\\\indent
+While this example only has two classes, it is in principle possible to use an unlimited number of classes. This is exactly what the memory-based approach to machine translation does: on the basis of a particular word and its context (for example, its direct neighbours), a classifier in machine translation returns as a class the most likely n-gram. Thus, instead of on human characteristics the classifiers are trained on words and their context from the source language, and instead of sex it uses n-grams from the target language as classes. \\\indent
 There are two types of classifaction methods: \emph{eager learning} and \emph{lazy learning}. Whereas eager learning algorithms try to create a small, abstract, general model, filtering out infrequent cases, lazy learning algorithms take into account everything they encounter. According to \citet{dvdb05}, for natural language processing the lazy learning approach works best, because infrequent cases are an important part of the knowledge needed. \\\indent
 Like I did with statistical machine translation, I will now give an overview of the memory-based machine translation process, based on \citet{vdbb09}. For this example, I will describe a translator that uses trigrams, but all kinds of n-grams could be used here, even n-grams of variable length. In fact, \citet{vangompel09}, \citet{vangompelea09} and \citet{vangompel11} showed that better results can be achieved using phrases of variable length; investigating the nature of multi-word units in translation therefore is one of the main goals of the Colibri project.
 
@@ -108,27 +109,26 @@ In this section, I will describe the main idea behind the project (subsection 1)
 
 \subsection{The building blocks: constructions}
 
-Colibri, 'Constructions as Linguistics Bridges', investigates constructions (or patterns), as its name suggests. A construction can be any group of consecutive words in any natural language that in some way forms an entity. An example is 'on the basis of' in the following sentence:
+Colibri, 'Constructions as Linguistics Bridges', investigates constructions (or patterns), as its name suggests. A construction can be any group of consecutive words  that in some way forms an entity, in any natural language. An example is 'on the basis of' in the following sentence:
 
 \begin{examples}
 \item On the basis of these ideas, software can be developed.
 \end{examples}
 
-Note that a simple trigram approach couldn't have discoverd this construction. Importantly, constructions can also have one or more gaps (so-called 'skip-grams'). 'From \_\_ point of view' in the following example, is a construction with one such gap. 
+Note that a simple trigram approach could not have covered this construction. Importantly, constructions can also have one or more gaps (so-called 'skipgrams'). 'From \_\_ point of view' in the following example, is a construction with one such gap. 
 
 \begin{examples}
 \item I understand things better when I look at them from his point of view.
 \end{examples}
 
-The gap is filled here is filled with 'his', but the construction 'from \_\_ point of view' can also be filled with many other words ('my', 'the', 'another', 'Obama's', etc.). This shows the advantage of skip-grams over n-grams for machine translation: whereas n-grams would only have been able to capture the construction 'point of view', because the word directly before 'point of view' is variable, skip-grams are also able to recognize that the word 'for' is part of the construction.\\\indent
-Of course, not every possible group of consecutive words is a construction; what makes some groups special? The exact nature of linguistic constructions has been the subject of many lignuistic publications and even an entire linguistic framework (construction grammar). For this project, however, it suffices to say that constructions emerge because some combinations of words are more frequent than others.
+The gap is filled here is filled with 'his', but the construction 'from \_\_ point of view' can also be filled with many other words ('my', 'the', 'another', 'Obama's', etc.). This shows the advantage of skipgrams over n-grams for machine translation: whereas n-grams would only have been able to capture the construction 'point of view', because the word directly before 'point of view' is variable, skipgrams are also able to recognize that the word 'for' is part of the construction. Frequent examples of the skipgrams (I expect the variant with 'my' to be very frequent, for instance) of course \emph{would} be recognized by the n-gram approach.\\\indent
+Of course, not every possible group of consecutive words is a construction; what makes some groups special? The exact nature of linguistic constructions has been the subject of many lignuistic publications and even an entire linguistic framework (construction grammar). For this project, however, it suffices to say that constructions emerge because some combinations of words are more frequent than others. As we've seen in the previous section, taking into account frequency in the training material is how classifiers are able to do their job.
 
 % Referentie construction grammar
 % Drie vormen freq: raw frequency, context frequency, multilingual alignmetn
-% Blabla, want freq is waar mach learning gebriuk van maakt
 
 \subsection{The builder: machine translation}
-Besides an attempt to discover more about the possibilities for machine translation technology, Colibri is also an attempt to actually develop this technology. A project overview therefore should not be complete without an overview of the software's functionality. Colibri's functionality can be split in four parts: (1) identifying and extracting constructions in a language, (2) identifying aligned constructions between language-pairs, (3) memory-based classification using construction experts and (4) reassembling constructions into a coherent target sentence. If we look at these parts int he light of the light of the memory-based machine translation process as described in the previous section, the first three parts would constitute the local phase, while part 4 would constitute the global phase. I will discuss the four parts in more detail consecutively:
+Besides an attempt to discover more about the possibilities for machine translation technology, Colibri is also an attempt to actually develop this technology. A project overview therefore cannot be complete without an overview of the software's functionality. Colibri's functionality can be split in four parts: (1) identifying and extracting constructions in a language, (2) identifying aligned constructions between language-pairs, (3) memory-based classification using construction experts and (4) reassembling constructions into a coherent target sentence. If we look at these parts in the light of the light of the memory-based machine translation process as described in the previous section, the first three parts would constitute the local phase, while part 4 would constitute the global phase. I will discuss the four parts in more detail consecutively:
 
 \subsubsection{Identifying and extracting constructions in a language}
 When using large corpora, the process of discovering simple n-grams might already take quite a lot of time; adding variability in lenght and one or multiple gaps to the n-grams makes the process even more - in fact, many times more - complex. However, as I write this, this problem has been solved by using two techniques: (1) by optimizing how the various tokens and the n-grams and skipgrams they are part of are saved in memory, and (2) by using an iterative counting algorithm to limit storage. Besides identifying the constructions, various frequency statistics can be given. These frequencies can then be used to create graphs which display the relations between the various constructions.
@@ -136,15 +136,15 @@ When using large corpora, the process of discovering simple n-grams might alread
 %Hoe is dit probleem precies opgelost?
 
 \subsubsection{Identifying aligned constructions between language-pairs}
-The classical approach for aligning constructions from a bilingual corpus is to first align the individual words, and then align the construction themselves \citep{koehn03}. As part of the Colibri project, it was attempted to skip the first step, and to try to align the constructions directly. To achieve this, you can for example simply measured how often the constructions found in both languages occur together.\\\indent
+The classical approach for aligning constructions from a bilingual corpus is to first align the individual words, and then align the constructions themselves \citep{koehn03}. It was attempted to skip the first step, and to try to align the constructions directly. To achieve this, you can for example simply measured how often the constructions found in both languages occur together (that is, in both the source and the target language).\\\indent
 Because at this stage the decoder was not yet ready (see subsection 4), the decoder from translation system MOSES was used to evaluate the results. These results showed that the approach using constructions for alignment could not provide results as good as the approach using words; therefore, it was decided to go back to the classical method. It should be noted that, because the MOSES decoder was used, the influence of skipgrams on alignment could not be measured. However, because they increase complexity, they are not expected to improve the alignments.\\\indent
-Although first aligning the words and after that aligning the construction is a good way to do this task, this does not solve the problems with the skipgrams: including skipgrams in the alignment process has negative effects on the results. To fix this, a algorithm specialized for skipgrams was developed, which indeed was able to find good translations. Unfortunately, when investigating the effects in a full translation setting, it turned out the skipgrams do not seem to improve the translation quality, because the decoder often picks the translation hypotheses consisting of sentences formed without skipgrams.
+When support for skipgrams was added to the implementation of the classical approach, it turned out that including skipgrams in the alignment process had negative effects on the results. To fix this, a algorithm specialized for aligning skipgrams was developed, which indeed was able to find good translations. Unfortunately, when investigating its effects in a full translation setting, it turned out the skipgrams do not seem to improve the translation quality, because the decoder mostly picks the translation hypotheses consisting of sentences formed without skipgrams.
 
 \subsubsection{Memory-based classification using construction experts}
-As may have become clear from the previous sections, the Colibri project uses machine learning techniques to get from the source language construction to the target language constructions. More specifically, Colibri uses little expert classifiers, trained for only one construction, inspired by the effectivity of this approach in word sense ambiguation \citep{vangompel10}. The results of this approach are compared to the results of a combined classifier approach and statistical machine translation. So far, the experiments have not yet shown an improvement in translation quality, but the researchers are hopeful in achieving this in the future. They also want to add support for skipgrams.
+As may have become clear from the previous sections, the Colibri project uses machine learning techniques to get from the source language construction to the target language constructions. More specifically, Colibri uses little expert classifiers, trained for only one construction, inspired by the effectivity of this approach in word sense ambiguation \citep{vangompel10}. The results of this approach are compared to the results of a combined classifier approach and statistical machine translation. So far, the experiments have not yet shown an improvement in translation quality, but the researchers are hopeful in achieving this in the future. They also want to add support for skipgrams in this stage.
 
 \subsubsection{Reassembling constructions into a coherent target sentence}
-A decoder was developed from scratch, following state-of-the-art techniques as described by \citet{koehn03}. On top of that, support of skip-grams was added.
+A decoder was developed from scratch, following state-of-the-art techniques as described by \citet{koehn03}. On top of that, support of skipgrams was added.
 
 
 
@@ -155,7 +155,9 @@ A decoder was developed from scratch, following state-of-the-art techniques as d
 
 
 
-\section{Scientific importance and relevance for society}
+\section{Relevance}
+
+\subsection{For science}
 
 % Ook lingusitic relevance: Abstracting fully lexicalised constructions
 %Finding semantic subclasses in constructions: from time-expression to time-expression"
@@ -163,13 +165,13 @@ A decoder was developed from scratch, following state-of-the-art techniques as d
 % Correlations with experimental findings
 % Switch tasks, cloze tests, reaction times, ...
 
-
+\subseciton{For society}
 
 
 
 \section{Methodology}
 
-Because of Colibri's practical nature, its methodology forms the core of the project and has been explained in detail in the previous sections, making this section largely superfluous. However, this might be the right place to note that Colibri's unusual methodology also makes its time planning quite different from more conventional research projects: whereas other projects would go through stages like (1) reading the previous literature, (2) building a theoretical model, (3) testing the model, for example with experiments and (4) refining the model on the basis of the results, Colibri takes an entirely different approach. The first year has been devoted to implementing ideas developed previously, resulting in a fully functional machine translation system. With this technology in place, the years after that can be used refining (and possibly extending) this technology, as well as evaluating its results.
+Because of Colibri's practical nature, its methodology forms the core of the project and has been explained in detail in the previous sections, making this section largely superfluous. However, this might be the right place to note that Colibri's unusual methodology also makes its time planning quite different from more conventional research projects: whereas other projects would go through stages like (1) reading the previous literature, (2) building a theoretical model, (3) testing the model, for example with experiments and (4) refining the model on the basis of the results, Colibri takes an entirely different approach. The first year has almost completely been devoted to implementing ideas developed previously, resulting in a fully functional machine translation system. With this technology in place, the years after that can be used refining (and possibly extending) this technology, as well as evaluating its results.
 
 
 
@@ -184,7 +186,11 @@ Because of Colibri's practical nature, its methodology forms the core of the pro
 
 \section{Strengths and weaknesses}
 
+In this section, I will try to give an overview of the project's strong and weak points. Some points concern this particular research project, other concern the memory based approach, and others zoom out even further and concern machine translation in general.
+
 \subsection{Strenghts}
+
+\subsubsection{The theory is tested immediately}
 
 \subsubsection{The example-based approach makes the system easily extensible to other languages}
 
@@ -192,23 +198,25 @@ When describing the rule-based approaches to machine translation, I pointed out 
 
 \subsubsection{Machines translation improves communication between the world's communities}
 
+%Bruggetje naar relevance for society
+
 \subsection{Weaknesses}
 
 \subsubsection{Memory based learning depends on quantity and quality of the data}
 
 Memory-based learning takes the rule-creating process out of the hands of the authors. This can be a good thing, because it means translation systems can be made without any knowledge of the source or the target language, but it also means the authors loses control over what the system produces. That is, if the system makes errors, solving this problem is not as simple as changing how the system works. \\\indent
-Instead, the task of the creator now is to provide enough bilingual texts for training - preferably as much as possible - as this improves the change of finding a matching n-gram. And importantly, to avoid errors, this data should be high quality. One incorrect translation, if not found anywhere else in the corpus, can already end up in the translation results. For example, when translating \emph{Will Justin Bieber ever hit puberty} from English to Vietnamese with Google Translate, which is also based on bilingual corpora, the result is \emph{Justin Bieber se bao gio den tuoi day thi}, which means as much as 'Justin Bieber will never hit puberty'.
+Instead, the task of the creator now is to provide enough bilingual texts for training - preferably as much as possible - as this improves the change of finding a matching n-gram. And importantly, to avoid errors, this data should be of high quality. One incorrect translation, if not found anywhere else in the corpus, can already end up in the translation results. For example, when translating \emph{Will Justin Bieber ever hit puberty} from English to Vietnamese with Google Translate, which is also based on bilingual corpora, the result is \emph{Justin Bieber se bao gio den tuoi day thi}, which means as much as 'Justin Bieber will never hit puberty'.
 
 \subsubsection{It is unclear how well the memory-based approach works for non-European languages}
 
-Memory-based learning generated a translation on the basis of context. This works well for languages in which word order is largely fixed, like English: for these languages, if you change the order (and thus the context) of a particular word, you also change the meaning. There are languages, however, what happens for languages with free word order; so a word can have roughly the same meaning on various places in the sentence, and thus with various contexts. In other words, in these languages the main source of the knowledge of memory-based learning isn't fully available.
+Memory-based learning generated a translation on the basis of context. This works well for languages in which word order is largely fixed, like English: for these languages, if you change the position of a particular word in the sentence (and thus the context), you also change the meaning of that sentence. There are languages, however, with relatively free word order; so a word can have roughly the same meaning on various places in the sentence, and thus with various contexts. In other words, in these languages the main source of the knowledge of memory-based learning isn't fully available.
 
 % Uitzoeken
 
-\subsubsection{Machine translation is not good for common view on translation}
+\subsubsection{Machine translation is not good for the common view on translation}
 
-I'd like to close this section with a more general critique of machine translation. Machine translation is far from perfect. Colibri of course is an interesting attempt to bring the technology closer to the 'perfect'-end, it will almost certainly not result in an application which is able to replace human translators. However, when non-perfect software like this is made available to the public, ignorant users might treat it as if it was perfect software, thereby turning off their own intelligence, as it were. A similar critisism can be heard in the field of spell checkers: the invention of automated  spell checkers would have caused a general trend in relying on the technology too much, an regarding work as finished without even proofreading it. \citet{galletta05} for example show that people deliver texts with more false-positive and false-negative errors in it when a spell checker was present, and that this even holds for people with good verbal skills. \\\indent
-And although giving a detailed analysis of the validity of these arguments is beyond the scope of this paper, I'd like to point out that something similar already seems to be happening for machine translation: since the release of Google Translate, various examples of websites, street signs, restaurant menus and other texts incorrectly translated by the service can be found all over the internet. The authors of the text, apparently not skilled in the target language, have relied on machine translation only and didn't check the quality translation in any other way.\\\indent
+Machine translation is far from perfect. Colibri of course is an interesting attempt to bring the technology closer to the 'perfect' end of the scale, but it will almost certainly not result in an application which is able to replace human translators. However, when non-perfect software like this is made available to the public, ignorant users might treat it as if it was perfect software, thereby turning off their own intelligence, as it were. A similar critisism can be heard in the field of spell checkers: the invention of automated  spell checkers would have caused a general trend in relying on the technology too much, and regarding work as finished without even proofreading it. \citet{galletta05} for example show that people deliver texts with more false-positive and false-negative errors in it when a spell checker was present, and that this even holds for people with good verbal skills. \\\indent
+Although giving a detailed analysis of these viewpoint is beyond the scope of this paper, I'd like to point out that something similar already seems to be happening for machine translation: since the release of Google Translate, various examples of websites, street signs, restaurant menus and other texts incorrectly translated by the service can be found all over the internet. The authors of the text, apparently not skilled in the target language, have relied on machine translation only and didn't check the quality translation in any other way.\\\indent
 And to make the problem even more complicated, there probably is no such thing as a 'correct' translation, in contrast to what the previous paragraphs may have suggested. That is, if you ask \emph{n} translators to translate a long text from language A to language B, \emph{n} different translations will be produced. Translation is a problem for which no clearly defined answer exists. Instead, what one considers a good translation is largely a matter of taste, beliefs, cultural preference, etc., making translation much closer to an art. Viewing translation as something a computer can do might be a huge underestimation of the task, and giving the ignorant user this impression could be argued to be very misleading.
 
 

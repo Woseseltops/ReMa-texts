@@ -122,13 +122,22 @@ This knowledge was not inserted manually, but was created with the help of Machi
 Fowlt contains language models, and thus specialized confusible correctors, for the following confusibles (among others):
 
 What the confusible modules within Fowlt for each of these confusibles do is removing the confusible words and predicting which word was removed on the basis of the context. If they predicted the word incorrectly, BUT are very certain about it, they assume the original word was wrong and flag it as an error. \\\indent
-Ideally, a language model is created on the basis of a balanced training set, i.e. a training set that consists of roughly the same amount of examples for each confusible option. If we would use a training set with much more contexts for option A than for option B, which may bias the model to option A. For example, if the word 'cookie' can occur perfectly both in the context of option A and option B, when seeing 'cookie' in a particular context the confusible corrector should not be able to make a prediction on the basis of this word alone. However, if the language model is based on an unbalanced set it will predict option A, simply because A occured together with 'cookie' more often. \\\indent
+Ideally, a language model is created on the basis of a balanced training set, i.e. a training set that consists of roughly the same amount of examples for each confusible option. If we would use a training set with much more contexts for option A than for option B, we may bias the model to option A. For example, if the word 'cookie' has an equal chance to occur both in the context of option A and option B, the confusible corrector should not be able to make a prediction on the basis of this word alone. However, if the language model is based on an unbalanced set it will predict option A, simply because A occurred together with 'cookie' more often. \\\indent
+A solution to this could of course be to always offer balanced training sets. In practice, this means removing part of the data: if 100 examples of option A, and 500 examples of option B are available, 400 examples of B will have to be removed. The more skewed the distribution is, the more data have to be removed, which can lead to situations where less than 1 percent of the training material can be used. As the results of the confusible correctors improve if they have seen more data, it is very likely that removing so much data deteriorates the results, rather than improving them. In the remainder of this paper I will therefore investigate in which cases it is better to use a balanced training set, and in which cases it is better to train the modules on the larger, unbalanced set. As will be shown, the exact behavior of the confusible corrector differs per module, so it is hard to draw an exact boundary, but ...
+
+% Hier even opletten of wat ikz eg wel klopt met mijn uiteindelijke resultaten
+% UIteindelijke resultaten toevoegen
 
 \subsection{Method}
 
-% Hier moet ergens een beetje beschreven worden hoe zo'n Timblmodule werkt.
+\subsubsection{The confusible correctors}
+To investigate the differences between confusible correctors trained on balanced and unbalanced training sets, I will use the confusibles listed in the previous sections. For each of these confusibles, a confusible corrector is trained to predict which option is likely to occur in which context. To be able to recognize contexts, the correctors use \emph{Memory Based Learning}, which means that it saves all contexts previously seen in memory. When it is given a new context, it generates a list of previously seen contexts which are relatively similar. For each of the contexts of this list, the confusible ... This approach is called the k-nearest neighbour algorithm.
 
-\subsubsection{Evaluation}
+The classifier algorithm used using IGTree, a decision-tree approximation of IB1-IG.
+
+% Hier ref toevoegen
+
+\subsubsection{Evaluation of the confusible correctors}
 
 In this section, I describe the various evaluation measures I used. This is necessary because evaluation of spelling correctors has not been very uniform in the spelling checker literature so far; whereas various scholars only measured how many errors their algorithm can detect in an error list and called it accuracy (e.g. \citealp{agirre98, bm00, tm02,vandelden04}), others use or argue for the precision-recall terminology (\citealp{reynaert08,pz84}, although they use other terms for the two concepts) or argue against it \citep{sp02}.\\\indent
 
