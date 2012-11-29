@@ -34,10 +34,12 @@ To be able to make these kinds of correction suggestions, Fowlt makes use of lan
 The best way to get a good overview of what I have done is probably to look at Fowlt's internal structure, so that's what I present in the next section. The first part of my internship basically consisted of adding the modules described below, one by one. To get a better idea of what parts took more time to 'get right', I also added a section about problems I encountered.
 
 \subsection{Project structure}
-Fowlt exist of multiple little spelling checkers, specialized in doing one thing. These spelling checkers are called 'modules'. Fowlt consists of four context-free modules (relatively similar to normal spelling checkers functionality) and, as I write this, sixteen context-based modules. This number will probably be different when you read this, though, as new context-based modules are created easily, and can be removed if it turns out they're not accurate enough.
+Fowlt exist of multiple little spelling checkers, specialized in doing one thing. These spelling checkers are called 'modules'. Fowlt consists of four context-free modules (relatively similar to normal spelling checkers functionality) and, as I write this, sixteen context-based modules. This number will probably be different when you read this, though, as new context-based modules are created easily, and can be removed if it turns out they're not accurate enough. Although it is possible to run Fowlt as a stand-alone application, most people will use it as a web application. I will devote a subsection to this 'web shell' around Fowlt as well.
+
+%Plaatje toevoegen
 
 \subsubsection{The processchain}
-In Fowlt's main script, fowlt\_processchain.py, all modules are started up, and their outputs are collected. Making changes in this script (based on the one for Valkuil, written by Maarten van Gompel) to make sure the new English based modules worked correctly, is one of the main things I did during my internship.
+In Fowlt's main script, fowlt\_processchain.py, all modules are started up, their outputs are collected and are all saved in xml form. Making changes in this script (based on the ones for Valkuil, written by Maarten van Gompel) to make sure the new English based modules worked correctly, is one of the main things I did during my internship. 
 
 \subsubsection{ErrorlistChecker (context-free)}
 Martin Reynaert provided us with a large list of common typos and their corrections. This module, written by me, checks for every word in the input whether it's in the errorlist, and adds the correction when it is.
@@ -59,6 +61,13 @@ The ConfusibleCheckers work similar to the WOPRChecker, with the only difference
 \\\indent
 A ConfusibleChecker trained on the difference between 'then' and 'than' for example filters out these two words and their contexts, sends these contexts to a Timblserver running somewhere. This Timblserver then says which of the two it would predict on the basis of the context. If this prediction is different from the actual word and the server is very sure about this, the word is flagged as an error. Training new ConfusibleModules has been a large part of my internship.
 
+\subsubsection{Fowlt as a web application}
+%Picture reference
+Fowlt can also (and, probably, will mostly) be used as a website. In this web variant, Fowlt works exactly as described above, but some extra mechanisms are built around to make sure it works and looks nice in the browser. The transition from a standalone application to a website is a two-step process, as is exemplified by figure... . Firstly, Fowlt is made available online webservice using the software CLAM. Among other things, CLAM adds the possibility to use Fowlt as a RESTful service. However, ordinary users don't want to send HTTP requests or read xml files when they want to texts corrected. This is solved in the second step, which is the Fowlt.net interface. In this interface, users can paste their texts, and see the mistakes flagged in red in these texts themselves. The interface even adds functionality to correct any errors. Behind the screens, the interface communicates of course with the CLAM webservice.
+\\\indent
+%Section reference
+Most of the functionality described above was already working for Valkuil, and so only had to be adapted to English to be function within Fowlt. One feature that I created for Fowlt that Valkuil doesn't have (yet), is an error tolerance slider. With this slider, users can change on the fly how confident Fowlt has to be about an error before it displays it. The implementation of this slider was, however, not without problems. See section for more information on that.
+
 \subsection{Problems encountered}
 
 \subsubsection{The original confusiblemodule could only handle two confusibles}
@@ -67,10 +76,108 @@ Most confusibles consist of two words only, but English has two that consist of 
 \subsubsection{Problems with Ucto}
 Although Ucto includes a configuration file for English, it didn't produce the correct output right out of the box. For example, for the It's-ItsModule to work, it is essential that "it's" is recognized as one word, which is not the case in original English configuration file. After a lot of tweaking of the regular expressions, I now have a tokenizer that produces output which can be used by all modules.
 
-\subsubsection{The ConfusibleModules weren't good enough}
-I didn't only train the ConfusibleModules, I also tested them with a program written by my supervisor. This program takes 10\% from the training data and saves it in a seperate file, trains TiMBL on the remaining 90\%, and then returns the percentage of correct predictions the resulting model can make about the 10\%. The results differed for the various confusibles, but the models were correct roughly 85-90\% of the time. This may seem a lot, but for a spellingchecker to be useful it's essential that a model can have an accuracy of over 99\%. Following the advice of my supervisor, I did two things to accomplish this: (1) I retrained TiMBL on the balanced training sets, which entails that there is an even amount of examples for each word the confusible consists of, and (2) I made the ConfusibleChecker only add a correction when it is very sure. Especially the latter solution increases the accuracy dramatically, but at the price of finding a lot less errors.
+%Deze paragraaf is twijfelachtig
+%\subsubsection{The ConfusibleModules weren't good enough}
+%I didn't only train the ConfusibleModules, I also tested them with a program written by my supervisor. This program takes 10\% from the training data and saves it in a seperate file, trains TiMBL on the remaining 90\%, and then returns the percentage of correct predictions the resulting model can make about the 10\%. The results differed for the various confusibles, but the models were correct roughly 85-90\% of the time. This may seem a lot, but for a spellingchecker to be useful it's essential that a model can have an accuracy of over 99\%. Following the advice of my supervisor, I did two things to accomplish this: (1) I retrained TiMBL on the balanced training sets, which entails that there is an even amount of examples for each word the confusible consists of, and (2) I made the ConfusibleChecker only add a correction when it is very sure. Especially the latter solution increases the accuracy dramatically, but at the price of finding a lot less errors.
 
-\subsection{Results}
+\subsubsection{Most modules didn't provide confidences measures}
+Unlike the confusible modules, the WOPR module and the other modules do not return how confident they are a particular error is indeed an error. This was a problem for the error tolerance slider, because for it to work it needs have confidence values for all errors, not just the confusibles. This not only entailed going back to the C-code of the original modules, but also to come up with formulas to represent exactly how confident the modules are. I would like to use this final subsection to explain in detail the formulas I have chosen:
+
+\paragraph{Lexicon Checker}
+
+\[
+1 - \frac{wf}{cf/ft}
+\]
+
+The lexicon checker gives a correction \emph{c} for a word \emph{w} if \emph{c} is very similar to \emph{w}, but \emph{frequency threshold} times more frequent. As I write this, the frequency threshold (ft) used for the lexicon checker is 10.000. This confidence formula reflects how many times the correction frequency (cf) is 10.000 times more frequent than the frequency of the original word (wf). Thus, if the correction is only 10.000 times more frequent, the result will be 0, if it is 20.000 more frequent, it will be 0.5, etc. The larger the difference between the original word and the correction, the closer to 1 the result will be.
+
+\begin{table}[h]
+\begin{tabular}{|l|lll|}
+\hline
+&word frequency (wf)&correction frequency (cf)&frequency threshold (ft)\\ 
+\hline
+anticcipate&1*&2.710.230&10.000\\
+newwspaper&876&15.200.566&10.000\\
+\hline
+\end{tabular}
+\end{table}
+
+anticcipate $\rightarrow$ anticipate
+
+\[
+1 - \frac{1}{2.710.230/10.000} = 0.996
+\]
+
+newwspaper $\rightarrow$ newspaper
+
+\[
+1 - \frac{876}{15.200.566/10.000} = 0.43
+\]
+
+* If the word frequency is lower than 1, it is assumed to be 1.
+
+\paragraph{Runon Checker}
+
+\[
+1 - \frac{1}{(\frac{(lf+rf)/2}{t})}
+\]
+
+The left fraction (lf) and the right fraction (rf) of a word represent how often the left and the right part of that word are part of a bigger word. If for these two parts the number is above a threshold (3000 as I write this), the Runon Checker suggests the two parts are probably words on their own. This confidence formula reflects how high these fractions are. It first calculates the mean fraction and relates this to the threshold (t). The result is then transformed into a number between 1 and 0.
+
+\begin{table}[h]
+\begin{tabular}{|l|lll|}
+\hline
+&left fraction (lf)&right fraction (rf)&threshold (t)\\ 
+\hline
+fightscrime&37.274,75&94.063,234&3000\\
+unexpectedhorror&81.098,078&55.204,098&3000\\
+\hline
+\end{tabular}
+\end{table}
+
+fightscrime $\rightarrow$ fights crime
+
+\[
+1 - \frac{1}{(\frac{(37.274,75+94.063,234)/2}{3000})} = 0.954
+\]
+
+unexpectedhorror $\rightarrow$ unexpected horror
+
+\[
+1 - \frac{1}{(\frac{(81.098,078+55.204,098)/2}{3000})} = 0.956
+\]
+
+\paragraph{Split Checker}
+
+\[
+1 - \frac{1}{(\frac{cf}{((fpw+fcw)/fr)/2})}
+\]
+
+The Split Checker combines every word with the word before it, and checks if the frequency of the result is higher than the frequencies of both original words. Before this comparison is done, the frequencies of the original words are divided by the frequency ratio (2 as I write this), so the module will respond more often. This confidence formula reflects the difference between the mean frequency of both original words (fwp and fcw) and the frequency of the new word (cf). It first calculates this mean, and also takes the frequency ratio (fr) into account. This mean is then compared to the frequency of the mean of the combination, and the result is then transformed into a number between 1 and 0.
+
+\begin{table}[h]\footnotesize
+\begin{tabular}{|l|lll|}
+\hline
+&combination frequency (cf)&previous word frequency (pwf)&current word frequency (cwf)\\ 
+\hline
+unexp ected&1054275&2124&7223\\
+flabberg asted&97389&0&1913\\
+\hline
+\end{tabular}
+\end{table}
+
+unexp ected $\rightarrow$ unexpected
+
+\[
+1 - \frac{1}{(\frac{1054275}{((2124+7223)/2)/2})} = 0.982
+\]
+
+flabberg asted $\rightarrow$ flabbergasted
+
+\[
+1 - \frac{1}{(\frac{97389}{((0+1913)/2)/2})} = 0.995
+\]
+
 
 \section{What I have learned}
 Although had some experience with both programming and language technology, and even with some software co-developed by my supervisor, this internship turned out to be an adventure full of novelty: no single semester in my Radboud University career had such a high skills-acquired/day-ratio as this one. In the following sections, I give a non-exhaustive overview of what I learned while working on Fowlt.
