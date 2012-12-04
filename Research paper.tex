@@ -29,7 +29,7 @@ In section 2, I'll give a short overview of what has been achieved in machine tr
 
 \section{Theoretical background / framework}
 
-In this section I will try to give a short overview of the various approaches in machine translation, with special attention to the example-based approach, as that is the approach used in this project. This section is mainly based on \citet{vangompel09}
+In this section I will try to give a short overview of the various approaches in machine translation, with special attention to the example-based approach, as that is the approach used in this project. This section is mainly based on \citet{jm09} and \citet{vangompel09}.
 
 \subsection{The rule-based approach}
 
@@ -48,21 +48,18 @@ The horizontal arrows represent the approaches. I'll go through them from bottom
 \item \emph{The direct approach} does very little source language analysis, and could thus be viewed as the automatical version of looking up every word in the source language in a dictionary and replacing it with the corresponding word in the target language. This often doesn't yield very good results: if I for example would have translated this paper from my mother tongue Dutch to English word for word, 'would we now not real a good result have'. It should be noted, however, that the direct approach mostly is more complicated than this; for example, in some cases morphological analysis is needed before it can be looked up in a dictionary, and more morphological analysis is needed for the translation word to fit in the sentence. Word reordering rules can also be included.
 \item \emph{The syntactic approach} tries to find out the syntactic structure of the source sentence before it starts translating, using a parser. This structure is then translated to the target language, and filled with translated words.
 \item \emph{The semantic approach} goes even one step further and also tries to grasp the meaning of a sentence, roughly. For a sentence like /emph{Mummy kisses daddy} this for example entails that mummy is the agent, and daddy the patient of the sentence. After having identified these semantic roles, the algorithm would then look how this meaning is expressed in the target language, find the approriate syntactic structure for that, and fill it with the translated words.
-\item \emph{The interlingua approach}. All of the approaches so far have in common that they require a seperate rule set for each language pair; no or very few rules included for translations from English to German can also be used for translations from English to French. The Interlingua approach is an attempt to solve this problem, by pairing up every language with a formal representation of meaning, the Interlingua. This means a translation from English to German would entail a translation from English to the Interlingua (using the ruleset English $\rightarrow$ Interlingua) and then a translation from the Interlingua to German (using the ruleset Interlingua $\rightarrow$ German). When translating from English to French, the same two steps would be taken, and the same ruleset English $\rightarrow$ Interlingua can be re-used. 
+\item \emph{The interlingua approach}. All of the approaches so far have in common that they require a seperate rule set for each language pair; no or very few rules included for translations from English to German can also be used for translations from English to French. This means that for every time a new language is added to the system, the amount of rules that have to be added grows exponentially. The Interlingua approach is an attempt to solve this problem, by pairing up every language with a formal representation of meaning, the Interlingua. This means a translation from English to German would entail a translation from English to the Interlingua (using the ruleset English $\rightarrow$ Interlingua) and then a translation from the Interlingua to German (using the ruleset Interlingua $\rightarrow$ German). When translating from English to French, the same two steps would be taken, and the same ruleset English $\rightarrow$ Interlingua can be re-used.
 \end{itemize}
 
+I should add that translation system focussing on one such approach are rare. As \citet{jm09} put it: 'Real systems tend to involve combinations of elements from these three architectures; thus, each is best thought of as a point in an algorithmic design space rather than as an actual algorithm.' The Systran system (\citealp{hs92,senellartea01}) is an example of this.\\\indent
 An advantage of the rule-based approach is that one has a lot of control over the output. In theory, if something has gone wrong, all one has to do is find out which rule or dictionary item caused the problem and improve it. In practice, however, it is almost impossible to have a dictionary and rule system good enough for more complicated sentences, and things like rule interactions and ambiguity make everything even more complicated. The next two approaches therefore replace hand-crafted rules with automatically generated ones.
-
-% Voorbeelden? References?
 
 \subsection{The statistical approach}
 
 Unlike the ruled-based approach, the statistical approach creates its own 'knowledge', using bilingual text corpora. With this knowledge, the algorithm is able to generate various translation hypotheses, from which the best one is chosen with the help of various statistical measures. I will explain these stages in more detail:
 
 \begin{itemize}
-\item \emph{Corpus alignment.} Only having a bilingual corpus is not enough: for such a corpus to be useful one also needs to know which parts of the sentence in language A correspond to which part of the sentence B. This is not only complicated by different word orders, but also by concepts that in language A take more or less words than in language B. A well-known word alignment algorithm that tries to solve this problem is the Expectation Maximisation algorithm \citep{dempster77}. It should be added that after aligning words, phrased could be formed and aligned. \citet{koehn03} show this provides better results than word-based translation.
-
-%GIZA++?
+\item \emph{Corpus alignment.} Only having a bilingual corpus is not enough: for such a corpus to be useful one also needs to know which parts of the sentence in language A correspond to which part of the sentence B. This is not only complicated by different word orders, but also by concepts that in language A take more or less words than in language B. It should be added that after aligning words, phrased could be formed and aligned. \citet{koehn03} show this provides better results than word-based translation.
 
 \item \emph{Hypothesis generation.} We now have some sort of automatically generated dictionary: for each word in language A, we know which word in language B is often used for it. On the basis of this knowledge, we can generate various possible translations. 
 
@@ -122,9 +119,8 @@ Note that a simple trigram approach could not have covered this construction. Im
 \end{examples}
 
 The gap is filled here is filled with 'his', but the construction 'from \_\_ point of view' can also be filled with many other words ('my', 'the', 'another', 'Obama's', etc.). This shows the advantage of skipgrams over n-grams for machine translation: whereas n-grams would only have been able to capture the construction 'point of view', because the word directly before 'point of view' is variable, skipgrams are also able to recognize that the word 'for' is part of the construction. Frequent examples of the skipgrams (I expect the variant with 'my' to be very frequent, for instance) of course \emph{would} be recognized by the n-gram approach.\\\indent
-Of course, not every possible group of consecutive words is a construction; what makes some groups special? The exact nature of linguistic constructions has been the subject of many lignuistic publications and even an entire linguistic framework (construction grammar). For this project, however, it suffices to say that constructions emerge because some combinations of words are more frequent than others. As we've seen in the previous section, taking into account frequency in the training material is how classifiers are able to do their job.
+Of course, not every possible group of consecutive words is a construction; what makes some groups special? The exact nature of linguistic constructions has been the subject of many linguistic publications and even an entire group of linguistic frameworks (construction grammar, see \citet{goldberg95} for a well-known example). For this project, however, it suffices to say that constructions emerge because some combinations of words are more frequent than others. As we've seen in the previous section, taking into account frequency in the training material is how classifiers are able to do their job.
 
-% Referentie construction grammar
 % Drie vormen freq: raw frequency, context frequency, multilingual alignmetn
 
 \subsection{The builder: machine translation}
@@ -251,6 +247,9 @@ Dempster et al., 1997
 \bibitem[Galletta et al., 2005]{galletta05}
 Galletta, D. F., Durcikova, A., Everard, A. \& B. M. Jones. Does spelling checker software need warning label? Communications of the ACM, 48 (7), 82 - 86.
 
+\bibitem[Goldberg, 1995]{goldberg95}
+Goldberg, A (1995). Constructions: A Construction Grammar Approach to Argument Structure. Chicago: University of Chicago Press.
+
 \bibitem[Van Gompel, 2009]{vangompel09}
 Van Gompel, M. Phrase-based memory-based machine translation. Unpublished
 master's thesis, Tilburg University.
@@ -271,8 +270,17 @@ machine translation to phrases. In T. Markus, P. Monachesi, \& E. Westerhout (Ed
 Computational linguistics in the netherlands 2010: Selected papers from the twentieth
 clin meeting (pp. 45\-58). Utrecht, the Netherlands: LOT.
 
+\bibitem[Hutchins \& Somers, 1992]{hs92}
+Hutchins \& Somers, 1992.
+
+\bibitem[Jurafsky \& Martin, 2009]{jm09}
+Jurafsky, D. \& J. H. Martin (2000). Speech and language processing: an introduction to natural language processing, computational linguistics, and speech recognition. Second edition. New Jersey: Pearson Education.
+
 \bibitem[Koehn et al, 2003]{koehn03}
 Koehn et al, 2003
+
+\bibitem[Senellart et al., 2001]{senellartea01}
+Senellart et al., 2001
 
 \bibitem[Stroppa et al., 2007]{stroppa07}
 Stroppa, N., Van den Bosch, A., \& Way, A. (2007). Exploiting source similarity for SMT
