@@ -1,3 +1,4 @@
+%newgjhg
 \documentclass[12pt]{article}
 
 \title{Research training portfolio}
@@ -211,9 +212,10 @@ However, the real problems with setting up an NLP webservice were not related to
 
 \subsection*{Abstract}
 
-For many confusibles, like "\emph{you're} versus \emph{your}", one option is much more frequent than the other. This poses a problem when one tries to create a context-sensitive memory-based confusible corrector, as having more data for one option will make it more likely that the confusible corrector will predict that option. In some cases this can be solved by balancing the training data so that it has exactly the same amount of examples for each option, but in other cases this means a very large part of the data have to be thrown away, making the corrector even worse. In this paper I investigate in which cases it is better to use a balanced training set, and in which cases it is better to train the modules on the larger, unbalanced set. I do this by building x confusible correctors and evaluating their results.
+For many confusibles, like "\emph{you're} versus \emph{your}", one option is much more frequent than the other. This poses a problem when one tries to create a context-sensitive memory-based confusible corrector, as having more data for one option will make it more likely that the confusible corrector will predict that option. In the literature it has been suggested that balancing the training data, so that it has exactly the same amount of examples for each option, might improve results of classifiers in general. In this paper I investigate whether this is true for classifiers in a spelling correction environment.
 
 %hoeveel?
+% UIteindelijke resultaten toevoegen aan het abstract
 
 \subsection{Introduction}
 
@@ -227,16 +229,28 @@ This paper results from my attempts to solve a rather practical issue while buil
 
 \end{examples}
 
+
+
+
 These errors, in which one word is confused with another (often homophone) word, are called \emph{confusible errors}. For most common confusible errors, Fowlt contains specialized modules. Unlike typos, confusible errors cannot be detected by simply looking at the text word for word, because the error is in the relation of a particular word with the other words in the sentence. Therefore, the confusible modules detect them by looking at the context of the word, and see if that differs from the contexts they have seen in the past for that word. If it, on the basis of the context, would predict another word in that position, and is really certain about it, it flags the word as an error. This means, for example, that Fowlt is able to replace the incorrect "there" in the last example into "they're", simply because "there" usually isn't followed by "really nice people", while "they're" is. \\\indent
-This knowledge was not inserted manually, but was created with the help of Machine Learning software TiMBL. A more detailed account of its workings will be given in the next section. For now it is important to understand that TiMBL extracts this knowledge from large text corpora. From these corpora, all examples of the confusible have been extracted together with their context. The confusible corrector's results improve when TiMBL has seen more training material to base its language models on.\\\indent
-Fowlt contains language models, and thus specialized confusible correctors, for the following confusibles (among others):
+This knowledge was not inserted manually, but was created with the help of Machine Learning software TiMBL. A more detailed account of its workings will be given in the next section. For now, it is important to understand that TiMBL extracts this knowledge from large text corpora. From these corpora, all examples of the confusible have been extracted together with their context. The confusible corrector's results improve when TiMBL has seen more training material to base its language models on.\\\indent
+Fowlt contains language models, and thus specialized confusible correctors for numerous well-known mistakes in English. In this paper, I will investigate the following:
+
+\begin{itemize}
+\item \emph{advice} versus \emph{advise}
+\item \emph{lose} versus \emph{loose}
+\item \emph{practice} versus \emph{practise}
+\item \emph{than} versus \emph{then}
+\item \emph{weather} versus \emph{whether}
+\item \emph{you're} versus \emph{your}
+\end{itemize}
 
 What the confusible modules within Fowlt for each of these confusibles do is removing the confusible words and predicting which word was removed on the basis of the context. If they predicted the word incorrectly, BUT are very certain about it, they assume the original word was wrong and flag it as an error. \\\indent
 Ideally, a language model is created on the basis of a balanced training set, i.e. a training set that consists of roughly the same amount of examples for each confusible option. If we would use a training set with much more contexts for option A than for option B, we may bias the model to option A. For example, if the word 'cookie' has an equal chance to occur both in the context of option A and option B, the confusible corrector should not be able to make a prediction on the basis of this word alone. However, if the language model is based on an unbalanced set it will predict option A, simply because A occurred together with 'cookie' more often. \\\indent
-A solution to this could of course be to always offer balanced training sets. In practice, this means removing part of the data: if 100 examples of option A, and 500 examples of option B are available, 400 examples of B will have to be removed. The more skewed the distribution is, the more data have to be removed, which can lead to situations where less than 1 percent of the training material can be used. As the results of the confusible correctors improve if they have seen more data, it is very likely that removing so much data deteriorates the results, rather than improving them. In the remainder of this paper I will therefore investigate in which cases it is better to use a balanced training set, and in which cases it is better to train the modules on the larger, unbalanced set. As will be shown, the exact behavior of the confusible corrector differs per module, so it is hard to draw an exact boundary, but ...
+A solution to this could of course be to always offer balanced training sets \citep{provost, gh09}. MEER TOEVOEGEN UIT DE LITERATUUR. In practice, this means removing part of the data: if 100 examples of option A, and 500 examples of option B are available, 400 examples of B will have to be removed. The more skewed the distribution is, the more data have to be removed, which can lead to situations where less than 1 percent of the training material can be used. As the results of the confusible correctors improve if they have seen more data, it is very likely that removing so much data deteriorates the results, rather than improving them. In the remainder of this paper I will therefore investigate whether it is better to use a balanced training set or to to train the modules on the larger, unbalanced set. 
 
+% Meer literatuur toevoegen
 % Hier even opletten of wat ikz eg wel klopt met mijn uiteindelijke resultaten
-% UIteindelijke resultaten toevoegen
 
 \subsection{Method}
 
@@ -330,8 +344,13 @@ Brill \& Moore, 1998
 Van Delden et al, 2004.
 \bibitem[Fawcett, 2004]{fawcett04}
 Fawcett, 2004.
+\bibitem[García \& Herrera, 2009]{gh09}
+García \& Herrera, 2009. Evolutionary Undersampling for Classification with Imbalanced Datasets: Proposals and Taxonomy.
 \bibitem[Pollock \& Zamora, 1984]{pz84}
 Pollock \& Zamora, 1984
+\bibitem[Provost, 2000]{provost}
+Provost, F (2000). Machine Learning from Imbalanced Data Sets 101. Extended abstract. 
+%jaar is nep
 \bibitem[Reynaert, 2008]{reynaert08}
 Reyneart, 2008.
 \bibitem[Starlander \& Popescu-Belis, 2002]{sp02}
