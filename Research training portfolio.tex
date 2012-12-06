@@ -1,4 +1,3 @@
-%newgjhg
 \documentclass[12pt]{article}
 
 \title{Research training portfolio}
@@ -229,12 +228,7 @@ This paper results from my attempts to solve a rather practical issue while buil
 
 \end{examples}
 
-
-
-
-These errors, in which one word is confused with another (often homophone) word, are called \emph{confusible errors}. For most common confusible errors, Fowlt contains specialized modules. Unlike typos, confusible errors cannot be detected by simply looking at the text word for word, because the error is in the relation of a particular word with the other words in the sentence. Therefore, the confusible modules detect them by looking at the context of the word, and see if that differs from the contexts they have seen in the past for that word. If it, on the basis of the context, would predict another word in that position, and is really certain about it, it flags the word as an error. This means, for example, that Fowlt is able to replace the incorrect "there" in the last example into "they're", simply because "there" usually isn't followed by "really nice people", while "they're" is. \\\indent
-This knowledge was not inserted manually, but was created with the help of Machine Learning software TiMBL. A more detailed account of its workings will be given in the next section. For now, it is important to understand that TiMBL extracts this knowledge from large text corpora. From these corpora, all examples of the confusible have been extracted together with their context. The confusible corrector's results improve when TiMBL has seen more training material to base its language models on.\\\indent
-Fowlt contains language models, and thus specialized confusible correctors for numerous well-known mistakes in English. In this paper, I will investigate the following:
+These errors, in which one word is confused with another (often homophone) word, are called \emph{confusible errors}. For most common confusible errors, Fowlt contains specialized modules, which I will call \emph{confusible correctors} in the remainder of this paper. These confusible correctors cannot detect the errors they're supposed to detect by simply looking at the text word for word, because the error is in the relation of a particular word with the other words in the sentence. Therefore, they detect them by looking at the context of the word, and see if that differs from the contexts they have seen in the past for that word. If it, on the basis of the context, would predict another word in that position, and is really certain about it, it flags the word as an error. This means, for example, that Fowlt is able to replace the incorrect "there" in the last example into "they're", simply because "there" usually isn't followed by "really nice people", while "they're" is. Fowlt includes many confusible correctors like this, but for this paper I will limit myself to six examples. These are the confusibles they are specialized in: 
 
 \begin{itemize}
 \item \emph{advice} versus \emph{advise}
@@ -245,27 +239,30 @@ Fowlt contains language models, and thus specialized confusible correctors for n
 \item \emph{you're} versus \emph{your}
 \end{itemize}
 
-What the confusible modules within Fowlt for each of these confusibles do is removing the confusible words and predicting which word was removed on the basis of the context. If they predicted the word incorrectly, BUT are very certain about it, they assume the original word was wrong and flag it as an error. \\\indent
+All confusible correctors in Fowlt consist of two parts: \emph{TiMBL}, which is the same for every corrector, and a \emph{language model}, which is based on the specific confusible error the corrector was created for. TiMBL is machine learning software that looks at the contexts of possible, and decides whether it would have expected that word on the basis of that context. The language model is the 'knowledge' TiMBL uses to make this decision. This knowledge was not inserted manually, but was created automatically by looking at large text corpora (so-called \emph{training material}). Importantly, the confusible corrector's results improve when the language is based on more training material. So the more 'training material', the larger and more complete the language model, which in turn increases the likelihood that TiMBL will make the correct decision. \\\indent
 Ideally, a language model is created on the basis of a balanced training set, i.e. a training set that consists of roughly the same amount of examples for each confusible option. If we would use a training set with much more contexts for option A than for option B, we may bias the model to option A. For example, if the word 'cookie' has an equal chance to occur both in the context of option A and option B, the confusible corrector should not be able to make a prediction on the basis of this word alone. However, if the language model is based on an unbalanced set it will predict option A, simply because A occurred together with 'cookie' more often. \\\indent
-A solution to this could of course be to always offer balanced training sets \citep{provost, gh09}. MEER TOEVOEGEN UIT DE LITERATUUR. In practice, this means removing part of the data: if 100 examples of option A, and 500 examples of option B are available, 400 examples of B will have to be removed. The more skewed the distribution is, the more data have to be removed, which can lead to situations where less than 1 percent of the training material can be used. As the results of the confusible correctors improve if they have seen more data, it is very likely that removing so much data deteriorates the results, rather than improving them. In the remainder of this paper I will therefore investigate whether it is better to use a balanced training set or to to train the modules on the larger, unbalanced set. 
+A solution to this could of course be to always offer balanced training sets. A balanced training set can be achieved in two ways: oversampling and undersampling \citep{provost, gh09}. Oversampling means that extra data are somehow created for the less frequent option. Because of the unnatural situations this creates, oversampling probably is not desirable in the spell checking domain (and possibly for NLP in general). Undersampling means removing examples for the more frequent option: if 100 examples of option A, and 500 examples of option B are available, 400 examples of B will have to be removed. The more skewed the distribution is, the more data have to be removed, which can lead to situations where only a very small part of the originally collected training material can be used. For example, the distribution of the \emph{practice} versus \emph{practise} confusible is so unbalanced that 85.57 percent of the data had to be removed to create a balanced trainig set. \\\indent
+This leaves us with a dilemma: on the one hand, we want to throw away data to create balanced training set, so we can improve the results, and on the other hand, we want to keep as much data as possible, so we can improve the results. This paper is an attempt to solve this dilemma. This is done by creating two language models for each of the confusibles mentioned above - one on the basis of a balanced training set, and one of the basis of an unbalanced one - and evaluating their results.
 
 % Meer literatuur toevoegen
 % Hier even opletten of wat ikz eg wel klopt met mijn uiteindelijke resultaten
 
 \subsection{Method}
+This section is subdivided into three parts. In section \ref{timbl}, I will explain the workings of the software behind Fowlt's confusible correctors: TiMBL. This is important, because the results reported here might not hold for the confusible correctors of other spell checkers. Section \ref{langmod} contains information about the language models created with TiMBl. Section \ref{eval}, finally, explains how the models were evaluated.
 
-\subsubsection{The confusible correctors}
+
+\subsubsection{TiMBL} \label{timbl}
 To investigate the differences between confusible correctors trained on balanced and unbalanced training sets, I will use the confusibles listed in the previous sections. For each of these confusibles, a confusible corrector is trained to predict which option is likely to occur in which context. To be able to recognize contexts, the correctors use \emph{Memory Based Learning}, which means that it saves all contexts previously seen in memory. When it is given a new context, it generates a list of previously seen contexts which are relatively similar. For each of the contexts of this list, the confusible ... This approach is called the k-nearest neighbour algorithm.
 
 The classifier algorithm used using IGTree, a decision-tree approximation of IB1-IG.
 
-% Hier ref toevoegen
+\subsubsection{The language models} \label{langmod}
 
-\subsubsection{Evaluation of the confusible correctors}
+\subsubsection{Evaluation procedures} \label{eval}
 
 In this section, I describe the various evaluation measures I used. This is necessary because evaluation of spelling correctors has not been very uniform in the spelling checker literature so far; whereas various scholars only measured how many errors their algorithm can detect in an error list and called it accuracy (e.g. \citealp{agirre98, bm00, tm02,vandelden04}), others use or argue for the precision-recall terminology (\citealp{reynaert08,pz84}, although they use other terms for the two concepts) or argue against it \citep{sp02}.\\\indent
 
-Although most of the evaluation measures used in the literature can be useful and informative, they only tell part of the story. I think it is important to recognize that spelling correction is a multi-step process, and each step comes with its own measures. When using a confusible module as part of a spelling corrector, there are three steps: word prediction, error detection and error correction. I'll go through these steps and their evaluation measures one by one.
+Although most of the evaluation measures used in the literature can be useful and informative, they only tell part of the story. I think it is important to recognize that spelling correction is a multi-step process, and each step comes with its own measures. When using a confusible corrector as part of a spelling corrector, there are three steps: word prediction, error detection and error correction. I'll go through these steps and their evaluation measures one by one.
 
 \paragraph{Word prediction}
 
@@ -332,7 +329,8 @@ Waarom geen AUC?
 
 \subsection{Conclusion}
 
-\section{General conclusion}
+\section{General conclusion}%Beter uitleggen hoe Fowlt werkt, eenduidige terminologie hanteren
+
 
 \begin{thebibliography}{99}
 
@@ -363,3 +361,7 @@ Toutanova \& Moore, 2002.
 % Ene paper Antal
 
 \end{document}
+
+% TODO
+% Eenduidige terminologie handteren: context-sensitive, modulenamen, 'confusiblecorrectors'
+% Ref TiMBL invoegen
