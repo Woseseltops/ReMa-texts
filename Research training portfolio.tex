@@ -15,16 +15,6 @@
 \begin{document}
 \maketitle
 
-\begin{table}[h]
-\begin{tabular}{ll}
-Name&Wessel Stoop\\
-Student numbers&s0808709 (Nijmegen), u1249664 (Tilburg)\\
-Project&Fowlt, a context-based spelling checker\\
-Supervisor&Antal van den Bosch\\
-Period&September - December 2012\\
-\end{tabular}
-\end{table}
-
 \section{Introduction}
 Fowlt is the English version of the Dutch spelling checker Valkuil.net. Both Valkuil and Fowlt are unlike most well-known spell checkers (like the one in Microsoft Word): whereas these spelling checkers mostly try to find errors by comparing all words to a built-in dictionary and flag the word as an error if they can't find a match, Valkuil and Fowlt are 'context-based'. This entails that they also take into account the context, which is the words around every word. If, for a particular word, they expected another word based on the context, and the algorithm is really certain about it, it is flagged as an error. This means, for example, that Fowlt is able to replace the incorrect "there' in "there really nice people" into "they're" simply because "there" usually isn't followed by "really nice people", while "they're" is. 
 \\\indent
@@ -228,7 +218,7 @@ This paper results from my attempts to solve a rather practical issue while buil
 
 \end{examples}
 
-These errors, in which one word is confused with another (often homophone) word, are called \emph{confusible errors}. For most common confusible errors, Fowlt contains specialized modules, which I will call \emph{confusible correctors} in the remainder of this paper. These confusible correctors cannot detect the errors they're supposed to detect by simply looking at the text word for word, because the error is in the relation of a particular word with the other words in the sentence. Therefore, they detect them by looking at the context of the word, and see if that differs from the contexts they have seen in the past for that word. If it, on the basis of the context, would predict another word in that position, and is really certain about it, it flags the word as an error. This means, for example, that Fowlt is able to replace the incorrect "there" in the last example into "they're", simply because "there" usually isn't followed by "really nice people", while "they're" is. Fowlt includes many confusible correctors like this, but for this paper I will limit myself to six examples. These are the confusibles they are specialized in: 
+These errors, in which one word is confused with another (often homophone) word, are called \emph{confusible errors}. For most common confusible errors, Fowlt contains specialized modules, which I will call \emph{confusible correctors} in the remainder of this paper. These confusible correctors cannot detect the errors they're supposed to detect by simply looking at the text word for word, because the error is in the relation of a particular word with the other words in the sentence. Therefore, they detect them by looking at the context of the word, and see if that differs from the contexts they have seen in the past for that word. If it, on the basis of that context, would predict another word in that position, and is really certain about it, it flags the word as an error. This means, for example, that Fowlt is able to replace the incorrect "there" in the last example into "they're", simply because "there" usually isn't followed by "really nice people", while "they're" is. Fowlt has many confusible correctors like this, but for this paper I will limit myself to six examples. These are the confusibles they are specialized in: 
 
 \begin{itemize}
 \item \emph{advice} versus \emph{advise}
@@ -239,41 +229,55 @@ These errors, in which one word is confused with another (often homophone) word,
 \item \emph{you're} versus \emph{your}
 \end{itemize}
 
-All confusible correctors in Fowlt consist of two parts: \emph{TiMBL}, which is the same for every corrector, and a \emph{language model}, which is based on the specific confusible error the corrector was created for. TiMBL is machine learning software that looks at the contexts of possible, and decides whether it would have expected that word on the basis of that context. The language model is the 'knowledge' TiMBL uses to make this decision. This knowledge was not inserted manually, but was created automatically by looking at large text corpora (so-called \emph{training material}). Importantly, the confusible corrector's results improve when the language is based on more training material. So the more 'training material', the larger and more complete the language model, which in turn increases the likelihood that TiMBL will make the correct decision. \\\indent
-Ideally, a language model is created on the basis of a balanced training set, i.e. a training set that consists of roughly the same amount of examples for each confusible option. If we would use a training set with much more contexts for option A than for option B, we may bias the model to option A. For example, if the word 'cookie' has an equal chance to occur both in the context of option A and option B, the confusible corrector should not be able to make a prediction on the basis of this word alone. However, if the language model is based on an unbalanced set it will predict option A, simply because A occurred together with 'cookie' more often. \\\indent
-A solution to this could of course be to always offer balanced training sets. A balanced training set can be achieved in two ways: oversampling and undersampling \citep{provost, gh09}. Oversampling means that extra data are somehow created for the less frequent option. Because of the unnatural situations this creates, oversampling probably is not desirable in the spell checking domain (and possibly for NLP in general). Undersampling means removing examples for the more frequent option: if 100 examples of option A, and 500 examples of option B are available, 400 examples of B will have to be removed. The more skewed the distribution is, the more data have to be removed, which can lead to situations where only a very small part of the originally collected training material can be used. For example, the distribution of the \emph{practice} versus \emph{practise} confusible is so unbalanced that 85.57 percent of the data had to be removed to create a balanced trainig set. \\\indent
+All confusible correctors in Fowlt consist of two parts: \emph{TiMBL}, which is the same for every corrector, and a \emph{language model}, which is based on the specific confusible error the corrector was created for. TiMBL is machine learning software that looks at the contexts of possible confusible errors, and decides whether it would have expected that word on the basis of that context. The language model is the 'knowledge' TiMBL uses to make this decision. This knowledge was not created manually, but automatically by looking at large text corpora (so-called \emph{training material}). The more 'training material', the larger and more complete the language model, which in turn increases the likelihood that TiMBL will make the correct decision. \\\indent
+But just using lots of data isn't the only thing you can do to create a good language model. Ideally, a language model is also created on the basis of a \emph{balanced} training set, i.e. a training set that consists of roughly the same amount of examples for each confusible option (see \citealt{hg07} for an overview of literature on this problem). If we would use a training set with much more contexts for option A than for option B, we may bias the model to option A. For example, if the word 'cookie' has an equal chance to occur both in the context of option A and option B, the confusible corrector should not be able to make a prediction on the basis of this word alone. However, if the language model is based on an unbalanced set it will predict option A, simply because A occurred together with 'cookie' more often. \\\indent
+A solution to this could of course be to always offer balanced training sets. A balanced training set can be achieved in two ways: oversampling and undersampling \citep{provost, gh09, vhkn07, hg07}. Oversampling means that extra data are somehow created for the less frequent option. Because of the unnatural situations this creates, oversampling is probably not desirable in the spell checking domain (and possibly for NLP in general). Undersampling means removing examples for the more frequent option: if 100 examples of option A, and 500 examples of option B are available, 400 examples of B will have to be removed. The more skewed the distribution is, the more data have to be removed, which can lead to situations where only a very small part of the originally collected training material can be used. For example, the distribution of the \emph{practice} versus \emph{practise} confusible is so unbalanced that 85.57 percent of the data had to be removed to create a balanced training set. \\\indent
 This leaves us with a dilemma: on the one hand, we want to throw away data to create balanced training set, so we can improve the results, and on the other hand, we want to keep as much data as possible, so we can improve the results. This paper is an attempt to solve this dilemma. This is done by creating two language models for each of the confusibles mentioned above - one on the basis of a balanced training set, and one of the basis of an unbalanced one - and evaluating their results.
 
-% Meer literatuur toevoegen
 % Hier even opletten of wat ikz eg wel klopt met mijn uiteindelijke resultaten
 
 \subsection{Method}
-This section is subdivided into three parts. In section \ref{timbl}, I will explain the workings of the software behind Fowlt's confusible correctors: TiMBL. This is important, because the results reported here might not hold for the confusible correctors of other spell checkers. Section \ref{langmod} contains information about the language models created with TiMBl. Section \ref{eval}, finally, explains how the models were evaluated.
+This section is subdivided into three parts. In section \ref{timbl}, I will explain the workings of the software behind Fowlt's confusible correctors: TiMBL. This is important, because the results reported here might not hold for the confusible correctors of other spell checkers. Section \ref{langmod} contains information about the language models  TiMBl uses. Section \ref{eval}, finally, explains how the models were evaluated.
 
 
 \subsubsection{TiMBL} \label{timbl}
-To investigate the differences between confusible correctors trained on balanced and unbalanced training sets, I will use the confusibles listed in the previous sections. For each of these confusibles, a confusible corrector is trained to predict which option is likely to occur in which context. To be able to recognize contexts, the correctors use \emph{Memory Based Learning}, which means that it saves all contexts previously seen in memory. When it is given a new context, it generates a list of previously seen contexts which are relatively similar. For each of the contexts of this list, the confusible ... This approach is called the k-nearest neighbour algorithm.
-
-The classifier algorithm used using IGTree, a decision-tree approximation of IB1-IG.
+TiMBL compares contexts. For example, when it is given the task to decide whether "your" in "I think your really nice" is a mistake or not, it compares "I think \_ really nice" to the contexts it has seen in the training material. These training contexts are divided into two groups: the contexts for the "your" option and the contexts for the "you're" contexts. The context "I think \_ really nice" is more similar to the contexts in the "you're" group, so TiMBL will predict that "you're" should be used here. Because this doesn't match with the original word, Fowlt will flag this word as an error. This approach is called the k-nearest neighbour algorithm. The specific implementation of this algorithm used for Fowlt is IGTree, a decision-tree approximation of IB1-IG \citep{dvdbw97}.
 
 \subsubsection{The language models} \label{langmod}
+
+The six confusibles used for this research were chosen because they vary in their unbalancedness. Here I summarize some descriptive statistics about them:
+
+\begin{table}[h] \footnotesize
+\begin{tabular}{|l|l|p{3cm}|l|p{3cm}|}
+\hline
+Confusible&Distribution&Examples in unbalanced data set&Examples in balanced set&Percentage of data lost in balanced set\\
+\hline
+\emph{advice} versus \emph{advise}&82.8 - 17.2&12480&4094&67.2\\
+\emph{lose} versus \emph{loose}&67.7 - 32.2&9570&6178&35.44\\
+\emph{practice} versus \emph{practise}&92.82 - 7.18&18407&2638&85.67\\
+\emph{than} versus \emph{then}&46.97 - 53.03&302913&284546&6.06\\
+\emph{weather} versus \emph{whether}&13.66 - 86.34&41747&11400&72.69\\
+\emph{you're} versus \emph{your}&21.8 - 78.2&176801&77070&56.41\\
+\hline
+\end{tabular}
+\end{table}
 
 \subsubsection{Evaluation procedures} \label{eval}
 
 In this section, I describe the various evaluation measures I used. This is necessary because evaluation of spelling correctors has not been very uniform in the spelling checker literature so far; whereas various scholars only measured how many errors their algorithm can detect in an error list and called it accuracy (e.g. \citealp{agirre98, bm00, tm02,vandelden04}), others use or argue for the precision-recall terminology (\citealp{reynaert08,pz84}, although they use other terms for the two concepts) or argue against it \citep{sp02}.\\\indent
 
-Although most of the evaluation measures used in the literature can be useful and informative, they only tell part of the story. I think it is important to recognize that spelling correction is a multi-step process, and each step comes with its own measures. When using a confusible corrector as part of a spelling corrector, there are three steps: word prediction, error detection and error correction. I'll go through these steps and their evaluation measures one by one.
+Although most of the evaluation measures used in the literature can be useful and informative, they only tell part of the story. I think it is important to recognize that spelling correction is a multi-step process, and each step comes with its own measures. When using a confusible corrector as part of a spelling corrector, there are three steps: word prediction, error detection and error correction. I'll go through these steps and their evaluation measures one by one in the next three paragraphs.
 
-\paragraph{Word prediction}
+\paragraph{Step 1: Word prediction}
 
 \begin{itemize}
-\item Prediction accuracy. Although word prediction may be the most complicated part of the confusible module, its evaluation is actually the simplest. Calculating prediction accuracy entails removing all confusibles from a text, and see in how many of the cases the language model can correctly predict which word was removed. This percentage can be increased by only counting predictions that are above a certain threshold. Results with multiple thresholds (i.e. to what extent does the prediction accuracy improve if the threshold is raised?) can be visualized with a graph, as shown in the result section.
+\item Prediction accuracy. Although word prediction may be the most complicated part of the confusible correction, its evaluation is actually the simplest. Calculating prediction accuracy simply entails removing all confusibles from a text, and see in how many of the cases the language model can correctly predict which word was removed. This percentage can be increased by only taking into account predictions that are above a certain threshold. 
 \end{itemize}
 
-\paragraph{Error detection}
+\paragraph{Step 2: Error detection}
 
 \begin{itemize}
-\item The confusion matrix. From this step onwards, we concentrate on spelling errors. This means that our input no longer is errorless text, like in the previous step. We also interpret the results of the prediction differently now: whereas incorrectly predicted words were considered errors of the system in the previous task, lowering the accuracy, they will now be considered corrections. This means that the system can do two things right (correct incorrect words in the text and don't correct correct words), and two things wrong (correct correct words and don't correct incorrect words). This can be summarized in a confusion matrix (taken from \citet{fawcett04}):
+\item The detection confusion matrix. From this step onwards, we concentrate on spelling errors. This means that our input no longer is errorless text, like in the previous step. We also interpret the results of the prediction differently now: whereas incorrectly predicted words were considered errors of the system in the previous task, lowering the accuracy, they will now be considered corrections. This means that the system can do two things right (correct incorrect words in the text and don't correct correct words), and two things wrong (correct correct words and don't correct incorrect words). This can be summarized in a confusion matrix (taken from \citet{fawcett04}):
 
 \begin{figure}[htb]
 \centering
@@ -282,44 +286,46 @@ Although most of the evaluation measures used in the literature can be useful an
 \label{fig:confusion}
 \end{figure}
 
-When reporting the results of a confusible module, the names of the various cells will be replaced by numbers. These numbers are the data needed to calculate various evaluation measures, like the three below. Beside these evaluation measures, I will always give the confusion matrix itself, so readers can calculate other measures if desired.
+When reporting the results of a confusible module, the names of the various cells will be replaced by numbers. These numbers are the data needed to calculate various evaluation measures, like the three below. Beside the evaluation measures, I will always give the confusion matrix itself, so readers can calculate other measures if desired.
 
-\item Detection accuracy. Detection accuracy only indicates how many mistakes the confusible detector makes, not what kind of mistakes. It can be calculated with the following formula:
+\item Detection accuracy. Detection accuracy only indicates how many mistakes the confusible detector makes, not what kind of mistakes. It can be calculated from the confusion matrix with the following formula:
 
 \[
 \frac{tp+tn}{tp+tn+fp+fn}
 \]
 
-It is similar to prediction accuracy in that it indicates how well the sytem does in general, but keep in mind that prediction and detection accuracy measure two completely different concepts. Although a system with a good prediction accuracy is very likely to also have a good detection accuracy, it might be possible that a system very good at predicting confusibles in errorless texts behaves differently in texts that do contain errors.
+It is similar to prediction accuracy in that it indicates how well the sytem does in general, but keep in mind that prediction and detection accuracy measure two completely different concepts. Although a system with a good prediction accuracy is likely to also have a good detection accuracy, it might be possible that a system very good at predicting confusibles in errorless texts behaves differently in texts that do contain errors.
  
 \item Detection recall and detection precision. 
-Precision and recall are concepts well-known within the field of Information Retrieval; precision reflects how much of the retrieved things were relevant, while recall reflects how much of the the relevant things were retrieved. Often there is a inverse relationship between precision and recall: if you change an algorithm so that its recall increases, its precision decreases, and the other way around. In case of spelling checkers, this means you either have a system that catches a lot of errors, but also has a lot of false alarms, or a system that only finds true errors, but also misses a lot; you can't have the best of both.
+Precision and recall are concepts well-known within the field of Information Retrieval; precision reflects how much of the retrieved things were relevant, while recall reflects how much of the the relevant things were retrieved. Often there is a inverse relationship between precision and recall: if you change an algorithm so that its recall increases, its precision decreases, and the other way around. In case of spelling checkers, this means you either have a system that catches a lot of errors, but also has a lot of false alarms, or a system that only finds true errors, but also misses a lot; you can't have the best of both. \\
+
+Precision
 
 \[
 \frac{tp}{tp+fn}
 \]
+
+Recall
 
 \[
 \frac{tp}{tp+fp}
 \]
 
 \item Detection F-score. 
-Although you mostly cannot have an optimal precision \emph{and} recall at the same time, you can of course try to have them both as high as possible. Calculating the mean does not help here, because the mean can be relatively high if one of the two is high, but what you want to know is whether \emph{both} are high.
+Although you mostly cannot have an optimal precision \emph{and} recall at the same time, you can of course try to have them both as high as possible. Calculating the mean does not help here, because the mean can be relatively high if one of the two is high, but what you want to know is whether \emph{both} are high. This is fixed by the F-score, calculated with the following formula.
 
 \[
 2 * \frac{precision * recall}{precision + recall}
 \]
 
+Because this F-score 'summarizes' both precision and recall, it comes close to a measure that indicates how well the system does with it is supposed to do, and that is of course what we are interested in for this research question. For this reason, I will leave precision and recall out, and focus on the F-scores.
+
 \end{itemize}
 
-\paragraph{Error correction}
+\paragraph{Step 3: Error correction.} Detecting an error is of course something different from correctly correcting it. If correct corrections is what the user is interested in, it is possible to only count as true positives the errors correctly corrected, while the incorrectly corrected errors are counted as false positives. From the resulting correction confusion matrix, again the measures correction accuracy, correction recall, correction precision and correction F-score can be calculated. \\\indent
+For this paper, the correction measures will always be identical to the detecion measures, and will therefore not be mentioned seperately. This is because only two-option confusibles are investigated, which means that the correct correction is always 'the other option' once an error is detected correctly. This of course does not hold for confusibles with three or more options, like \emph{to} versus \emph{too} versus \emph{two} or \emph{they're} versus \emph{there} versus \emph{their}.
 
-\begin{itemize}
-\item Confusion matrix.
-\item Correction accuracy.
-\item Correction recall and correction precision.
-\item Correction F-score.
-\end{itemize}
+\paragraph{Multiple thresholds} Results with multiple thresholds (i.e. to what extent does the prediction accuracy improve if the threshold is raised?) can be visualized with a graph, as shown in the appendix section.
 
 \paragraph{Problems with precision and recall.} Some text.
 
@@ -338,12 +344,18 @@ Waarom geen AUC?
 Agirre et al., 1998
 \bibitem[Brill \& Moore, 2000]{bm00}
 Brill \& Moore, 1998
+\bibitem[Daelemans, Van den Bosch \& Weijters, 1997]{dvdbw97}
+Daelemans, W., A. Van den Bosch, \& A. Weijters, 1997. IGTree: using trees for compression and classification in lazy learning algorithms. Artificial Intelligence Review, 11:407–423.
 \bibitem[Van Delden et al., 2004]{vandelden04}
 Van Delden et al, 2004.
 \bibitem[Fawcett, 2004]{fawcett04}
 Fawcett, 2004.
-\bibitem[García \& Herrera, 2009]{gh09}
-García \& Herrera, 2009. Evolutionary Undersampling for Classification with Imbalanced Datasets: Proposals and Taxonomy.
+\bibitem[Garcia \& Herrera, 2009]{gh09}
+Garcia \& Herrera, 2009. Evolutionary Undersampling for Classification with Imbalanced Datasets: Proposals and Taxonomy.
+\bibitem[He \& Garcia, 2007]{hg07}
+He \& Garcia, 2007. Learning from imbalanced data. IEEE TRANSACTIONS ON KNOWLEDGE AND DATA ENGINEERING, VOL. 21, NO. 9.
+\bibitem[Van Hulse, Khoshgoftaar \& Napolitano, 2007]{vhkn07}
+Van Hulse, Khoshgoftaar \& Napolitano, 2007. Experimental Perspectives on Learning from Imbalanced Data. Proceedings of the 24 th International Conference on Machine Learning.
 \bibitem[Pollock \& Zamora, 1984]{pz84}
 Pollock \& Zamora, 1984
 \bibitem[Provost, 2000]{provost}
