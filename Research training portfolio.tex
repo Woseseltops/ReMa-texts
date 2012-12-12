@@ -201,10 +201,7 @@ However, the real problems with setting up an NLP webservice were not related to
 
 \subsection*{Abstract}
 
-For many confusibles, like "\emph{you're} versus \emph{your}", one option is much more frequent than the other. This poses a problem when one tries to create a context-sensitive memory-based confusible corrector, as having more data for one option will make it more likely that the confusible corrector will predict that option. In the literature it has been suggested that balancing the training data, so that it has exactly the same amount of examples for each option, might improve results of classifiers in general. In this paper I investigate whether this is true for classifiers in a spelling correction environment.
-
-%hoeveel?
-% UIteindelijke resultaten toevoegen aan het abstract
+For many confusibles, like "\emph{you're} versus \emph{your}", one option is much more frequent than the other. This poses a problem when one tries to create a context-sensitive memory-based confusible corrector, as having more data for one option will make it more likely that the confusible corrector will predict that option. In the literature it has been suggested that balancing the training data, so that it has exactly the same amount of examples for each option, might improve results of classifiers in general. In this paper I show this does not hold for classifiers in a spelling correction environment.
 
 \subsection{Introduction}
 
@@ -237,7 +234,7 @@ This leaves us with a dilemma: on the one hand, we want to throw away data to cr
 % Hier even opletten of wat ikz eg wel klopt met mijn uiteindelijke resultaten
 
 \subsection{Method}
-This section is subdivided into three parts. In section \ref{timbl}, I will explain the workings of the software behind Fowlt's confusible correctors: TiMBL. This is important, because the results reported here might not hold for the confusible correctors of other spell checkers. Section \ref{langmod} contains information about the language models  TiMBl uses. Section \ref{eval}, finally, explains how the models were evaluated.
+This section is subdivided into three parts. In section \ref{timbl}, I will explain the workings of the software behind Fowlt's confusible correctors: TiMBL. This is important, because the results reported here might not hold for the confusible correctors of other spell checkers. Section \ref{langmod} contains information about the language models  TiMBL used. Section \ref{eval}, finally, explains how the models were evaluated.
 
 
 \subsubsection{TiMBL} \label{timbl}
@@ -245,7 +242,10 @@ TiMBL compares contexts. For example, when it is given the task to decide whethe
 
 \subsubsection{The language models} \label{langmod}
 
-The six confusibles used for this research were chosen because they vary in their unbalancedness. Here I summarize some descriptive statistics about them:
+The language models are the actual decision trees TiMBL uses to makes its decision. These models were created by collecting all relevant examples and their contexts from the British National Corpus (ref), and randomly removing 10\% (which were used for evaluation) of them. And example consists of the confusible word, three words to its left, and three words to its right. The algorithm used to create the models was also part of the TiMBL software package.\\\indent
+As described above, language models were made for six confusibles. These confusibles were chosen because they vary in their unbalancedness. Here I summarize some descriptive statistics about them:
+
+%ref
 
 \begin{table}[h] \footnotesize
 \begin{tabular}{|l|l|p{3cm}|l|p{3cm}|}
@@ -264,9 +264,8 @@ Confusible&Distribution&Examples in unbalanced data set&Examples in balanced set
 
 \subsubsection{Evaluation procedures} \label{eval}
 
-In this section, I describe the various evaluation measures I used. This is necessary because evaluation of spelling correctors has not been very uniform in the spelling checker literature so far; whereas various scholars only measured how many errors their algorithm can detect in an error list and called it accuracy (e.g. \citealp{agirre98, bm00, tm02,vandelden04}), others use or argue for the precision-recall terminology (\citealp{reynaert08,pz84}, although they use other terms for the two concepts) or argue against it \citep{sp02}.\\\indent
-
-Although most of the evaluation measures used in the literature can be useful and informative, they only tell part of the story. I think it is important to recognize that spelling correction is a multi-step process, and each step comes with its own measures. When using a confusible corrector as part of a spelling corrector, there are three steps: word prediction, error detection and error correction. I'll go through these steps and their evaluation measures one by one in the next three paragraphs.
+The remaining 10\% of the collected data were used to evaluate the confusible correctors. In this section, I describe the various evaluation measures I used to do this. This is necessary because evaluation of spelling correctors has not been very uniform in the spelling checker literature so far; whereas various scholars only measured how many errors their algorithm can detect in an error list and called it accuracy (e.g. \citealp{agirre98, bm00, tm02,vandelden04}), others use or argue for the precision-recall terminology (\citealp{reynaert08,pz84}, although they use other terms for the two concepts) or argue against it \citep{sp02}.\\\indent
+Although most of the evaluation measures used in the literature can be useful and informative, they only tell part of the story. I think it is important to recognize that spelling correction is a multi-step process, and each step comes with its own measures. When using a confusible corrector as part of a spelling corrector, there are three steps: word prediction, error detection and error correction. I'll go through these steps and their evaluation measures one by one in the next three paragraphs. The paragraphs after that highlight other concerns when evaluating spelling correctors.
 
 \paragraph{Step 1: Word prediction}
 
@@ -322,10 +321,16 @@ Because this F-score 'summarizes' both precision and recall, it comes close to a
 
 \end{itemize}
 
-\paragraph{Step 3: Error correction.} Detecting an error is of course something different from correctly correcting it. If correct corrections is what the user is interested in, it is possible to only count as true positives the errors correctly corrected, while the incorrectly corrected errors are counted as false positives. From the resulting correction confusion matrix, again the measures correction accuracy, correction recall, correction precision and correction F-score can be calculated. \\\indent
-For this paper, the correction measures will always be identical to the detecion measures, and will therefore not be mentioned seperately. This is because only two-option confusibles are investigated, which means that the correct correction is always 'the other option' once an error is detected correctly. This of course does not hold for confusibles with three or more options, like \emph{to} versus \emph{too} versus \emph{two} or \emph{they're} versus \emph{there} versus \emph{their}.
+\paragraph{Step 3: Error correction.} Detecting an error is of course something different from correctly correcting it. That is, when a spelling checker corrects 'i like you alot' into 'i like you allot' it might have detected the error, but replaced it with the wrong word. If approriate corrections is what the user is interested in, it is possible to only count as true positives the errors correctly corrected, while the incorrectly corrected errors are counted as false positives. From the resulting correction confusion matrix the measures correction accuracy, correction recall, correction precision and correction F-score can then be calculated again. \\\indent
+For this paper, the correction measures will always be identical to the detecion measures, and will therefore not be mentioned seperately. This is because only two-option confusibles are investigated, which means that the approriate correction is always 'the other option' once an error is detected correctly. This of course does not hold for confusibles with three or more options, like \emph{to} versus \emph{too} versus \emph{two} or \emph{they're} versus \emph{there} versus \emph{their}.
 
-\paragraph{Multiple thresholds} Results with multiple thresholds (i.e. to what extent does the prediction accuracy improve if the threshold is raised?) can be visualized with a graph, as shown in the appendix section.
+\paragraph{Simulating errors.} In the description of these measures, I have assumed the existence of a text corpus full of annotated natural errors, so we can easily see which errors were correctly identified, and which were missed. Such a corpus unfortunately does not exist, and because of time and money constraints I was unable to create one myself. To solve this, such a corpus was created artificially by adding errors to 10\% of the examples used for evaluation. I would like to stress, however, that this is a dangerous approach: I risk adding very unnatural errors, making the evaluation results different from real usage results, and thus less useful. \\\indent
+Fortunately, our focus on confusibles largely eliminates this problem: we don't only already know which words are often spelled wrong, we also know \emph{how} language users spell them wrong (unlike, for example, typos). A problem that still remains, though, is the fact that some errors are not made as often as others. For example, "your" might be used instead of "you're" much more than vice versa; ref for example claims that confusible errors are largely based on frequencies. Research into the occurence frequencies for all confusible errors would be needed to be able to simulate errors in a more natural way.
+
+%ref
+%Dominiek Sandra toevoegen
+
+\paragraph{Thresholds.} As mentioned in the section about prediction accuracy, predictions come with a confidence, and it is possible to only take into account predictions above a particular threshold. This decision has an enormous influence on the rest of the confusible correction process, as in the detection phase every prediction below the threshold means a change either from a true positive into a false negative or from a false positive into a true negative. Because a higher threshold means the corrector has to be more confident to flag a word as an error, raising the threshold essentially means lowering the amount of false positives at the cost of lowering the amount of true positives; in other words, increasing the precision at the cost of recall. To find out at which threshold there is an optimal precision-recall ratio, the F-score is calculated for multiple thresholds, as can be seen in the results section.
 
 \paragraph{Problems with precision and recall.} Some text.
 
