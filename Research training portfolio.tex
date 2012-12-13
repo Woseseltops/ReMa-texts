@@ -6,6 +6,7 @@
 \usepackage{covington}
 \usepackage{graphicx}
 \usepackage{natbib}
+\usepackage{float}
 
 \renewcommand{\familydefault}{\sfdefault}
 
@@ -15,16 +16,26 @@
 \begin{document}
 \maketitle
 
+\begin{table}[h]
+\begin{tabular}{ll}
+Name&Wessel Stoop\\
+Student numbers&s0808709 (Nijmegen), u1249664 (Tilburg)\\
+Project&Fowlt, a context-based spelling checker\\
+Supervisor&Antal van den Bosch\\
+Period&September - December 2012\\
+\end{tabular}
+\end{table}
+
 \section{Introduction}
-Fowlt is the English version of the Dutch spelling checker Valkuil.net. Both Valkuil and Fowlt are unlike most well-known spell checkers (like the one in Microsoft Word): whereas these spelling checkers mostly try to find errors by comparing all words to a built-in dictionary and flag the word as an error if they can't find a match, Valkuil and Fowlt are 'context-based'. This entails that they also take into account the context, which is the words around every word. If, for a particular word, they expected another word based on the context, and the algorithm is really certain about it, it is flagged as an error. This means, for example, that Fowlt is able to replace the incorrect "there' in "there really nice people" into "they're" simply because "there" usually isn't followed by "really nice people", while "they're" is. 
+Fowlt is the English version of the Dutch spelling corrector Valkuil.net. Both Valkuil and Fowlt are unlike most well-known spelling correctors (like the one in Microsoft Word): whereas these spelling correctors mostly try to find errors by comparing all words to a built-in dictionary and flag the word as an error if they can't find a match, Valkuil and Fowlt are 'context-based'. This entails that they also take into account the context, which is the words around every word. If, for a particular word, they expected another word based on the context, and the algorithm is really certain about it, it is flagged as an error. This means, for example, that Fowlt is able to replace the incorrect "there' in "there really nice people" into "they're" simply because "there" usually isn't followed by "really nice people", while "they're" is. 
 \\\indent
-To be able to make these kinds of correction suggestions, Fowlt makes use of language models. These models are created by giving lots of texts to the machine learning software TiMBL and WOPR. It's on the basis of these texts the model knows "there" mostly is not followed by "really nice people". However, this also means that if the context of a particular error is very different from what the model has seen in the training data, it won't be able to correct the error. This means users should be aware of the fact that, although Fowlt can recognize more kinds of errors than regular spell checkers, it might still miss a few. This is particularly true because Fowlt has been taught to only flag a word as an error if the algorithms are really sure about it.
+To be able to make these kinds of correction suggestions, Fowlt makes use of language models. These models are created by giving lots of texts to the machine learning software TiMBL and WOPR. It's on the basis of these texts the model knows "there" mostly is not followed by "really nice people". However, this also means that if the context of a particular error is very different from what the model has seen in the training data, it won't be able to correct the error. This means users should be aware of the fact that, although Fowlt can recognize more kinds of errors than regular spelling correctors, it might still miss a few. This is particularly true because Fowlt has been taught to only flag a word as an error if the algorithms are really sure about it.
 
 \section{What I have done}
 The best way to get a good overview of what I have done is probably to look at Fowlt's internal structure, so that's what I present in the next section. The first part of my internship basically consisted of adding the modules described below, one by one. To get a better idea of what parts took more time to 'get right', I also added a section about problems I encountered.
 
 \subsection{Project structure}
-Fowlt exist of multiple little spelling checkers, specialized in doing one thing. These spelling checkers are called 'modules'. Fowlt consists of four context-free modules (relatively similar to normal spelling checkers functionality) and, as I write this, sixteen context-based modules. This number will probably be different when you read this, though, as new context-based modules are created easily, and can be removed if it turns out they're not accurate enough. Although it is possible to run Fowlt as a stand-alone application, most people will use it as a web application. I will devote a subsection to this 'web shell' around Fowlt as well.
+Fowlt exist of multiple little spelling correctors, specialized in doing one thing. These spelling correctors are called 'modules'. Fowlt consists of four context-free modules (relatively similar to normal spelling correctors functionality) and, as I write this, sixteen context-based modules. This number will probably be different when you read this, though, as new context-based modules are created easily, and can be removed if it turns out they're not accurate enough. Although it is possible to run Fowlt as a stand-alone application, most people will use it as a web application. I will devote a subsection to this 'web shell' around Fowlt as well.
 
 %Plaatje toevoegen
 
@@ -56,7 +67,7 @@ A ConfusibleChecker trained on the difference between 'then' and 'than' for exam
 Fowlt can also (and, probably, will mostly) be used as a website. In this web variant, Fowlt works exactly as described above, but some extra mechanisms are built around to make sure it works and looks nice in the browser. The transition from a standalone application to a website is a two-step process, as is exemplified by figure... . Firstly, Fowlt is made available online webservice using the software CLAM. Among other things, CLAM adds the possibility to use Fowlt as a RESTful service. However, ordinary users don't want to send HTTP requests or read xml files when they want to texts corrected. This is solved in the second step, which is the Fowlt.net interface. In this interface, users can paste their texts, and see the mistakes flagged in red in these texts themselves. The interface even adds functionality to correct any errors. Behind the screens, the interface communicates of course with the CLAM webservice.
 \\\indent
 %Section reference
-Most of the functionality described above was already working for Valkuil, and so only had to be adapted to English to be function within Fowlt. One feature that I created for Fowlt that Valkuil doesn't have (yet), is an error tolerance slider. With this slider, users can change on the fly how confident Fowlt has to be about an error before it displays it. The implementation of this slider was, however, not without problems. See section for more information on that.
+Most of the functionality described above was already working for Valkuil, and so only had to be adapted to English to be function within Fowlt. One feature that I created for Fowlt that Valkuil doesn't have (yet), is an error tolerance slider. With this slider, users can change on the fly how confident Fowlt has to be about an error before it displays it. The implementation of this slider was, however, not without problems. See section \ref{formulas} more information on that.
 
 \subsection{Problems encountered}
 
@@ -70,8 +81,20 @@ Although Ucto includes a configuration file for English, it didn't produce the c
 %\subsubsection{The ConfusibleModules weren't good enough}
 %I didn't only train the ConfusibleModules, I also tested them with a program written by my supervisor. This program takes 10\% from the training data and saves it in a seperate file, trains TiMBL on the remaining 90\%, and then returns the percentage of correct predictions the resulting model can make about the 10\%. The results differed for the various confusibles, but the models were correct roughly 85-90\% of the time. This may seem a lot, but for a spellingchecker to be useful it's essential that a model can have an accuracy of over 99\%. Following the advice of my supervisor, I did two things to accomplish this: (1) I retrained TiMBL on the balanced training sets, which entails that there is an even amount of examples for each word the confusible consists of, and (2) I made the ConfusibleChecker only add a correction when it is very sure. Especially the latter solution increases the accuracy dramatically, but at the price of finding a lot less errors.
 
-\subsubsection{Most modules didn't provide confidences measures}
-Unlike the confusible modules, the WOPR module and the other modules do not return how confident they are a particular error is indeed an error. This was a problem for the error tolerance slider, because for it to work it needs have confidence values for all errors, not just the confusibles. This not only entailed going back to the C-code of the original modules, but also to come up with formulas to represent exactly how confident the modules are. I would like to use this final subsection to explain in detail the formulas I have chosen:
+\subsubsection{WOPR didn't behave as expected}
+WOPR wasn't expected to give a lot of problems: it works well in Valkuil, so simply retraining it on English data should have been enough. Unfortunately, this turned out not be the case: although WOPR was trained with exactly the same settings, and was used in exactly the same way, it always returned that I didn't discover any errors. As I write this, this problem still isn't fully solved, but we did discover three things: 
+
+\begin{itemize}
+
+\item The problem is not in the communication between Fowlt and WOPR, as WOPR starts to respond when you tell it it can also give suggestion larger than Levenshtein Distance 1.
+\item The problem also isn't in the training data, as WOPR does find errors when it is used from the command line (instead of while communicating with Fowlt in server mode).
+\item WOPR finds more errors when you turn off the setting \emph{min\_ratio:100}. This setting makes sure its suggestion is 100 times more frequent than the original word. It is completely unclear why turning this setting on and off makes such a big difference, as it is always on for Valkuil.
+
+\end{itemize}
+
+\subsubsection{Most modules didn't provide confidences measures} \label{formulas}
+Implementing the confidence slider described above was a hard and labor-intensive process. Not only did I have to create a working slider in Javascript that behaved like expected in all browsers, this slider also had to look like designer Monica Hajek had envisioned it, and the position of the handle had to be linked to both the errors marked in the text and the errors in the menu (directly above the slider). Before this could work, however, the slider needed to be able to extract the confidence for each error from Fowlt's output xml. This information about confidence originally wasn't there either, so I had to tell the process chain to ask each module for this information, and add it to the right place in the output. All modules subsequently had to be changed so they actually did return their confidence for each error. In other words, imlementing the slider was a long journey that made me revisit all layers of Fowlt's architecture.\\\indent
+The biggest problem in this process, however, is that most modules not only didn't return some confidence measure for each error, they actually didn't calculate one. This not only meant I had to go back to the C-code of the original modules, but also that I had to come up with formulas to represent exactly how confident the modules are. I would like to use this final subsection to explain in detail the formulas I have chosen:
 
 \paragraph{Lexicon Checker}
 
@@ -205,7 +228,7 @@ For many confusibles, like "\emph{you're} versus \emph{your}", one option is muc
 
 \subsection{Introduction}
 
-This paper results from my attempts to solve a rather practical issue while building Fowlt, an online spell checker freely available on the internet. Fowlt, just like its Dutch equivalent Valkuil, is a context-sensitive spell checker. This context-sensitivity makes it possible to detect errors like the following:
+This paper results from my attempts to solve a rather practical issue while building Fowlt, an online spelling corrector freely available on the internet. Fowlt, just like its Dutch equivalent Valkuil, is a context-sensitive spelling corrector. This context-sensitivity makes it possible to detect errors like the following:
 
 \begin{examples}
 
@@ -228,13 +251,21 @@ These errors, in which one word is confused with another (often homophone) word,
 
 All confusible correctors in Fowlt consist of two parts: \emph{TiMBL}, which is the same for every corrector, and a \emph{language model}, which is based on the specific confusible error the corrector was created for. TiMBL is machine learning software that looks at the contexts of possible confusible errors, and decides whether it would have expected that word on the basis of that context. The language model is the 'knowledge' TiMBL uses to make this decision. This knowledge was not created manually, but automatically by looking at large text corpora (so-called \emph{training material}). The more 'training material', the larger and more complete the language model, which in turn increases the likelihood that TiMBL will make the correct decision. \\\indent
 But just using lots of data isn't the only thing you can do to create a good language model. Ideally, a language model is also created on the basis of a \emph{balanced} training set, i.e. a training set that consists of roughly the same amount of examples for each confusible option (see \citealt{hg07} for an overview of literature on this problem). If we would use a training set with much more contexts for option A than for option B, we may bias the model to option A. For example, if the word 'cookie' has an equal chance to occur both in the context of option A and option B, the confusible corrector should not be able to make a prediction on the basis of this word alone. However, if the language model is based on an unbalanced set it will predict option A, simply because A occurred together with 'cookie' more often. \\\indent
-A solution to this could of course be to always offer balanced training sets. A balanced training set can be achieved in two ways: oversampling and undersampling \citep{provost, gh09, vhkn07, hg07}. Oversampling means that extra data are somehow created for the less frequent option. Because of the unnatural situations this creates, oversampling is probably not desirable in the spell checking domain (and possibly for NLP in general). Undersampling means removing examples for the more frequent option: if 100 examples of option A, and 500 examples of option B are available, 400 examples of B will have to be removed. The more skewed the distribution is, the more data have to be removed, which can lead to situations where only a very small part of the originally collected training material can be used. For example, the distribution of the \emph{practice} versus \emph{practise} confusible is so unbalanced that 85.57 percent of the data had to be removed to create a balanced training set. \\\indent
-This leaves us with a dilemma: on the one hand, we want to throw away data to create balanced training set, so we can improve the results, and on the other hand, we want to keep as much data as possible, so we can improve the results. This paper is an attempt to solve this dilemma. This is done by creating two language models for each of the confusibles mentioned above - one on the basis of a balanced training set, and one of the basis of an unbalanced one - and evaluating their results.
+A solution to this could of course be to always offer balanced training sets. A balanced training set can be achieved in two ways: oversampling and undersampling \citep{provost, gh09, vhkn07, hg07}. Oversampling means that extra data are somehow created for the less frequent option. Because of the unnatural situations this creates, oversampling is probably not desirable in the spelling correction domain (and possibly for NLP in general). Undersampling means removing examples for the more frequent option: if 100 examples of option A, and 500 examples of option B are available, 400 examples of B will have to be removed. The more skewed the distribution is, the more data have to be removed, which can lead to situations where only a very small part of the originally collected training material can be used. For example, the distribution of the \emph{practice} versus \emph{practise} confusible is so unbalanced that 85.57 percent of the data had to be removed to create a balanced training set. \\\indent
+This leaves us with a dilemma: on the one hand, we want to throw away data to create balanced training set, so we can improve the results, and on the other hand, we want to keep as much data as possible, so we can improve the results. This paper is an attempt to solve this dilemma. The main research question thus is:
+
+\begin{examples}
+
+\item Does throwing away training data to obtain a balanced data set improve the results of confusible correctors?
+
+\end{examples}
+
+This is investigated by creating two language models for each of the confusibles mentioned above - one on the basis of a balanced training set, and one of the basis of an unbalanced one - and evaluating their results.
 
 % Hier even opletten of wat ikz eg wel klopt met mijn uiteindelijke resultaten
 
 \subsection{Method}
-This section is subdivided into three parts. In section \ref{timbl}, I will explain the workings of the software behind Fowlt's confusible correctors: TiMBL. This is important, because the results reported here might not hold for the confusible correctors of other spell checkers. Section \ref{langmod} contains information about the language models  TiMBL used. Section \ref{eval}, finally, explains how the models were evaluated.
+This section is subdivided into three parts. In section \ref{timbl}, I will explain the workings of the software behind Fowlt's confusible correctors: TiMBL. This is important, because the results reported here might not hold for the confusible correctors of other spelling correctors. Section \ref{langmod} contains information about the language models  TiMBL used. Section \ref{eval}, finally, explains how the models were evaluated.
 
 
 \subsubsection{TiMBL} \label{timbl}
@@ -325,23 +356,72 @@ Because this F-score 'summarizes' both precision and recall, it comes close to a
 For this paper, the correction measures will always be identical to the detecion measures, and will therefore not be mentioned seperately. This is because only two-option confusibles are investigated, which means that the approriate correction is always 'the other option' once an error is detected correctly. This of course does not hold for confusibles with three or more options, like \emph{to} versus \emph{too} versus \emph{two} or \emph{they're} versus \emph{there} versus \emph{their}.
 
 \paragraph{Simulating errors.} In the description of these measures, I have assumed the existence of a text corpus full of annotated natural errors, so we can easily see which errors were correctly identified, and which were missed. Such a corpus unfortunately does not exist, and because of time and money constraints I was unable to create one myself. To solve this, such a corpus was created artificially by adding errors to 10\% of the examples used for evaluation. I would like to stress, however, that this is a dangerous approach: I risk adding very unnatural errors, making the evaluation results different from real usage results, and thus less useful. \\\indent
-Fortunately, our focus on confusibles largely eliminates this problem: we don't only already know which words are often spelled wrong, we also know \emph{how} language users spell them wrong (unlike, for example, typos). A problem that still remains, though, is the fact that some errors are not made as often as others. For example, "your" might be used instead of "you're" much more than vice versa; ref for example claims that confusible errors are largely based on frequencies. Research into the occurence frequencies for all confusible errors would be needed to be able to simulate errors in a more natural way.
+Fortunately, our focus on confusibles largely eliminates this problem: we don't only already know which words are often spelled wrong, we also know \emph{how} language users spell them wrong (unlike, for example, typos). A problem that still remains, though, is the fact that some errors are not made as often as others. For example, "your" might be used instead of "you're" much more than vice versa; \citet{sfd99} for example claim that confusible errors are largely based on frequencies. Research into the occurence frequencies for all confusible errors would be needed to be able to simulate errors in a more natural way.
 
 %ref
-%Dominiek Sandra toevoegen
 
 \paragraph{Thresholds.} As mentioned in the section about prediction accuracy, predictions come with a confidence, and it is possible to only take into account predictions above a particular threshold. This decision has an enormous influence on the rest of the confusible correction process, as in the detection phase every prediction below the threshold means a change either from a true positive into a false negative or from a false positive into a true negative. Because a higher threshold means the corrector has to be more confident to flag a word as an error, raising the threshold essentially means lowering the amount of false positives at the cost of lowering the amount of true positives; in other words, increasing the precision at the cost of recall. To find out at which threshold there is an optimal precision-recall ratio, the F-score is calculated for multiple thresholds, as can be seen in the results section.
 
-\paragraph{Problems with precision and recall.} Some text.
-
-Waarom geen AUC?
+\paragraph{Problems with precision and recall.} Although I limit myself to precision, recall, and the F-scores calculated from them, these measures are not without problems. As can be seen from the formulas given above, for example, they completely ignore the 'true negative' box in the confusion matrix. As \citet{fawcett04} shows, this can have quite extreme implications when the class distribution changes, and proposes ROC curves instead; this entails by pitting the true positive rate against the false positive rate. However, for spelling correction this measure is not useful: because the amount of negatives (correct words) usually is many times larger than the amount of positives (incorrect words), this always leads to false positive rates that are near-zero. This in turns causes the Area Under the Curve is almost completely determined by the recall, which is of course only part of what we're interested in.
 
 \subsection{Results}
 
+In this section I present the F-scores of all confusible correctors, calculated for 21 different thresholds. Because all examples were assigned to either the training set and the test set randomly (as was explained in the Methods section, 90\% of the data were used to train the correctors, while 10\% was used to calculated these measures), and also because the errors added to the test set were added randomly, these results are not exactly reproducable: a confusible corrector trained on other examples and tested on other errors might of course have other results. Nevertheless, a quick test showed that the F-scores are relatively stable: for all correctors, when the procedure was done again, the F-scores were less than 0.01 higher or lower, which suggest that the results presented here are good reflections of the correctors' actual performance.\\\indent
+Prediction accuracy for multiple thresholds and confusion matrices were calculated as well. These can be found in the appendix.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{fscore_adviceadvise.png}
+\caption{The F-scores of corrector for the \emph{advice} versus \emph{advise}, trained on both a balanced and an inbalanced data set.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{fscore_loseloose.png}
+\caption{The F-scores of corrector for the \emph{lose} versus \emph{loose}, trained on both a balanced and an inbalanced data set.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{fscore_practicepractise.png}
+\caption{The F-scores of corrector for the \emph{practice} versus \emph{practise}, trained on both a balanced and an inbalanced data set.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{fscore_thanthen.png}
+\caption{The F-scores of corrector for the \emph{than} versus \emph{then}, trained on both a balanced and an inbalanced data set.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{fscore_weatherwhether.png}
+\caption{The F-scores of corrector for the \emph{weather} versus \emph{whether}, trained on both a balanced and an inbalanced data set.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{fscore_you'reyour.png}
+\caption{The F-scores of corrector for the \emph{you're} versus \emph{your}, trained on both a balanced and an inbalanced data set.}
+\end{figure}
+
+With respect to our research question, two important facts can be distilled from these data:
+
+\begin{itemize}
+
+\item The corrector trained on the balanced data set (the blue line in the graph) always performs similar or worse than the unbalanced set. Only for the \emph{lose} versus \emph{loose} corrector we see that the balanced set provides the best results. However, the difference between the F-scores of the balanced and unbalanced set in less than 0.01, which means that this better performance can attributed to chance.
+\item How much better the corrector trained on the unbalanced data set actually is seems to be related to how much data was lost. For example, for the balanced set for the \emph{than} versus \emph{then} corrector only 6.06\% of the data had to be thrown away, and we indeed see that the correctors based on the balanced and unbalanced perform similar. For the \emph{practice} versus \emph{practise} corrector, on the other hand, 85.67\% of the data had to be thrown away, and here was see that the corrector trained on the large, unbalanced data set performs much better. Spearman's rho\footnote{Spearman's rho was chosen over Pearson's r, because an early plot of the data indicated that the correlation was not linear.} indicates that there is indeed a strong positive correlation between difference in F-score and proportion of data lost ($r_s(4)=.812, p=.05$). This means that the more data that are lost, the more the corrector based on the unbalanced set will outperform the corrector based on the balanced data set.
+
+% stat toevoegen
+
+\end{itemize}
+
 \subsection{Conclusion}
+In this study, six confusible correctors were trained on both a balanced and an inbalanced data set. It was found that the correctors using the imbalanced training data always performed similar and mostly better than the balanced training data. A strong correlation was found between how much data had to be removed to create the balanced data set and to what extent the corrector based on the imbalanced training data outperformed its balanced counterpart. This suggests that the dataset being large is more important than the dataset being balanced. These findings form a contrast with suggestions in the literature that imbalanced training data should be avoided.
 
-\section{General conclusion}%Beter uitleggen hoe Fowlt werkt, eenduidige terminologie hanteren
+\section{General conclusion}
 
+\section{Appendix}
 
 \begin{thebibliography}{99}
 
@@ -368,6 +448,8 @@ Provost, F (2000). Machine Learning from Imbalanced Data Sets 101. Extended abst
 %jaar is nep
 \bibitem[Reynaert, 2008]{reynaert08}
 Reyneart, 2008.
+\bibitem[Sandra et al., 1999]{sfd99}
+Sandra, D., Frisson, S.,Daems, F., 1999. Why simple verb forms can be so difficult to spell: the influence of homophone frequency and distance in Dutch. Brain Lang. 1999 Jun 1-15;68(1-2):277-83.
 \bibitem[Starlander \& Popescu-Belis, 2002]{sp02}
 Starlander \& Popescu-Belis, 2002
 \bibitem[Toutanova \& Moore, 2002]{tm02}
@@ -380,5 +462,5 @@ Toutanova \& Moore, 2002.
 \end{document}
 
 % TODO
-% Eenduidige terminologie handteren: context-sensitive, modulenamen, 'confusiblecorrectors'
-% Ref TiMBL invoegen
+% Eenduidige terminologie hanteren:  modulenamen
+% Appendix
