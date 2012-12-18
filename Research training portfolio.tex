@@ -250,8 +250,8 @@ These errors, in which one word is confused with another (often homophone) word,
 \end{itemize}
 
 All confusible correctors in Fowlt consist of two parts: \emph{TiMBL}, which is the same for every corrector, and a \emph{language model}, which is based on the specific confusible error the corrector was created for. TiMBL is machine learning software that looks at the contexts of possible confusible errors, and decides whether it would have expected that word on the basis of that context. The language model is the 'knowledge' TiMBL uses to make this decision. This knowledge was not created manually, but automatically by looking at large text corpora (so-called \emph{training material}). The more 'training material', the larger and more complete the language model, which in turn increases the likelihood that TiMBL will make the correct decision. \\\indent
-But just using lots of data isn't the only thing you can do to create a good language model. Ideally, a language model is also created on the basis of a \emph{balanced} training set, i.e. a training set that consists of roughly the same amount of examples for each confusible option (see \citealt{hg07} for an overview of literature on this problem). If we would use a training set with much more contexts for option A than for option B, we may bias the model to option A. For example, if the word 'cookie' has an equal chance to occur both in the context of option A and option B, the confusible corrector should not be able to make a prediction on the basis of this word alone. However, if the language model is based on an unbalanced set it will predict option A, simply because A occurred together with 'cookie' more often. \\\indent
-A solution to this could of course be to always offer balanced training sets. A balanced training set can be achieved in two ways: oversampling and undersampling \citep{provost, gh09, vhkn07, hg07}. Oversampling means that extra data are somehow created for the less frequent option. Because of the unnatural situations this creates, oversampling is probably not desirable in the spelling correction domain (and possibly for NLP in general). Undersampling means removing examples for the more frequent option: if 100 examples of option A, and 500 examples of option B are available, 400 examples of B will have to be removed. The more skewed the distribution is, the more data have to be removed, which can lead to situations where only a very small part of the originally collected training material can be used. For example, the distribution of the \emph{practice} versus \emph{practise} confusible is so unbalanced that 85.57 percent of the data had to be removed to create a balanced training set. \\\indent
+But just using lots of data isn't the only thing you can do to create a good language model. Ideally, a language model is also created on the basis of a \emph{balanced} training set, i.e. a training set that consists of roughly the same amount of examples for each confusible option (see \citealt{hg09} for an overview of literature on this problem). If we would use a training set with much more contexts for option A than for option B, we may bias the model to option A. For example, if the word 'cookie' has an equal chance to occur both in the context of option A and option B, the confusible corrector should not be able to make a prediction on the basis of this word alone. However, if the language model is based on an unbalanced set it will predict option A, simply because A occurred together with 'cookie' more often. \\\indent
+A solution to this could of course be to always offer balanced training sets. A balanced training set can be achieved in two ways: oversampling and undersampling \citep{provost, gh09, vhkn07, hg09}. Oversampling means that extra data are somehow created for the less frequent option. Because of the unnatural situations this creates, oversampling is probably not desirable in the spelling correction domain (and possibly for NLP in general). Undersampling means removing examples for the more frequent option: if 100 examples of option A, and 500 examples of option B are available, 400 examples of B will have to be removed. The more skewed the distribution is, the more data have to be removed, which can lead to situations where only a very small part of the originally collected training material can be used. For example, the distribution of the \emph{practice} versus \emph{practise} confusible is so unbalanced that 85.57 percent of the data had to be removed to create a balanced training set. \\\indent
 This leaves us with a dilemma: on the one hand, we want to throw away data to create balanced training set, so we can improve the results, and on the other hand, we want to keep as much data as possible, so we can improve the results. This paper is an attempt to solve this dilemma. The main research question thus is:
 
 \begin{examples}
@@ -426,34 +426,33 @@ In this study, six confusible correctors were trained on both a balanced and an 
 \begin{thebibliography}{99}
 
 \bibitem[Agirre et al., 1998]{agirre98}
-Agirre et al., 1998
+Agirre, E., K. Gojenola, K. Sarasola, \& A. Voutilainen (1998). Towards a Single Proposal in Spelling Correction. \emph{COLING-ACL ’98},  22-28.
 \bibitem[Brill \& Moore, 2000]{bm00}
-Brill \& Moore, 1998
+Brill, E. \& R. C. Moore (2000). An improved error model for noisy channel spelling correction. In \emph{Proceedings of the 38th Annual Meeting of the ACL}, 286-293.
 \bibitem[Daelemans, Van den Bosch \& Weijters, 1997]{dvdbw97}
-Daelemans, W., A. Van den Bosch, \& A. Weijters, 1997. IGTree: using trees for compression and classification in lazy learning algorithms. Artificial Intelligence Review, 11:407–423.
+Daelemans, W., A. van den Bosch, \& A. Weijters (1997). IGTree: using trees for compression and classification in lazy learning algorithms. \emph{Artificial Intelligence Review, 11}, 407–423.
 \bibitem[Van Delden et al., 2004]{vandelden04}
-Van Delden et al, 2004.
+Van Delden, S., D. B. Bracewell, \& F. Gomez (2004). Supervised and unsupervised automatic spelling correction algorithms. In D. Zhang, E. Gregoire \& D. DeGroot (eds), \emph{Proceedings of the 2004 IEEE International Conference on Information Reuse and Integration}, 530–535, Las Vegas.
 \bibitem[Fawcett, 2004]{fawcett04}
-Fawcett, 2004.
+Fawcett, T. (2004). \emph{ROC Graphs: Notes and Practical Considerations for Researchers.} Available online at binf.gmu.edu/mmasso/ROC101.pdf.
 \bibitem[Garcia \& Herrera, 2009]{gh09}
-Garcia \& Herrera, 2009. Evolutionary Undersampling for Classification with Imbalanced Datasets: Proposals and Taxonomy.
-\bibitem[He \& Garcia, 2007]{hg07}
-He \& Garcia, 2007. Learning from imbalanced data. IEEE TRANSACTIONS ON KNOWLEDGE AND DATA ENGINEERING, VOL. 21, NO. 9.
+Garcia, S. \& F. Herrera (2009). Evolutionary Undersampling for Classification with Imbalanced Datasets: Proposals and Taxonomy. \emph{Evolutionary Computation 17}, 275-306.
+\bibitem[He \& Garcia, 2009]{hg09}
+He, H. \& E. Garcia (2009). Learning from imbalanced data. \emph{IEEE Transactions on knowledge and data engineering, 21(9)}, 1263-1281.
 \bibitem[Van Hulse, Khoshgoftaar \& Napolitano, 2007]{vhkn07}
-Van Hulse, Khoshgoftaar \& Napolitano, 2007. Experimental Perspectives on Learning from Imbalanced Data. Proceedings of the 24 th International Conference on Machine Learning.
+Van Hulse, J. T. M. Khoshgoftaar \& A. Napolitano (2007). Experimental Perspectives on Learning from Imbalanced Data. \emph{Proceedings of the 24 th International Conference on Machine Learning.}
 \bibitem[Pollock \& Zamora, 1984]{pz84}
-Pollock \& Zamora, 1984
-\bibitem[Provost, 2000]{provost}
-Provost, F (2000). Machine Learning from Imbalanced Data Sets 101. Extended abstract. 
-%jaar is nep
+Pollock J. J. \& A. Zamora (1984). Automatic spelling correction in scientific and scholarly text. \emph{Commun. ACM, 27(4)}, 358-368.
+\bibitem[Provost, ?]{provost}
+Provost, F. (year unkown). \emph{Machine Learning from Imbalanced Data Sets 101.} Extended abstract.
 \bibitem[Reynaert, 2008]{reynaert08}
-Reyneart, 2008.
+Reyneart, M. (2008). All, and only, the errors: More complete and consistent spelling and OCR-error correction evaluation. \emph{Proceedings of the Sixth International Language Resources and Evaluation (LREC’08), Marrakech, Morocco}.
 \bibitem[Sandra et al., 1999]{sfd99}
-Sandra, D., Frisson, S.,Daems, F., 1999. Why simple verb forms can be so difficult to spell: the influence of homophone frequency and distance in Dutch. Brain Lang. 1999 Jun 1-15;68(1-2):277-83.
+Sandra, D., Frisson, S.,Daems, F., (1999). Why simple verb forms can be so difficult to spell: the influence of homophone frequency and distance in Dutch. \emph{Brain Language, 68(1-2),} 277-283.
 \bibitem[Starlander \& Popescu-Belis, 2002]{sp02}
-Starlander \& Popescu-Belis, 2002
+Starlander, M. \& A. Popescu-Belis (2002). Corpusbased evaluation of a French spelling and grammar checker. In \emph{LREC 2002: Third International Conference on language resources and evaluation, volume 1}, 268–274. Paris: ELRA, European Language Resources.
 \bibitem[Toutanova \& Moore, 2002]{tm02}
-Toutanova \& Moore, 2002.
+Toutanova, K. \& R. C. Moore (2002). Pronunciation modeling for improved spelling correction. In \emph{Proceedings of the 40th Annual Meeting of the ACL}, 144–151.
 
 \end{thebibliography}
 
