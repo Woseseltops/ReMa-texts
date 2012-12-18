@@ -37,34 +37,38 @@ The best way to get a good overview of what I have done is probably to look at F
 \subsection{Project structure}
 Fowlt exist of multiple little spelling correctors, specialized in doing one thing. These spelling correctors are called 'modules'. Fowlt consists of four context-free modules (relatively similar to normal spelling correctors functionality) and, as I write this, sixteen context-based modules. This number will probably be different when you read this, though, as new context-based modules are created easily, and can be removed if it turns out they're not accurate enough. Although it is possible to run Fowlt as a stand-alone application, most people will use it as a web application. I will devote a subsection to this 'web shell' around Fowlt as well.
 
-%Plaatje toevoegen
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{fowlt_chain.png}
+\caption{Fowlt's architecture}
+\label{fig:chain}
+\end{figure}
 
 \subsubsection{The processchain}
 In Fowlt's main script, fowlt\_processchain.py, all modules are started up, their outputs are collected and are all saved in xml form. Making changes in this script (based on the ones for Valkuil, written by Maarten van Gompel) to make sure the new English based modules worked correctly, is one of the main things I did during my internship. 
 
-\subsubsection{ErrorlistChecker (context-free)}
+\subsubsection{Errorlist module (context-free)}
 Martin Reynaert provided us with a large list of common typos and their corrections. This module, written by me, checks for every word in the input whether it's in the errorlist, and adds the correction when it is.
 
-\subsubsection{LexiconChecker (context-free)}
+\subsubsection{Lexicon module (context-free)}
 Google provided us with an enormous list of word frequencies on the internet in 2008. The LexiconChecker checks for every word in the input whether there's a word on the frequencylist that is very similar to it, but much more frequent.
 
-\subsubsection{RunonChecker (context-free)}
+\subsubsection{Runon module (context-free)}
 The RunonChecker also uses Google's list, but uses it to check if any spaces were forgotten in the input. This is done by looking whether splitting up long words produces two words which both are much more frequent that the original word.
 
-\subsubsection{SplitChecker (context-free)}
+\subsubsection{Split module (context-free)}
 The SplitChecker is the exact opposite of the RunonChecker: instead of looking whether any spaces are forgotten, it checks whether any spaces have to be added. This is done by looking whether each combination of two words produces a word which is much more frequent than the two original words.
 
-\subsubsection{WOPRChecker (context-based)}
+\subsubsection{WOPR module(context-based)}
 The WOPRChecker contacts WOPR, running on a server on localhost or elsewhere. It gives it the context of each word, but not the words themselves. If WOPR predicts another word with much certainty, this word is added as a correction.  
 
-\subsubsection{The ConfusibleCheckers (context-based)}
+\subsubsection{The Confusible modules (context-based)}
 The ConfusibleCheckers work similar to the WOPRChecker, with the only difference that they are trained on one specific language problem, instead of on language in general. As I write this, there are fifteen active ConfusibleCheckers, all focussing on their own expertise: lose-loose, it's-its, you're-your, than-then, who-which-that, whether-weather, effect-affect, lie-lay, they're-their-there, don't-doesn't,to-too-two, advice-advise, any-some, less-fewer, practice-practise and chose-choose.
 \\\indent
 A ConfusibleChecker trained on the difference between 'then' and 'than' for example filters out these two words and their contexts, sends these contexts to a Timblserver running somewhere. This Timblserver then says which of the two it would predict on the basis of the context. If this prediction is different from the actual word and the server is very sure about this, the word is flagged as an error. Training new ConfusibleModules has been a large part of my internship.
 
 \subsubsection{Fowlt as a web application}
-%Picture reference
-Fowlt can also (and, probably, will mostly) be used as a website. In this web variant, Fowlt works exactly as described above, but some extra mechanisms are built around to make sure it works and looks nice in the browser. The transition from a standalone application to a website is a two-step process, as is exemplified by figure... . Firstly, Fowlt is made available online webservice using the software CLAM. Among other things, CLAM adds the possibility to use Fowlt as a RESTful service. However, ordinary users don't want to send HTTP requests or read xml files when they want to texts corrected. This is solved in the second step, which is the Fowlt.net interface. In this interface, users can paste their texts, and see the mistakes flagged in red in these texts themselves. The interface even adds functionality to correct any errors. Behind the screens, the interface communicates of course with the CLAM webservice.
+Fowlt can also (and, probably, will mostly) be used as a website. In this web variant, Fowlt works exactly as described above, but some extra mechanisms are built around to make sure it works and looks nice in the browser. The transition from a standalone application to a website is a two-step process, as is exemplified by Figure \ref{fig:chain}. Firstly, Fowlt is made available online webservice using the software CLAM. Among other things, CLAM adds the possibility to use Fowlt as a RESTful service. However, ordinary users don't want to send HTTP requests or read xml files when they want to texts corrected. This is solved in the second step, which is the Fowlt.net interface. In this interface, users can paste their texts, and see the mistakes flagged in red in these texts themselves. The interface even adds functionality to correct any errors. Behind the screens, the interface communicates of course with the CLAM webservice.
 \\\indent
 %Section reference
 Most of the functionality described above was already working for Valkuil, and so only had to be adapted to English to be function within Fowlt. One feature that I created for Fowlt that Valkuil doesn't have (yet), is an error tolerance slider. With this slider, users can change on the fly how confident Fowlt has to be about an error before it displays it. The implementation of this slider was, however, not without problems. See section \ref{formulas} more information on that.
@@ -197,8 +201,6 @@ Although had some experience with both programming and language technology, and 
 
 \subsection{Working with Linux and SSH}
 The novelty already started with something as non-trivial as the choice of operating system. As a Microsoft Windows user, I was surprised to find out all machine learning software I needed was developed and best used on Linux (see the next section). I only had a few hours of experience with Ubuntu, so I had to invest several hours into installing and getting more familiar with it. Ubuntu's GUI turned out to be almost identical to Windows', so most time went into learning the terminal commands. Unlike the commands for Windows' command prompt, Linux commands are essential for having full control. The first hours of the internship were therefore spent figuring out basic actions like \emph{ls} (showing folders and files in a directory) and \emph{mv} (renaming and moving files). This knowledge was also essential later, when I needed to control external servers over an SSH connection, as these Linux machines can be controlled with commands only. Here again, it took some time to figure out how to make the servers do what I wanted - transferring a python script from my machine to a server, for instance. Fortunately, working with Linux became routine quickly.
-
-% Voordelen Linux?
 
 \subsection{Working with machine learning software}
 Fowlt uses the machine learning software TiMBL, TiMBLserver and WOPR. TiMBL consists of several memory-based learning algorithms, among which IB1-IG, an implementation of k-nearest neighbor classification with feature weighting suitable for symbolic feature spaces, and IGTree, a decision-tree approximation of IB1-IG. TiMBLserver adds server functionality to TiMBL. WOPR is a wrapper around the k-nearest neighbor classifier in TiMBL, offering word prediction and language modeling functionalities. Trained on a text corpus, WOPR can predict missing words, report perplexities at the word level and the text level, and generate spelling correction hypotheses. For Fowlt, only WOPR's spelling modus is used, of course.
@@ -412,8 +414,6 @@ With respect to our research question, two important facts can be distilled from
 \item The corrector trained on the balanced data set (the blue line in the graph) always performs similar or worse than the unbalanced set. Only for the \emph{lose} versus \emph{loose} corrector we see that the balanced set provides the best results. However, the difference between the F-scores of the balanced and unbalanced set in less than 0.01, which means that this better performance can attributed to chance.
 \item How much better the corrector trained on the unbalanced data set actually is seems to be related to how much data was lost. For example, for the balanced set for the \emph{than} versus \emph{then} corrector only 6.06\% of the data had to be thrown away, and we indeed see that the correctors based on the balanced and unbalanced perform similar. For the \emph{practice} versus \emph{practise} corrector, on the other hand, 85.67\% of the data had to be thrown away, and here was see that the corrector trained on the large, unbalanced data set performs much better. Spearman's rho\footnote{Spearman's rho was chosen over Pearson's r, because an early plot of the data indicated that the correlation was not linear.} indicates that there is indeed a strong positive correlation between difference in F-score and proportion of data lost ($r_s(4)=.812, p=.05$). This means that the more data that are lost, the more the corrector based on the unbalanced set will outperform the corrector based on the balanced data set.
 
-% stat toevoegen
-
 \end{itemize}
 
 \subsection{Conclusion}
@@ -422,6 +422,156 @@ In this study, six confusible correctors were trained on both a balanced and an 
 \section{General conclusion}
 
 \section{Appendix}
+
+\subsection{Advice versus advice corrector}
+
+\begin{table}[H] \footnotesize
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+&&P&N\\
+\hline
+balanced&Y&0&0\\
+&N&0&0\\
+\hline
+\hline
+unbalanced&Y&0&0\\
+&N&0&0\\
+\hline
+\end{tabular}
+\caption{The confusion matrices for the corrector for the \emph{advice} versus \emph{advise}, trained on both a balanced and an inbalanced data set.}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{accuracy_adviceadvise.png}
+\caption{The accuracies of corrector for the \emph{advice} versus \emph{advise}, trained on both a balanced and an inbalanced data set.}
+\end{figure}
+
+\subsection{Lose versus loose corrector}
+
+\begin{table}[H] \footnotesize
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+&&P&N\\
+\hline
+balanced&Y&0&0\\
+&N&0&0\\
+\hline
+\hline
+unbalanced&Y&0&0\\
+&N&0&0\\
+\hline
+\end{tabular}
+\caption{The confusion matrices for the corrector for the \emph{lose} versus \emph{loose}, trained on both a balanced and an inbalanced data set.}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{accuracy_loseloose.png}
+\caption{The accuracies of corrector for the \emph{lose} versus \emph{loose}, trained on both a balanced and an inbalanced data set.}
+\end{figure}
+
+\subsection{Practice versus practise corrector}
+
+\begin{table}[H] \footnotesize
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+&&P&N\\
+\hline
+balanced&Y&0&0\\
+&N&0&0\\
+\hline
+\hline
+unbalanced&Y&0&0\\
+&N&0&0\\
+\hline
+\end{tabular}
+\caption{The confusion matrices for the corrector for the \emph{practice} versus \emph{practise}, trained on both a balanced and an inbalanced data set.}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{accuracy_practicepractise.png}
+\caption{The accuracies of corrector for the \emph{practice} versus \emph{practise}, trained on both a balanced and an inbalanced data set.}
+\end{figure}
+
+\subsection{Than versus then corrector}
+
+\begin{table}[H] \footnotesize
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+&&P&N\\
+\hline
+balanced&Y&0&0\\
+&N&0&0\\
+\hline
+\hline
+unbalanced&Y&0&0\\
+&N&0&0\\
+\hline
+\end{tabular}
+\caption{The confusion matrices for the corrector for the \emph{than} versus \emph{then}, trained on both a balanced and an inbalanced data set.}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{accuracy_thanthen.png}
+\caption{The accuracies of corrector for the \emph{than} versus \emph{then}, trained on both a balanced and an inbalanced data set.}
+\end{figure}
+
+\subsection{Weather versus whether corrector}
+
+\begin{table}[H] \footnotesize
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+&&P&N\\
+\hline
+balanced&Y&0&0\\
+&N&0&0\\
+\hline
+\hline
+unbalanced&Y&0&0\\
+&N&0&0\\
+\hline
+\end{tabular}
+\caption{The confusion matrices for the corrector for the \emph{weather} versus \emph{whether}, trained on both a balanced and an inbalanced data set.}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{accuracy_weatherwhether.png}
+\caption{The accuracies of corrector for the \emph{weather} versus \emph{whether}, trained on both a balanced and an inbalanced data set.}
+\end{figure}
+
+\subsection{You're versus your corrector}
+
+\begin{table}[H] \footnotesize
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+&&P&N\\
+\hline
+balanced&Y&0&0\\
+&N&0&0\\
+\hline
+\hline
+unbalanced&Y&0&0\\
+&N&0&0\\
+\hline
+\end{tabular}
+\caption{The confusion matrices for the corrector for the \emph{you're} versus \emph{your}, trained on both a balanced and an inbalanced data set.}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{accuracy_you'reyour.png}
+\caption{The accuracies of corrector for the \emph{you're} versus \emph{your}, trained on both a balanced and an inbalanced data set.}
+\end{figure}
 
 \begin{thebibliography}{99}
 
@@ -459,7 +609,3 @@ Toutanova, K. \& R. C. Moore (2002). Pronunciation modeling for improved spellin
 % Ene paper Antal
 
 \end{document}
-
-% TODO
-% Eenduidige terminologie hanteren:  modulenamen
-% Appendix
