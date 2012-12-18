@@ -20,22 +20,25 @@
 \begin{tabular}{ll}
 Name&Wessel Stoop\\
 Student numbers&s0808709 (Nijmegen), u1249664 (Tilburg)\\
-Project&Fowlt, a context-based spelling checker\\
+Project&Fowlt, a context-sensitive spelling checker\\
 Supervisor&Antal van den Bosch\\
 Period&September - December 2012\\
 \end{tabular}
 \end{table}
 
 \section{Introduction}
-Fowlt is the English version of the Dutch spelling corrector Valkuil.net. Both Valkuil and Fowlt are unlike most well-known spelling correctors (like the one in Microsoft Word): whereas these spelling correctors mostly try to find errors by comparing all words to a built-in dictionary and flag the word as an error if they can't find a match, Valkuil and Fowlt are 'context-based'. This entails that they also take into account the context, which is the words around every word. If, for a particular word, they expected another word based on the context, and the algorithm is really certain about it, it is flagged as an error. This means, for example, that Fowlt is able to replace the incorrect "there' in "there really nice people" into "they're" simply because "there" usually isn't followed by "really nice people", while "they're" is. 
+Fowlt is the English version of the Dutch spelling corrector Valkuil.net. Both Valkuil and Fowlt are unlike most well-known spelling correctors (like the one in Microsoft Word): whereas these spelling correctors mostly try to find errors by comparing all words to a built-in dictionary and flag the word as an error if they can't find a match, Valkuil and Fowlt are 'context-sensitive'. This entails that they also take into account the context, which is the words around every word. If, for a particular word, they expected another word based on the context, and the algorithm is really certain about it, it is flagged as an error. This means, for example, that Fowlt is able to replace the incorrect "there' in "there really nice people" into "they're" simply because "there" usually isn't followed by "really nice people", while "they're" is. 
 \\\indent
-To be able to make these kinds of correction suggestions, Fowlt makes use of language models. These models are created by giving lots of texts to the machine learning software TiMBL and WOPR. It's on the basis of these texts the model knows "there" mostly is not followed by "really nice people". However, this also means that if the context of a particular error is very different from what the model has seen in the training data, it won't be able to correct the error. This means users should be aware of the fact that, although Fowlt can recognize more kinds of errors than regular spelling correctors, it might still miss a few. This is particularly true because Fowlt has been taught to only flag a word as an error if the algorithms are really sure about it.
+To be able to make these kinds of correction suggestions, Fowlt makes use of language models. These models are created by giving lots of texts to the machine learning software TiMBL and WOPR. It's on the basis of these texts the model knows "there" mostly is not followed by "really nice people". However, this also means that if the context of a particular error is very different from what the model has seen in the training data, it won't be able to correct the error. This means users should be aware of the fact that, although Fowlt can recognize more kinds of errors than regular spelling correctors, it might still miss a few. 
+\\\indent
+Although most of software was already there when I started, this project has been a long journey, with many problems. In this portfolio, I hope to give the reader an idea of what I did, what I learned, and what went wrong. On top of that, I did a little study on Fowlt's confusible checkers. I report this study in section 4.
+\\\indent
 
 \section{What I have done}
 The best way to get a good overview of what I have done is probably to look at Fowlt's internal structure, so that's what I present in the next section. The first part of my internship basically consisted of adding the modules described below, one by one. To get a better idea of what parts took more time to 'get right', I also added a section about problems I encountered.
 
 \subsection{Project structure}
-Fowlt exist of multiple little spelling correctors, specialized in doing one thing. These spelling correctors are called 'modules'. Fowlt consists of four context-free modules (relatively similar to normal spelling correctors functionality) and, as I write this, sixteen context-based modules. This number will probably be different when you read this, though, as new context-based modules are created easily, and can be removed if it turns out they're not accurate enough. Although it is possible to run Fowlt as a stand-alone application, most people will use it as a web application. I will devote a subsection to this 'web shell' around Fowlt as well.
+Fowlt exists of multiple little spelling correctors, specialized in doing one thing. These spelling correctors are called 'modules'. Fowlt consists of four context-free modules (relatively similar to normal spelling correctors functionality) and, as I write this, sixteen context-sensitive modules. This number will probably be different when you read this, though, as new context-sensitive modules are created easily, and can be removed if it turns out they're not accurate enough. Although it is possible to run Fowlt as a stand-alone application, most people will use it as a web application. I will devote a subsection to this 'web shell' around Fowlt as well.
 
 \begin{figure}[H]
 \centering
@@ -45,7 +48,7 @@ Fowlt exist of multiple little spelling correctors, specialized in doing one thi
 \end{figure}
 
 \subsubsection{The processchain}
-In Fowlt's main script, fowlt\_processchain.py, all modules are started up, their outputs are collected and are all saved in xml form. Making changes in this script (based on the ones for Valkuil, written by Maarten van Gompel) to make sure the new English based modules worked correctly, is one of the main things I did during my internship. 
+In Fowlt's main script, fowlt\_processchain.py, all modules are started up, their outputs are collected and are all saved in xml form. Making changes in this script (based on the one for Valkuil, written by Maarten van Gompel) to make sure the new English based modules worked correctly, is one of the main things I did during my internship. 
 
 \subsubsection{Errorlist module (context-free)}
 Martin Reynaert provided us with a large list of common typos and their corrections. This module, written by me, checks for every word in the input whether it's in the errorlist, and adds the correction when it is.
@@ -54,28 +57,27 @@ Martin Reynaert provided us with a large list of common typos and their correcti
 Google provided us with an enormous list of word frequencies on the internet in 2008. The LexiconChecker checks for every word in the input whether there's a word on the frequencylist that is very similar to it, but much more frequent.
 
 \subsubsection{Runon module (context-free)}
-The RunonChecker also uses Google's list, but uses it to check if any spaces were forgotten in the input. This is done by looking whether splitting up long words produces two words which both are much more frequent that the original word.
+The Runon module also uses Google's list, but uses it to check if any spaces were forgotten in the input. This is done by looking whether splitting up long words produces two words which both are much more frequent that the original word.
 
 \subsubsection{Split module (context-free)}
-The SplitChecker is the exact opposite of the RunonChecker: instead of looking whether any spaces are forgotten, it checks whether any spaces have to be added. This is done by looking whether each combination of two words produces a word which is much more frequent than the two original words.
+The Split module is the exact opposite of the RunonChecker: instead of looking whether any spaces are forgotten, it checks whether any spaces have to be added. This is done by looking whether each combination of two words produces a word which is much more frequent than the two original words.
 
-\subsubsection{WOPR module(context-based)}
-The WOPRChecker contacts WOPR, running on a server on localhost or elsewhere. It gives it the context of each word, but not the words themselves. If WOPR predicts another word with much certainty, this word is added as a correction.  
+\subsubsection{WOPR module(context-sensitive)}
+The WOPR module contacts WOPR, running on a server on localhost or elsewhere. It gives it the context of each word, but not the words themselves. If WOPR predicts another word with much certainty, this word is added as a correction.  
 
-\subsubsection{The Confusible modules (context-based)}
-The ConfusibleCheckers work similar to the WOPRChecker, with the only difference that they are trained on one specific language problem, instead of on language in general. As I write this, there are fifteen active ConfusibleCheckers, all focussing on their own expertise: lose-loose, it's-its, you're-your, than-then, who-which-that, whether-weather, effect-affect, lie-lay, they're-their-there, don't-doesn't,to-too-two, advice-advise, any-some, less-fewer, practice-practise and chose-choose.
+\subsubsection{The Confusible modules (context-sensitive)}
+The confusible modules work similar to the WOPR module, with the only difference that they are trained on one specific language problem, instead of on language in general. As I write this, there are fifteen active confusible modules, all focussing on their own expertise: lose-loose, it's-its, you're-your, than-then, who-which-that, whether-weather, effect-affect, lie-lay, they're-their-there, don't-doesn't,to-too-two, advice-advise, any-some, less-fewer, practice-practise and chose-choose.
 \\\indent
-A ConfusibleChecker trained on the difference between 'then' and 'than' for example filters out these two words and their contexts, sends these contexts to a Timblserver running somewhere. This Timblserver then says which of the two it would predict on the basis of the context. If this prediction is different from the actual word and the server is very sure about this, the word is flagged as an error. Training new ConfusibleModules has been a large part of my internship.
+A confusible module trained on the difference between 'then' and 'than' for example filters out these two words and their contexts, sends these contexts to a Timblserver running somewhere. This Timblserver then says which of the two it would predict on the basis of the context. If this prediction is different from the actual word and the server is very sure about this, the word is flagged as an error.
 
 \subsubsection{Fowlt as a web application}
-Fowlt can also (and, probably, will mostly) be used as a website. In this web variant, Fowlt works exactly as described above, but some extra mechanisms are built around to make sure it works and looks nice in the browser. The transition from a standalone application to a website is a two-step process, as is exemplified by Figure \ref{fig:chain}. Firstly, Fowlt is made available online webservice using the software CLAM. Among other things, CLAM adds the possibility to use Fowlt as a RESTful service. However, ordinary users don't want to send HTTP requests or read xml files when they want to texts corrected. This is solved in the second step, which is the Fowlt.net interface. In this interface, users can paste their texts, and see the mistakes flagged in red in these texts themselves. The interface even adds functionality to correct any errors. Behind the screens, the interface communicates of course with the CLAM webservice.
+Fowlt can also (and, probably, will mostly) be used as a website. In this web variant, Fowlt works exactly as described above, but some extra mechanisms are built around it to make sure it works and looks nice in the browser. The transition from a standalone application to a website is a two-step process. Firstly, Fowlt is made available online webservice using the software CLAM. Among other things, CLAM adds the possibility to use Fowlt as a RESTful service. However, ordinary users don't want to send HTTP requests or read xml files when they want their texts corrected. This is solved in the second step, which is the Fowlt.net interface. In this interface, users can paste their texts, and see the mistakes flagged in red in these texts themselves. The interface even adds functionality to correct any errors. Behind the screens, the interface communicates with the CLAM webservice.
 \\\indent
-%Section reference
 Most of the functionality described above was already working for Valkuil, and so only had to be adapted to English to be function within Fowlt. One feature that I created for Fowlt that Valkuil doesn't have (yet), is an error tolerance slider. With this slider, users can change on the fly how confident Fowlt has to be about an error before it displays it. The implementation of this slider was, however, not without problems. See section \ref{formulas} more information on that.
 
 \subsection{Problems encountered}
 
-\subsubsection{The original confusiblemodule could only handle two confusibles}
+\subsubsection{The original confusible module could only handle two confusibles}
 Most confusibles consist of two words only, but English has two that consist of three: they're-there-their and to-too-two. The original c-code could not handle confusibles with more than two words, so while the original plan was to either use Valkuil's c-code or rewrite it in Python, the quickest solution here was me diving into the c-code of my supervisor and add support for three.
 
 \subsubsection{Problems with Ucto}
@@ -86,18 +88,23 @@ Although Ucto includes a configuration file for English, it didn't produce the c
 %I didn't only train the ConfusibleModules, I also tested them with a program written by my supervisor. This program takes 10\% from the training data and saves it in a seperate file, trains TiMBL on the remaining 90\%, and then returns the percentage of correct predictions the resulting model can make about the 10\%. The results differed for the various confusibles, but the models were correct roughly 85-90\% of the time. This may seem a lot, but for a spellingchecker to be useful it's essential that a model can have an accuracy of over 99\%. Following the advice of my supervisor, I did two things to accomplish this: (1) I retrained TiMBL on the balanced training sets, which entails that there is an even amount of examples for each word the confusible consists of, and (2) I made the ConfusibleChecker only add a correction when it is very sure. Especially the latter solution increases the accuracy dramatically, but at the price of finding a lot less errors.
 
 \subsubsection{WOPR didn't behave as expected}
-WOPR wasn't expected to give a lot of problems: it works well in Valkuil, so simply retraining it on English data should have been enough. Unfortunately, this turned out not be the case: although WOPR was trained with exactly the same settings, and was used in exactly the same way, it always returned that I didn't discover any errors. As I write this, this problem still isn't fully solved, but we did discover three things: 
+WOPR wasn't expected to give a lot of problems: it works well in Valkuil, so simply retraining it on English data should have been enough. Unfortunately, this turned out not be the case: although WOPR was trained with exactly the same settings, and was used in exactly the same way, it always returned that it didn't discover any errors. As I write this, this problem still isn't fully solved, but we did discover three things: 
 
 \begin{itemize}
 
-\item The problem is not in the communication between Fowlt and WOPR, as WOPR starts to respond when you tell it it can also give suggestion larger than Levenshtein Distance 1.
+\item The problem is not in the communication between Fowlt and WOPR, as WOPR starts to respond when you tell it it can also give suggestions that have a larger Levenshtein Distance than 1.
 \item The problem also isn't in the training data, as WOPR does find errors when it is used from the command line (instead of while communicating with Fowlt in server mode).
 \item WOPR finds more errors when you turn off the setting \emph{min\_ratio:100}. This setting makes sure its suggestion is 100 times more frequent than the original word. It is completely unclear why turning this setting on and off makes such a big difference, as it is always on for Valkuil.
 
 \end{itemize}
 
+\subsection{All browsers and operating systems treat css differently}
+Fowlt's web interface, designed by Monica Hajek, is very similar to Valkuil's interface. I thought that simply changing the logo and some colors would be all interface-related things I had to do. I couldn't have been more wrong: Monica wanted every GUI element to be on exactly the right place, pixel-perfect. This meant that every single element I had added (and even some elements I hadn't added) had to be repositioned.\\\indent
+Having used css several times before, I thought this entailed changing some values and adding some things to Fowlt's stylesheet. Unfortunately, this turned out to be a very hard, frustrating and time-consuming task, as no two browsers behave exactly the same. This means that having all positioning correct in one browsers means having all positioning horribly wrong in another. And to make things even more complicated, things differ per operating system as well: although you can use Chrome on Windows, Mac and Linux, Fowlt looks very different on each of them.\\\indent
+After many frustrated mornings, I decided to give up on this problem, and instead focus on the most used browser-operating system combination, which is Windows+Chrome. Monica provided me with a normalizer style sheet, which claims to eliminate browsers differences and indeed fixes some problems, but at the moment the problem is far from solved.
+
 \subsubsection{Most modules didn't provide confidences measures} \label{formulas}
-Implementing the confidence slider described above was a hard and labor-intensive process. Not only did I have to create a working slider in Javascript that behaved like expected in all browsers, this slider also had to look like designer Monica Hajek had envisioned it, and the position of the handle had to be linked to both the errors marked in the text and the errors in the menu (directly above the slider). Before this could work, however, the slider needed to be able to extract the confidence for each error from Fowlt's output xml. This information about confidence originally wasn't there either, so I had to tell the process chain to ask each module for this information, and add it to the right place in the output. All modules subsequently had to be changed so they actually did return their confidence for each error. In other words, imlementing the slider was a long journey that made me revisit all layers of Fowlt's architecture.\\\indent
+Implementing the confidence slider described above was a hard and labor-intensive process. Not only did I have to create a working slider in Javascript that behaved like expected in all browsers, this slider also had to look like Monica had envisioned it, and the position of the handle had to be linked to both the errors marked in the text and the errors in the menu (directly above the slider). Before this could work, however, the slider needed to be able to extract the confidence for each error from Fowlt's output xml. This information about confidence originally wasn't there either, so I had to tell the process chain to ask each module for this information, and add it to the right place in the output. All modules subsequently had to be changed so they actually did return their confidence for each error. In other words, imlementing the slider was a long journey that made me revisit all layers of Fowlt's architecture.\\\indent
 The biggest problem in this process, however, is that most modules not only didn't return some confidence measure for each error, they actually didn't calculate one. This not only meant I had to go back to the C-code of the original modules, but also that I had to come up with formulas to represent exactly how confident the modules are. I would like to use this final subsection to explain in detail the formulas I have chosen:
 
 \paragraph{Lexicon Checker}
@@ -215,12 +222,11 @@ Working with multiple people on the same software can cause quite a lot of pract
 \subsection{Working with Django and CLAM, setting up an NLP webservice}
 Although I do have experience with web development, everything I had to do to get Fowlt online was completely new to me. Whereas I was used to web programming language PHP, Fowlt works with Django, a Python library for web development. Fortunately, the Django documentation turned out to be very good and clear, so I got the hang of it quickly. In fact, Django turned out to be so elegant and easy that I might use it in future projects as well. The fact that most code needed could be copied from Valkuil made this part extra easy. CLAM, which turns an NLP application into a webservice, also turned out to be easy to use, and has a good documentation. I had Fowlt working with CLAM within an hour.
 \\\indent
-However, the real problems with setting up an NLP webservice were not related to Django or CLAM, but to all kinds of unexpected behavior of the university's servers. For example, the user groups on Applejack were not set up correctly when I started, prohibiting me to reach some locations, both Spitfire and Applejack reset file permissions when files are updated, and the server software caches server settings, even after update the configuration file. In retrospect, the problems were minor and could be solved easily (either by me or by an administrator), but it took me quite a lot of time figure out what the problem was and how to solve it.
+However, the real problems with setting up an NLP webservice were not related to Django or CLAM, but to all kinds of unexpected behavior of the university's servers. For example, the user groups on Applejack were not set up correctly when I started, prohibiting me to reach some locations, both Spitfire and Applejack reset file permissions when files are updated, and the server software caches server settings, even after updating the configuration file. In retrospect, the problems were minor and could be solved easily (either by me or by an administrator), but it took me days to figure out what the problems were and how to solve them.
 
 \subsection{General}
 
-% Python stuff
-% C compilen
+Besides these general themes, there were several similar learning moments per day. Things that I learned include how to use the Google Calendar, the concept IRC (of which I had only a very basic understanding), the fact that bash shell aliases make your life a lot easier, how to make Latex show pictures exactly where you want them, what Python list comprehensions and lambda functions really are, and how to compile C code (and that it should be compiled in the first place).
 
 \section{Research paper}
 
@@ -420,6 +426,8 @@ With respect to our research question, two important facts can be distilled from
 In this study, six confusible correctors were trained on both a balanced and an inbalanced data set. It was found that the correctors using the imbalanced training data always performed similar and mostly better than the balanced training data. A strong correlation was found between how much data had to be removed to create the balanced data set and to what extent the corrector based on the imbalanced training data outperformed its balanced counterpart. This suggests that the dataset being large is more important than the dataset being balanced. These findings form a contrast with suggestions in the literature that imbalanced training data should be avoided.
 
 \section{General conclusion}
+In this research training portfolio, I hope to have shown that creating a spelling corrector isn't something that can be done in a day, even if most of the code is already available. I didn't only change what was there to work with English, I also had to solve several problems related to processing the English language, extend the software on some places (for example, with the confidence slider), and did a little study on the confusible correctors' training data. While doing this, I had to get familiar with new concepts (SSH, GitHub, MBL) on an almost daily basis.\\\indent
+Perhaps suprisingly, the fact that I have created something which could (hopefully) be useful to hundreds, if not thousands or millions of people around the globe, and the fact that I have gathered lots of new and super useful knowledge, are not the most valuable things I got out of this internship. The most valuable thing is that I rediscovered language technology as something I love, and that I now know what I want to spend my future doing.
 
 \section{Appendix}
 
