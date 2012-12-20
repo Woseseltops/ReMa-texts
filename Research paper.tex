@@ -90,8 +90,6 @@ Like I did with statistical machine translation, I will now give an overview of 
 
 \item \emph{Global search.} In the global phase we try to merge the trigrams into one text. The part of the translation software responsible for this is called the \emph{decoder}. There might be a lot of overlap in the resulting trigrams (for example, when the trigrams would be '\emph{\_ I love}', '\emph{I love you}' and '\emph{love you \_}'), making the decoder's task relatively easy. Such overlap might even give hints for the word order of the target language. In many cases, unfortunately, such overlap does not exist or is even misleading. As with statistical translation, here too we can pick the best translation hypothesis by using a language model and a translation model. 
 
-% Constraint Satisfaction Inference
-
 \end{itemize}
 
 
@@ -120,8 +118,6 @@ Note that a simple trigram approach could not have covered this construction. Im
 
 The gap is filled here is filled with 'his', but the construction 'from \_\_ point of view' can also be filled with many other words ('my', 'the', 'another', 'Obama's', etc.). This shows the advantage of skipgrams over n-grams for machine translation: whereas n-grams would only have been able to capture the construction 'point of view', because the word directly before 'point of view' is variable, skipgrams are also able to recognize that the word 'for' is part of the construction. Frequent examples of the skipgrams (I expect the variant with 'my' to be very frequent, for instance) of course \emph{would} be recognized by the n-gram approach.\\\indent
 Of course, not every possible group of consecutive words is a construction; what makes some groups special? The exact nature of linguistic constructions has been the subject of many linguistic publications and even an entire group of linguistic frameworks (construction grammar, see \citet{goldberg95} for a well-known example). For this project, however, it suffices to say that constructions emerge because some combinations of words are more frequent than others. As we've seen in the previous section, taking into account frequency in the training material is how classifiers are able to do their job.
-
-% Drie vormen freq: raw frequency, context frequency, multilingual alignmetn
 
 \subsection{The builder: machine translation}
 Besides an attempt to discover more about the possibilities for machine translation technology, Colibri is also an attempt to actually develop this technology. A project overview therefore cannot be complete without an overview of the software's functionality. Colibri's functionality can be split in four parts: (1) identifying and extracting constructions in a language, (2) identifying aligned constructions between language-pairs, (3) memory-based classification using construction experts and (4) reassembling constructions into a coherent target sentence. If we look at these parts in the light of the light of the memory-based machine translation process as described in the previous section, the first three parts would constitute the local phase, while part 4 would constitute the global phase. I will discuss the four parts in more detail consecutively:
@@ -299,4 +295,3 @@ using context-informed features. In A. Way \& B. Gawronska (Eds.), Proceedings o
 %Graph-based relations can be used to constrain to good constructions
 %Constructions can be aligned without resorting to word alignments as a basis
 %In MT, constructions (i.e. possibly with gaps) result in better translation than mere consecutive phrases
-
