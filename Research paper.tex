@@ -98,11 +98,9 @@ Like I did with statistical machine translation, I will now give an overview of 
 
 
 
-\section{Project description}
+\section{Project description} \label{Description}
 
 Colibri is an attempt to improve the quality of machine translation. This is done by building a translation system using state-of-the-art techniques, then implementing new concepts, and investigating whether they improve translation quality or not. Two concepts investigated so far are the use of constructions instead of phrases as translation units, and the use of context while translation these units. In section \ref{constructions}, I will describe what constructions are and why they might improve translation, in section \ref{builder} I describe the actual software that uses these constructions \emph{and} their context.
-
-In this section, I will describe the main idea behind the project (subsection 1), and how this is operationalized (section 2). Where possible, I will add information of the current status of the project.
 
 \subsection{The building blocks: constructions} \label{constructions}
 
@@ -142,26 +140,24 @@ As may have become clear from the previous sections, the Colibri project uses ma
 \subsubsection{Reassembling constructions into a coherent target sentence}
 A decoder was developed from scratch, following state-of-the-art techniques as described by \citet{koehn03}. Support of skipgrams, of course not available in standard decoders, was added.
 
-% Integreren
-\subsection{Results so far}
-Unfortunately, when investigating its effects in a full translation setting, it turned out the skipgrams do not seem to improve the translation quality, because the decoder mostly picks the translation hypotheses consisting of sentences formed without skipgrams.
-
-So far, the experiments have not yet shown an improvement in translation quality, but the researchers are hopeful in achieving this in the future. They also want to add support for skipgrams in this stage.
-
-
-
-
-\section{Main outstanding questions and future research}
-
-
-
 
 
 
 
 \section{Methodology}
 
-Because of Colibri's practical nature, its methodology forms the core of the project and has been explained in detail in the previous sections, making this section largely superfluous. However, this might be the right place to note that Colibri's unusual methodology also makes its time planning quite different from more conventional research projects: whereas other projects would go through stages like (1) reading the previous literature, (2) building a theoretical model, (3) testing the model, for example with experiments and (4) refining the model on the basis of the results, Colibri takes an entirely different approach. The first year has almost completely been devoted to implementing ideas developed previously, resulting in a fully functional machine translation system. With this technology in place, the years after that can be used refining (and possibly extending) this technology, as well as evaluating its results.
+Because of Colibri's practical nature, its methodology forms the core of the project and has been explained in detail in the previous sections, making this section largely superfluous. However, this might be the right place to note that Colibri's unusual methodology also makes its time planning quite different from more conventional research projects: whereas other projects would go through stages like (1) reading the previous literature, (2) building a theoretical model, (3) testing the model, for example with experiments and (4) refining the model on the basis of the results, Colibri takes an entirely different approach. The first year has almost completely been devoted to implementing ideas, resulting in a fully functional machine translation system. With this technology in place, the years after that can be used refining (and possibly extending) this technology, as well as evaluating its results.
+
+
+
+
+
+\section{Current status and future research}
+
+At the moment, the functional machine translation system described in section \ref{builder} is mostly finished. It is mainly based on the open source translation system MOSES (ref), and indeed manages to produce similar results. However, as was explained in section \ref{Description}, Colibri is an attempt to improve the quality of machine translation by adding skipgrams and memory-based learning. Unfortunately it has turned out that both do not add much to the translation quality: memory-based learning only improves the results a little bit, and the skipgrams are mostly ignored by the decoder. Apparently, translation hypotheses with skipgrams are more likely to be good translations in most of the cases. \\\indent
+This means Colibri's goal, improving translation quality, has not yet been achieved. It is possible that larger improvements in translation quality \emph{can} be achieved by changing things like corpora or even languages used, but if this is not the case, new possibilities for improvements have to be investigated. One such possibility is to include a system that finds the correct translations of words on the basis of particular keywords in a sentences. This system should for example be able to translate the English \emph{bank} into Dutch \emph{oever} ('river bank') when the words like \emph{boat} are mentioned, but into \emph{bank} (financial institution) when \emph{money} is mentioned.
+
+%ref
 
 
 
