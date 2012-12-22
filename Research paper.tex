@@ -166,15 +166,11 @@ This means Colibri's goal, improving translation quality, has not yet been achie
 
 \subsection{For science}
 
-% Ook lingusitic relevance: Abstracting fully lexicalised constructions
-%Finding semantic subclasses in constructions: from time-expression to time-expression"
-%Collapsing constructions with word disjunctions (\he/she/it") or part-of-speech tags
-% Correlations with experimental findings
-% Switch tasks, cloze tests, reaction times, ...
+Because Colibri's goals are not reached at the moment and there currently is no certainty about whether this will happen, Colibri's scientific relevance for now is relatively small; as described in the previous section, the already existing open source machine translation system MOSES has similar results. I should add, however, that the current state the project is in seems to be a fertile ground for breakthroughs in the future. 
 
-\subsection{For society}
+\subsection{For society} \label{soc}
 
-
+Assuming such a breakthrough will indeed come, the relevance for society is a big one: by improving the quality of machine translation, one basically improves (1) to what extent someone can get information from a document written in a human language he or she does not master, and (2) to what extent people without a common language can communicate. As for the first point, a lot of the roughly 7000 languages in the world also have a written form. This means that, unless you know all of these languages, part of all information available can only be reached by translation. This can of course be done a translator, but that's a time-consuming and labour-intensive job, which forces us to concentrate on translating only the more important documents to the more important languages. With good machine translation, we can easily make available \emph{all} information available to everyone. The second point is perhaps even more important: if for two people there isn't a language they both speak, they have very little ways to communicate. In practice this means whole communities of people are excluded from the rest of the world, simply because they do not know the languages of the rest of the world. In highly educated societies this is of course less of a problem, as people can easily learn a new language as long as they are willing to do some effort, but foreign language education is not available in large parts of the world. If it manages to get good enough, machine translation might save the day here: by building 'linguistic bridges' between the world's communities, it creates the possibility for everyone on the world to communicate with everyone on the world. This means one is no longer limited to the community he or she was born, which may increase one's chances for a happy and succesful life seriously.
 
 
 
@@ -187,6 +183,8 @@ In this section, I will try to give an overview of the project's strong and weak
 
 \subsection{Strenghts}
 
+Besides the general strength described in section \ref{soc}, Colibri has (at least) two more:
+
 \subsubsection{The theory is tested immediately and completely}
 
 An idea is very different from something that is really useful or true. Many fields of science get stuck somewhere in this transition. In some fields scholars only write down their ideas in human language, not fully formulating how the idea should work, and thus never discovering there might be flaws in the idea somewhere. In other fields scholars can make the idea formal, but have no way to test the ideas in any other way than trusting on intuitions. In again other fields one can test it, for example by means of experiments, but it remains unclear how the results should be interpreted and to what extent they generalize to the whole population. All this is not a problem for the Colibri project. Claims are made (for example 'skipgrams improve machine translation'), formalized ('this is how they should work within in a machine translation system'), but also implemented and fully tested (i.e. in a fully functional machine learning system). In other words, except maybe for the evaluation measures, there is little reason to doubt the results of this project. 
@@ -194,10 +192,6 @@ An idea is very different from something that is really useful or true. Many fie
 \subsubsection{The example-based approach makes the system easily extensible to other languages}
 
 When describing the rule-based approaches to machine translation, I pointed out that for most approaches one needs a specific ruleset for each language pair. The Interlingua approach is an attempt to solve this problem by adding a language in between, so that only a ruleset for every language-Interlingua pair is needed. Statistical and memory-based approaches solve this problem in an even more elegant way: the only things needed are computational power, time, and a lot of data. As digital translated texts are available in large quantities for the more important languages of the world, adding more languages to Colibri should not be that problematic. But even less important languages can be added easily, as long as there is enough data to train the classifiers (but see the first two weaknesses). Obviously, the opposite is true for the rule-based approach.
-
-\subsubsection{Machines translation improves communication between the world's communities}
-
-%Bruggetje naar relevance for society
 
 \subsection{Weaknesses}
 
