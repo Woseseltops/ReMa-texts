@@ -1,13 +1,15 @@
 \documentclass[12pt]{article}
 
-\title{\emph{Doen}-support in Dutch}
+\title{Periphrastic \emph{doen} in Dutch}
 \author{Wessel Stoop, s0808709}
 
 \usepackage{covington}
 \usepackage{graphicx}
 \usepackage{natbib}
+\usepackage{gb4e}
 
 \renewcommand{\familydefault}{\sfdefault}
+\let\eachwordtwo=\sf
 
 \begin{document}
 \maketitle
@@ -15,26 +17,35 @@
 \section{Introduction}
 In the Dutch main clause, there are two verb positions: the \emph{verb second position} and the \emph{verb final} position. The verb second position is used for the inflected verb, which means that it is always filled; the verb final position is only used when there is more than one verb. This is exemplified in example 1 and 2.
 
-\begin{examples}
-\item Ik eet koekjes.
-\item Ik heb koekjes gegeten.
-\end{examples}
+\begin{exe}
+\ex \gll Ik \textbf{eet} koekjes\\
+ 'I \textbf{ate} cookies'\\
+
+\ex \gll Ik \textbf{heb} koekjes \textbf{gegeten}\\
+I \textbf{have} cookies \textbf{eaten}\\
+\trans 'I have eaten cookies'
+\end{exe}
 
 In standard Dutch, no such thing as do-support is known. For example, subject–auxiliary inversion is possible with all verbs to form questions.
 
-\begin{examples}
-\item Eet ik koekjes?
-\end{examples}
+\begin{exe}
+\ex \gll Eet ik koekjes? \\
+Eat I cookies? \\
+\trans 'Did I eat cookies?
+\end{exe}
 
-Interestingly, however, in some non-standard, informal varieties of Dutch, something very similar to do-support can be heard. Speakers replace the inflected verb in verb second position with an inflected form of \emph{doen} 'do', and place the meaningful verb in verb final position. The \emph{doen}-variant of example 1 would be:
+Interestingly, however, in some non-standard, informal varieties of Dutch, something very similar to do-support can be found. Speakers replace the inflected verb in verb second position with an inflected form of \emph{doen} 'do', and place the meaningful verb in verb final position. The \emph{doen}-variant of example 1 would be:
 
-\begin{examples}
-\item Ik doe koekjes eten.
-\end{examples}
+\begin{exe}
+\ex \gll Ik doe koekjes eten \\
+I do cookies eat\\
+\trans 'I eat cookies'
+\end{exe}
 
-\citet{g83} notes this construction with \emph{doen} is not popular with language users - or at least the ones aware of the construction: 'language users consider [it] unacceptable, and such sentences are mostly associated with childish language. [It is a] frequent phenomenon in spoken language, contested on the basis of non-linguistic arguments or prescriptive norms' (\citealp{g83}:58, translation WS).\\\indent
-This dislike seems to be shared by some linguists, however. \citet[p. 121]{d94} for example says: 'experienced language users do not have trouble with larger formal complexity; they don't need the ease of paraphrasing. It is because of this [\emph{doen}-construction] is devious' (translation WS), and \citet[p. 153]{n62} claims the construction is mainly limited to children and women.\\\indent
-Interestingly, the construction has been claimed to be part of dialectal language use several times: it would be part of the dialects of Groningen \citep{tl53}, Twente \citep{n62} and Heerlen \citep{c94}, dialects that have in common that they are all spoken in the east of the Netherlands. In this paper, however, I will show that \emph{doen}-support is not limited to dialectal language use, but can be heard in (the eastern variant of) Standard Dutch as well. Furthermore, I will try to explain what triggers its use. For this, I will use both a regression model and a model based on memory based learning.\\\indent
+\citet{g83} notes this construction with \emph{doen}, often called \emph{periphrastic doen} is not popular with language users - or at least the ones aware of the construction: 'language users consider [it] unacceptable, and such sentences are mostly associated with childish language. [It is a] frequent phenomenon in spoken language, contested on the basis of non-linguistic arguments or prescriptive norms' (\citealp[p. 58]{g83}, translation WS).\\\indent
+This dislike seems to be shared by some linguists, however. \citet[p. 121]{d94} for example says: 'experienced language users do not have trouble with larger formal complexity; they don't need the ease of paraphrasing. It is because of this [periphrastic \emph{doen}] is devious' (translation WS), and \citet[p. 153]{n62} claims the construction is mainly limited to children and women.\\\indent
+Interestingly, the construction has also been claimed to be part of dialectal language use: it would be part of the dialects of Groningen \citep{tl53}, Twente \citep{n62} and Heerlen \citep{c94}, dialects that have in common that they are all spoken in the east of the Netherlands.\\\indent
+In this paper, I will show that \emph{doen}-support is not limited to dialectal language or the language of children or women,  but seems to be part of (the eastern variant of) Standard Dutch. Furthermore, I will try to explain what triggers its use. For this, I will use both a regression model and a model based on memory based learning.\\\indent
 The remainder of this paper consists of 4 sections. In section \ref{data}, I will elaborate on the collection and the nature of the dataset used. Section \ref{regression} consists of an overview of factors that could possibly have an influence on whether periphrastic \emph{doen} is used or not, and to what extent these factors indeed can explain the data. In section \ref{mbl}, I will explain the working of Memory Based Learning software TiMBL, and discuss its results on predicting in which cases periphastic \emph{doen} is used. The paper will be concluded in section \ref{conc}.
 
 
@@ -79,8 +90,8 @@ The remainder of this paper consists of 4 sections. In section \ref{data}, I wil
 
 \subsection{Introduction}
 
-Like regression models, the goal of Memory Based Learning models is to predict the value of a dependent variable (in our case, whether periphrastic \emph{doen} is used or not) for new examples. The way in which MBL tries to do this precition is radically different, however. Regression models make predictions on the basis of abstractions. With every factor we include in the model, we assume another abstraction; for example, by including the factor person, we assume the existence of an abstract category person in language.\\\indent
-Memory based learning doesn't do any of these assumptions. Instead of relying on human annotations for a dataset, it tries to make predictions on the basis of the data themselves. An MBL model thus is created by giving an algorithm as many examples as possible, and telling it to which class each example belongs. When given a new example, this example is compared to all classes seen in the training data. For the training examples that are most similar (that is, contain a lot of the same lexical items), it looks up the classes. The class that most of these training examples have is the class the MBL model predicts for the new example.
+Like regression models, the goal of Memory Based Learning models is to predict the value of a dependent variable (in our case, whether periphrastic \emph{doen} is used or not) for new examples. The way in which MBL tries to do this prediction is radically different, however. Regression models make predictions on the basis of abstractions. With every factor we include in the model, we assume another abstraction; for example, by including the factor person, we assume the existence of an abstract category person in language.\\\indent
+Memory based learning doesn't do any of these assumptions. Instead of relying on human annotations for a dataset, it tries to make predictions on the basis of the data themselves. An MBL model thus is created by giving an algorithm as many examples as possible, and telling it to which class each example belongs. When given a new example, this example is compared to all examples seen in the training data. For the training examples that are most similar (that is, contain a lot of the same lexical items), it looks up the classes. The class that most of these training examples have is the class the MBL model predicts for the new example.
 
 \subsection{Method}
 
@@ -99,19 +110,17 @@ Memory based learning doesn't do any of these assumptions. Instead of relying on
 
 \section{Conclusion} \label{conc}
 
-% Gloss
-
 \begin{thebibliography}{99}
 \bibitem[Duinhoven(1994)]{d94}
-Duinhoven, A.M. (1994), Het hulpwerkwoord doen heeft afgedaan. Forum der Letteren 35, 2: 110-131.
+Duinhoven, A. M. (1994), Het hulpwerkwoord doen heeft afgedaan. \emph{Forum der Letteren 35}, 2: 110-131.
 \bibitem[Cornips(1994)]{c94}
-Cornips, L. (1994). De hardnekkige vooroordelen over de regionale doen+infinitief-constructie. Forum der Letteren. Jaargang 1994.
+Cornips, L. (1994). De hardnekkige vooroordelen over de regionale doen+infinitief-constructie. \emph{Forum der Letteren. Jaargang 1994.}
 \bibitem[Giesbers(1983)]{g83}
-Giesbers, H. (1983-1984), Doe jij lief spelen? Notities over het perifrastisch doen. Mededelingen van de Nijmeegse Centrale voor Dialect- en Naamkunde 19, 57-64.
+Giesbers, H. (1983-1984), Doe jij lief spelen? Notities over het perifrastisch doen. \emph{Mededelingen van de Nijmeegse Centrale voor Dialect- en Naamkunde 19}, 57-64.
 \bibitem[ter Laan(1953)]{tl53}
-Laan, K. ter (1953), Proeve van een Groninger spraakkunst. Winschoten: van der Veen.
+Laan, K. ter (1953). \emph{Proeve van een Groninger spraakkunst}. Winschoten: van der Veen.
 \bibitem[Nuijtens(1962)]{n62}
-Nuijtens, E. (1962). De tweetalige mens. Assen: Van Gorcum \& Comp.
+Nuijtens, E. (1962). \emph{De tweetalige mens}. Assen: Van Gorcum \& Comp.
 \end{thebibliography}
 
 \end{document}
