@@ -49,7 +49,7 @@ The horizontal arrows represent the approaches. I'll go through them from bottom
 \item \emph{The interlingua approach}. All of the approaches so far have in common that they require a seperate rule set for each language pair; no or very few rules included for translations from English to German can also be used for translations from English to French. This means that for every time a new language is added to the system, the amount of rules that have to be added grows exponentially. The Interlingua approach is an attempt to solve this problem, by pairing up every language with a formal representation of meaning, the Interlingua. This means a translation from English to German would entail a translation from English to the Interlingua (using the ruleset English $\rightarrow$ Interlingua) and then a translation from the Interlingua to German (using the ruleset Interlingua $\rightarrow$ German). When translating from English to French, the same two steps would be taken, and the same ruleset English $\rightarrow$ Interlingua can be used.
 \end{itemize}
 
-I should add that translation system focussing on one such approach are rare. As \citet{jm09} put it: 'Real systems tend to involve combinations of elements from these three architectures; thus, each is best thought of as a point in an algorithmic design space rather than as an actual algorithm.' The Systran system (\citealp{hs92,senellartea01}) is an example of this.\\\indent %TODO example of what
+I should add that translation system focussing on one such approach are rare. As \citet{jm09} put it: 'Real systems tend to involve combinations of elements from these three architectures; thus, each is best thought of as a point in an algorithmic design space rather than as an actual algorithm.' The Systran system \citep{hs92,senellartea01}, for example combines the first three approaches.\\\indent
 An advantage of the rule-based approach is that one has a lot of control over the output. In theory, if something has gone wrong, all one has to do is find out which rule or dictionary item caused the problem and improve it. In practice, however, it is almost impossible to have a dictionary and rule system good enough for more complicated sentences, and things like rule interactions and ambiguity make everything even more complicated. The next two approaches therefore replace hand-crafted rules with automatically generated ones.
 
 \subsection{The statistical approach}
@@ -254,8 +254,11 @@ Van Gompel, M. (2010). Uvt-wsd1: A cross-lingual word sense disambiguation syste
 Van Gompel, M., A. Van den Bosch, \& P. Berck (2011). Extending memory-based
 machine translation to phrases. In T. Markus, P. Monachesi, \& E. Westerhout (Eds.), \emph{Computational linguistics in the netherlands 2010: Selected papers from the twentieth clin meeting} (pp. 45-58). Utrecht, the Netherlands: LOT.
 
+\bibitem[Van Gompel, 2012]{vangompel12}
+Van Gompel, M. (2012). \emph{Colibri documentation}. Available online at http://proycon.github.com/colibri/doc/.
+
 \bibitem[Hutchins \& Somers, 1992]{hs92}
-Hutchins \& Somers, 1992.
+Hutchins, W. J. \& H. L. Somers (1992). \emph{An introduction to Machine Translation.} Academic Press.
 
 \bibitem[Jurafsky \& Martin, 2009]{jm09}
 Jurafsky, D. \& J. H. Martin (2000). \emph{Speech and language processing: an introduction to natural language processing, computational linguistics, and speech recognition.} Second edition. New Jersey: Pearson Education.
@@ -267,12 +270,11 @@ Koehn, P., F.-J. Och, \& D. Marcu (2003). Statistical phrase-based translation. 
 Koehn, P., H. Hoang, A. Birch, C. Callison-Burch, M. Federico, N. Bertoldi, et al. (2007). Moses: Open source toolkit for statistical machine translation. In \emph{ACL. The Association for Computer Linguistics.}
 
 \bibitem[Senellart et al., 2001]{senellartea01}
-Senellart et al., 2001
+Senellart, J., P. Dienes \& T. Varadi (2001). New generation SYSTRAN translation system. In emph{MT Summit 8}.
 
 \bibitem[Stroppa et al., 2007]{stroppa07}
 Stroppa, N., A. Van den Bosch, \& A. Way, (2007). Exploiting source similarity for SMT using context-informed features. In A. Way \& B. Gawronska (Eds.), \emph{Proceedings of the 11th international conference on theoretical issues in machine translation (tmi 2007)} (pp. 231\-240). Skövde, Sweden.
 
 \end{thebibliography}
-% Documentatie Colibri
 
 \end{document}
