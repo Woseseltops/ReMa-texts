@@ -8,6 +8,11 @@
 \usepackage{natbib}
 \usepackage{gb4e}
 
+\addtolength{\textwidth}{0.4in}
+\addtolength{\hoffset}{-0.2in}
+\addtolength{\textheight}{0.4in}
+\addtolength{\voffset}{-0.2in}
+
 \renewcommand{\familydefault}{\sfdefault}
 \let\eachwordtwo=\sf
 
@@ -82,13 +87,10 @@ that do i then look when I then anyway for Alex er momentarily come look\\ \labe
 \trans 'I'll look at that when I come look for Alex'
 \end{exe}
 
-To these 66 examples, 100 randomly selected 'control' sentences were added. These are sentences with a finite verb but without periphrastic \emph{doen}, which is almost every Dutch sentence. Picking a (sub)corpus to select these control sentences from turned out to be a rather difficult task. \\\indent
+To these 66 examples, 100 randomly selected 'control' sentences were added. These are sentences with a finite verb but without periphrastic \emph{doen}, which is almost every Dutch sentence. Picking a (sub)corpus from which to select these control sentences, which comes down to defining the envelope of variation, turned out to be a rather difficult task. \\\indent
 For example, if 100 sentences selected from all Dutch corpora available would have been used, and then annotated for register, we would probably see a significant effect for register: the \emph{doen} examples are all spoken, informal language, while this would not true for all control sentences. We would thus find that there is no variation in formal language. However, if we then wanted to use this same dataset to investigate other effects, these formal sentences might obscure the view; for example, while verb type might be a strong predictor for the use of periphrastic \emph{doen} in informal language, it is not at all in formal language (as it never occurs there, regardless of verb type). Including formal sentences thus decreases the size of the effect. In other words, because the variation does not occur in formal language, it seems to make sense to exclude formal language, so we can zoom in on the place where the variation \emph{does} occur. \\\indent 
 On the other hand, if it turned out that periphrastic \emph{doen} is limited to the verb \emph{zijn} 'be', the researcher could decide to also only pick control sentences with \emph{zijn}. While doing this allows him or her to discover very specific effects about the variation, it is no longer possible to discover the general effect that \emph{doen} always co-occurs with \emph{zijn}, while this might be a very important predictor for periphrastic \emph{doen} and part of the explanation why it is used. In other words, when being too picky in selecting the control sentences, one risks throwing away the baby with the bathwater.\\\indent
 Because the literature about periphrastic \emph{doen} is so limited, I decided to focus on more general effects. There does not seem to be any consensus about possible predictors besides that it is limited to informal language, so that is the only place the control sentences were limited: all were taken from the \emph{face-to-face conversations} or \emph{telephone conversations} from the CGN, because that is also the place where all \emph{doen} sentences came from (with the exception of one example from sports commentaries).
-
-% Envelope of variation
-% Misschien iets doen met interacties?
 
 \section{The regression model} \label{regression}
 
@@ -108,26 +110,30 @@ I introduce her to you\\
 
 \citet[pp. 156]{n62} suggests periphrastic \emph{doen} is a strategy to avoid the extra processing load this long-distance relationship causes, both for the speaker and the hearer. If that is true, we would expect to find much more phrasal verbs as the main verb in the \emph{doen} sentences than in the control sentences. This turns out to be the case:
 
-\begin{table}[h]
-\begin{tabular}{|l||ll|ll|}
+\begin{table}[h] \footnotesize
+
+\makebox[\textwidth][c]{
+\begin{tabular}{|l||ll|ll|} 
 \hline
 &Phrasal verbs&&Non-phrasal verbs&\\
 \hline
 periphrastic \emph{doen} sentences	&23 	& \emph{34.85\%}	&43		 &\emph{65.15\%}\\
 control sentences					&0		& \emph{0\%}		&100	 &\emph{100\%}\\
 \hline
-\end{tabular}
+\end{tabular}}
+\caption{\footnotesize Distribution phrasal verbs versus non-phrasal verbs for the \emph{doen} sentences and the control sentences.}
 \end{table}
 
 Because of their infrequency, phrasal verb do not even occur in the control sample, while one-third of the main verbs used with periphrastic \emph{doen} is a phrasal verb. A chi-square test showed this difference is indeed significant ($\chi^2(1, N=166) = 40.45, p > .001$).
 
 \subsubsection{The given before new-principle}
 
-Although there is a lot of disagreement over the exact details and the terminology, there is a wide consensus among linguists that languages often use the \emph{given before new}-principle (ref). This principle entails that speakers try to put information already known by the addressee in the beginning of the sentence, while the part of the sentence that contains the new information is put at the end as much as possible. Or, to put it differently, speakers first introduce their topic, and then say what they want to say about this topic.\\\indent
-%ref
+Although there is a lot of disagreement over the exact details and the terminology, there is a wide consensus among linguists that languages often use the \emph{given before new}-principle (see \citet{dsdh95} for an overview). This principle entails that speakers try to put information already known by the addressee in the beginning of the sentence, while the part of the sentence that contains the new information is put at the end as much as possible. Or, to put it differently, speakers first introduce their topic, and then say what they want to say about this topic.\\\indent
 The Dutch V2-rule, however, limits the possibilities to do this drastically. Unless there is an auxiliary present for other reasons, it is not possible to put the main verb at the end of the sentence in main clauses. periphrastic \emph{doen} could be a perfect tool to solve this problem, as it forces the main verb to go to the end of the sentence. If \emph{doen} is indeed used this way, we would expect that the main verb in \emph{doen} sentences indeed is new information. To investigate this, the conversations preceding all sentences were listened to. If the concept the main verb conveys was already mentioned in some form, the main verb was annotated as old information, whereas it was annotated as new information if it was not mentioned somehow before.
 
-\begin{table}[h]
+\begin{table}[h] \footnotesize
+
+\makebox[\textwidth][c]{
 \begin{tabular}{|l||ll|ll|}
 \hline
 &Old information&&New information&\\
@@ -135,7 +141,8 @@ The Dutch V2-rule, however, limits the possibilities to do this drastically. Unl
 periphrastic \emph{doen} sentences	&15 	& \emph{22.73\%}	&51		 &\emph{77.27\%}\\
 control sentences					&24		& \emph{24\%}		&76		 &\emph{76\%}\\
 \hline
-\end{tabular}
+\end{tabular}}
+\caption{\footnotesize Distribution of whether the main verb contained new information for the \emph{doen} sentences and the control sentences.}
 \end{table}
 
 As can be seen from the table, there does not seem to be a clear difference between the \emph{doen} sentences and the control sentences; in both cases the main verb was new information most of the times, regardless of whether \emph{doen} was used. A chi-square test showed this difference was not significant ($\chi^2(1, N=166) = 0.036, p = .85$).
@@ -144,7 +151,9 @@ As can be seen from the table, there does not seem to be a clear difference betw
 
 \citet{c94} discusses periphrastic \emph{doen} as part of the Heerlen dialect, and claims it has a semantic function rather than being a syntactic strategy; periphrastic \emph{doen} would be used to express habitual aspect. Although such a categorical explanation does not seem to work for all examples used in the current dataset, (a habitual interpretation for sentences like \ref{hond} and \ref{Alex} would be very unlikely, for example), it might also play a role here. To investigate this, for every sentence it was annotated whether a habitual interpretation was possible. It should be added that the possibility of such an interpretation does not necessarily mean the speaker also intended it.
 
-\begin{table}[h] 
+\begin{table}[h] \footnotesize
+
+\makebox[\textwidth][c]{
 \begin{tabular}{|l||ll|ll|} 
 \hline
 &Possibly habitual&&Habitual impossible&\\
@@ -152,7 +161,8 @@ As can be seen from the table, there does not seem to be a clear difference betw
 periphrastic \emph{doen} sentences	&22 	& \emph{33.33\%}	&44		 &\emph{66.67\%}\\
 control sentences					&19		& \emph{19\%}		&81		 &\emph{81\%}\\
 \hline
-\end{tabular}
+\end{tabular}}
+\caption{\footnotesize Distribution of whether habitual interpration is possible for the \emph{doen} sentences and the control sentences.}
 \end{table}
 
 The data show a small difference between periphrastic \emph{doen} and the control sentences; a possible habitual doen interpretation is a little more likely when periphrastic \emph{doen} is present. A chi-square test showed this difference was significant ($\chi^2(1, N=166) = 4.39, p = .036$).
@@ -161,7 +171,9 @@ The data show a small difference between periphrastic \emph{doen} and the contro
 
 As discussed in the introduction, the literature suggests periphrastic \emph{doen} might be a phenomenon limited to eastern Dutch. Whereas the longitude of the speaker's origin cannot be checked easily for the CGN data, the latitude can: the data are annotated for being either Netherlandic or Belgian Dutch. One third of the CGN is recorded in Belgium.
 
-\begin{table}[h] 
+\begin{table}[h] \footnotesize
+
+\makebox[\textwidth][c]{
 \begin{tabular}{|l||ll|ll|} 
 \hline
 &Netherlandic&&Belgian&\\
@@ -169,7 +181,8 @@ As discussed in the introduction, the literature suggests periphrastic \emph{doe
 periphrastic \emph{doen} sentences	&63 	& \emph{95.45\%}	&3		 &\emph{4.55\%}\\
 control sentences					&67		& \emph{67\%}		&33		 &\emph{33\%}\\
 \hline
-\end{tabular}
+\end{tabular}}
+\caption{\footnotesize Distribution of variety for the \emph{doen} sentences and the control sentences.}
 \end{table}
 
 These data reveal periphrastic \emph{doen} seems to be mostly limited to Netherlandic Dutch. A chi-square test showed this difference was significant ($\chi^2(1, N=166) = 18.954, p > .001$).
@@ -178,7 +191,9 @@ These data reveal periphrastic \emph{doen} seems to be mostly limited to Netherl
 
 An observation done while annotating for the previously described factors is that periphrastic \emph{doen} is used in first and second person, but never in the third. While this can be linked to various more abstract explanations, as will be attempted in the next two sections, it was first investigated whether this really was the case, and whether this is expected on the basis of the control sentences.
 
-\begin{table}[h]
+\begin{table}[h] \footnotesize
+
+\makebox[\textwidth][c]{
 \begin{tabular}{|l||ll|ll|ll|}
 \hline
 &First&&Second&&Third&\\
@@ -186,7 +201,8 @@ An observation done while annotating for the previously described factors is tha
 periphrastic \emph{doen} sentences	&26 	& \emph{39.39\%}	&40		&\emph{60.61\%} 	& 0 &\emph{0\%}\\
 control sentences					&55		& \emph{55\%}		&21	 	&\emph{21\%} 		& 24 &\emph{24\%}\\
 \hline
-\end{tabular}
+\end{tabular}}
+\caption{\footnotesize Distribution person for the \emph{doen} sentences and the control sentences.}
 \end{table}
 
 Here we see indeed that the third person is absent from the \emph{doen} sentences, which suggests that periphrastic \emph{doen} in third person is infrequent, and possibly even ungrammatical. It should be added that a counter-example to that last suggestion was found on \emph{taaladvies.net}, the language advice website discussed earlier, although it unclear to what extent this example is artificial:
@@ -205,7 +221,9 @@ A chi-square test showed the difference between the \emph{doen} sentences and th
 
 If periphrastic \emph{doen} indeed has an interactional function, we would of course also expect it to occur more in interactional situations like imperatives and questions. In fact, it might even be the case that \emph{doen} is not so much an interaction marker, but is a marker for a less frequent mood - similar to how an accusative marker is a marker for a less frequent case. To investigate whether periphrastic \emph{doen} indeed is somehow related to the imperative or the interrogative mood, for each sentence the mood was annotated.
 
-\begin{table}[h]
+\begin{table}[h] \footnotesize
+
+\makebox[\textwidth][c]{
 \begin{tabular}{|l||ll|ll|ll|}
 \hline
 &Indicative&&Imperative&&Interrogative&\\
@@ -213,7 +231,8 @@ If periphrastic \emph{doen} indeed has an interactional function, we would of co
 periphrastic \emph{doen} sentences	&32 	& \emph{48.48\%}	&25		&\emph{37.88\%} & 9 &\emph{13.64\%}\\
 control sentences					&91		& \emph{91\%}		&0	 	&\emph{0\%} 	& 9 &\emph{9\%}\\
 \hline
-\end{tabular}
+\end{tabular}}
+\caption{\footnotesize Distribution of mood for the \emph{doen} sentences and the control sentences.}
 \end{table}
 
 Here we see indeed that non-indicative moods are much more frequent for \emph{doen} sentences than they are for the control sentences. A chi-square test showed this difference is significant ($\chi^2(2, N=166) = 48.37, p > .001$).
@@ -233,7 +252,11 @@ Eat your bread!\\
 
 Possibly, periphrastic \emph{doen} is used to indicate that a non-standard word order is used. To investigate this, all sentences where annotated for word order. Besides the reasons mentioned above, a frequent source of alternative word order turned out to be object fronting (OVS).
 
-\begin{table}[h]
+
+\begin{table}[h] \footnotesize
+
+\makebox[\textwidth][c]{
+
 \begin{tabular}{|l||ll|ll|}
 \hline
 &SVO&&V(S)O or OVS&\\
@@ -241,14 +264,16 @@ Possibly, periphrastic \emph{doen} is used to indicate that a non-standard word 
 periphrastic \emph{doen} sentences	&11		 &\emph{16.67\%}&55 	& \emph{83.33\%}	\\
 control sentences					&58		 &\emph{58\%}	&42		& \emph{42\%}		\\
 \hline
-\end{tabular}
+\end{tabular}}
+\caption{\footnotesize Distribution of word order for the \emph{doen} sentences and the control sentences.}
 \end{table}
+
 
 As can be seen from these data, whereas most \emph{doen} examples indeed have an alternative word order, this is not the case for the control sentences. A chi-square test showed this difference is significant ($\chi^2(1, N=166) = 27.97, p > .001$). It should be added, however, that this correlation does not tell us anything about causation. For example, it has been suggested above that the presence of emphatic \emph{doen} is caused by alternative word orders, but it might as well be the case the presence of \emph{doen} actually causes alternative word orders.
 
 \subsection{Results} \label{regressionresults}
 
-When investigated seperately, only the factor \emph{given before new} did not have a relation to the \emph{doen} sentences. When all factors are investigated at the same time in a multiple regression, however, we might see something different: some of the factors might be correlated, which means that adding them both does not add more predictive power to the model. Another advantage of multiple regression is that we can calculate $R^2$, which indicates how much of the variation the model can explain. This is particularly important to this study, as the significant results of the $\chi^2$ tests might have camouflaged that the results never were really good predictors: no category had a majority of the \emph{doen} sentences in group A, but a majority of the control sentences in group B.
+When investigated separately, only the factor \emph{given before new} did not have a relation to the \emph{doen} sentences. When all factors are investigated at the same time in a multiple regression, however, we might see something different: some of the factors might be correlated, which means that adding them both does not add more predictive power to the model. Another advantage of multiple regression is that we can calculate $R^2$, which indicates how much of the variation the model can explain. This is particularly important to this study, as the significant results of the $\chi^2$ tests might have camouflaged that the results never were really good predictors: no category had a majority of the \emph{doen} sentences in group A, but a majority of the control sentences in group B.
 
 \begin{table}[h] \centering
 \begin{tabular}{|l||l|l|l|}
@@ -266,8 +291,9 @@ Inversion&0.06&0.07&.06\\
 \hline
 \end{tabular}
 \caption{Multiple regression results, * $ p > 0.005$, **  $p > 0.001$ }
+\label{restable}
 \end{table}
-The most important thing to note here is that inversion is no longer significant. As discussed above, it is strongly related to person and mood, which may make it useless to a regression model; investigations of correlation data showed that this was indeed the case. As expected, this model has a relatively low predictive value: $R^2 = .461$.\\\indent
+The most important thing to note from table \ref{restable} is that inversion is no longer significant. As discussed above, it is strongly related to person and mood, which may make it useless to a regression model; investigations of correlation data showed that this was indeed the case. As expected, this model has a relatively low predictive value: $R^2 = .461$.\\\indent
 
 \section{The Memory Based Learning model} \label{mbl}
 
@@ -298,12 +324,8 @@ TiMBL was able to correctly predict the sentence type for 24 of the 32 examples,
 
 
 
-
-%tabel labels?
-%tabels too wide centeren
-
 \section{Conclusion and discussion} \label{conc}
-In this paper we saw that the periphrastic \emph{doen} construction, although impopular, can be found in (the eastern variant of) spoken Dutch. Of the various factors investigated, phrasal verbs, a possible habitual interpretation, a Dutch speaker, first or second person and non-indicative mood turned out to be useful predictors of the construction, but together could explain slightly less than half of the variation. On the other hand, a Memory Based Learning model using only lexical information, achieved much better results. This can either mean not the right factors have been investigated in the regression model, or that periphrastic \emph{doen} is triggered by certain lexical items.
+In this paper we saw that the periphrastic \emph{doen} construction, although unpopular, can be found in (the eastern variant of) spoken Dutch. Of the various factors investigated, phrasal verbs, a possible habitual interpretation, a Dutch speaker, first or second person and non-indicative mood turned out to be useful predictors of the construction, but together could only explain slightly less than half of the variation. On the other hand, a Memory Based Learning model using only lexical information, achieved much better results. This can either mean not enough factors have been included in the regression model, or that periphrastic \emph{doen} is triggered by certain lexical items.
 
 \begin{thebibliography}{99}\footnotesize
 \bibitem[CGN(2006)]{cgn}
@@ -320,6 +342,8 @@ Giesbers, H. (1983-1984), Doe jij lief spelen? Notities over het perifrastisch d
 Laan, K. ter (1953). \emph{Proeve van een Groninger spraakkunst}. Winschoten: van der Veen.
 \bibitem[Nuijtens(1962)]{n62}
 Nuijtens, E. (1962). \emph{De tweetalige mens}. Assen: Van Gorcum \& Comp.
+\bibitem[de Swart \& de Hoop(1995)]{dsdh95}
+De Swart, H. \& H. De Hoop (1995). Topic and focus. \emph{Glot International} 1: 3 - 7.
 \end{thebibliography}
 
 \end{document}
