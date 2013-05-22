@@ -6,48 +6,94 @@
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{apacite}
+\usepackage{covington}
 
 \renewcommand{\familydefault}{\sfdefault}
 
 \begin{document}
 
 \section{Project title}
-Idiolects in word prediction
+Defining idiolects for word prediction
 
 \section{Summary}
-[[]]
+Systems that predict what words we want to type as we are keying them in can save us a lot of time, in particular for users of smartphones and people with physical or cognitive disabilities. Recently, scholars have tried to implement knowledge of style register and topics into word prediction systems. This research will investigate a new approach to this task: using idiolects.
+
+The concept of idiolects, the language of only one person, has been well-known as a concept for a long time, but has rarely been investigated quantitively for practical and theoretical reasons. As a result of this, it is unclear how an idiolect should be defined (for example, in terms of style registers and changes over time). Now the linguistic landscape has changed (both practically and theoretically), these questions can finally be answered.
+
+The research proposed here consists of building a word prediction system based on idiolects. Various models, based on various definitions of idiolects, will be tested. Knowledge of which model (and thus definition) can be used to save the most keystrokes will be useful to both the field of word prediction and the field of idiolects.
 
 \section{Candidate}
 Wessel Stoop
 
 \section{Description of the proposed research}
 
-This research is an attempt to link two academic fields: the field of \emph{word completion} and the field \emph{idiolects}. They will be introduced in section \ref{wordprediction} and \ref{idiolects} respectively. Section \ref{link} will show what the advantages of linking these two concepts are.
+This research is an attempt to link two fields of research: the field of \emph{word completion} and the field \emph{idiolects}. They will be introduced in section \ref{wordprediction} and \ref{idiolects} respectively. Section \ref{link} will show what the advantages of linking these two concepts are.
 
 \subsection{Word prediction} \label{wordprediction}
 
-\subsubsection{Introduction}
-
 Word prediction is used in many applications we use daily: Google completes our search queries, our webbrowser finishes the web addresses we type in, our email client finishes email addresses, Excel completes annotations based on earlier annotations, etc. It reduces the number of keystrokes we have to do, and thus saves us time and effort. However, when we type full sentences, whether they are part of an email, a scientific article, a tweet, or a research proposal, we often still key in every single character. 
 
-Why don't we use word prediction here too? While, as far as I am aware, no quantitative research has been done to answer this question, my own experience with word prediction is that its prediction accuracy generally is too low to speed up typing. Keying in every character is often faster than checking and accepting the predictions. Once typing speed decreases, however, word prediction \emph{is} used. With the rise of smartphones,  on which one generally cannot type as fast as on a normal keyboard, word prediction has become more widely known - although it is unclear what proportion of the smartphone users also use some sort of word prediction application. Another example are  people with speech and motor disabilities, like cerebral palsy or hemiplexia. By using a device equiped with word prediction technology, they can increase their communication rate considerably \cite{Garay-Vitoria}.
+Why don't we use word prediction here too? While no quantitative research has been done to answer this question (as far as we are aware), an obvious answer would be that prediction accuracy generally is too low to speed up typing. Keying in every character is often faster than checking and accepting the predictions. Once typing speed decreases, however, word prediction \emph{is} used. With the rise of smartphones,  on which one  cannot type as fast as on a normal keyboard, word prediction has become more widely known - although it is unclear what proportion of the smartphone users also use some sort of word prediction application. Another example are  people with speech and motor disabilities, like cerebral palsy or hemiplexia. By using a device equiped with word prediction technology, they can increase their communication rate considerably \cite{Garay-Vitoria+06}.
 
-In the academic literature, several attempts have been made to improve word prediction technology, so that it can increase the communication rate for smartphone users, people with physical disabilities and typing in general. 
+%In the academic literature, several attempts have been made to improve word prediction technology, so that it can increase the communication rate for smartphone users, people with physical disabilities and typing in general. One of the first techniques to achieve a useable word prediction system is to use frequency lists; although it is possible to wait until a word unicity point has been reached, much more keystrokes can be saved if the prediction can be done earlier. For example, if the user wants to type the word \emph{communication}, the system could wait until \emph{communicatio} has been keyed in to make sure not do an incorrect suggestion in case the user wanted to say \emph{communicative}, but it could also take the risk and guess one of the words much earlier. Which one of the two the system guesses should be the option that is more likely. This chance of occurence of a word is reflected by its frequency in texts. In the example, \emph{communication} will be more likely to be correct because it will probably be higher on a frequency list. One of the first word prediction systems using this technique, and also one of the first word predictions systems in general, was PAL \cite{swiffin+85}. 
 
-% WOORDENBOEK, CS, Antal & Suzan?
+In the academic literature, several attempts have been made to improve word prediction technology, so that it can increase the communication rate for smartphone users, people with physical disabilities and typing in general. One of the first techniques to achieve a useable word prediction system is to use frequency lists, because these lists reflect the chance of occurrence of a word. If a word has a high position on a frequency list, this means it has occurred a lot in previous text, and thus is (relatively) likely to occur again, which makes it an interesting choice for a word prediction system. One of the first word prediction systems using this technique, and also one of the first word predictions systems in general, was PAL \cite{swiffin+85}. Since then, numerous authors have shown that taking context into account improves prediction accuracy significantly \cite[among others]{Lesher+99,Garay-Vitoria+06,Tanaka-Ishii07,vandenbosch+08}. This entails that the system has some information on which words are likely to follow eachother, and uses this when giving predictions. For example, if the user has keyed in sentence \ref{iate}, a context-sensitive system should not predict the word \emph{communication}, even if it is high on the frequency lists, because \emph{communication} is unlikely to follow \emph{ate}.
 
-The goal of this research is to improve the quality of word prediction. We will build a word prediction system that incorperates the latest insights from the field, and ...
+\begin{examples}
+\item I ate co \label{iate}
+\end{examples}
+
+%One of the earliest implementations of this concept, by \citeA{hunnicutt87}, used a 2D-matrix to store frequent collocations of words. A matrix for our example could be:
+
+%\begin{examples}
+
+%\item \begin{tabular}{l|ll}
+%&I&you\\
+%\hline
+%like&dancing&fishing\\
+%ate&cookies&cake\\
+%\end{tabular}
+
+%\end{examples}
+
+%However, when using millions of words and all possible combinations between them, and also more context than just two words, such a matrix quickly becomes impractical. 
+
+Modern word predictions systems search through text corpora ('training material') and collect a number of similar contexts. The word that follows most of these contexts will be the word predicted \cite[among others]{vandenbosch+08}. 
+
+% A key publication on context-sensitivity is that by \citeA{Lesher+99}, who show that the accuracy of a context-sensitive word prediction system is related to how much training material is provided. This is the case in particular when more words from the context are used, because then much more combinations are possible. In a hypothetical language with 10 words, 10 contexts are possible when using 1 word as the context, but $10*10*10 = 1000$ contexts are possible when using 3 words as the context. Thus, the larger the context the word prediction system uses, the more the system benefits from having a lot of training material.
+
+Context-sensitivity, in particular when using a lot of training material, is most powerful when it comes to collocations (for example, \emph{in combination with}, \emph{on the basis of}), i.e. when it comes to language. However, humans use more than knowledge of language alone to predict what somebody is going to say; we also take into account what style register the speaker is using, and what the speaker is talking about. For instance, the input \emph{wed} can be very likely to refer to \emph{Wednesday} when making an appointment for next week, whereas it can also be very likely to refer to \emph{wedding} when talking about a marriage. 
+
+One way give some of this kind of knowledge to word prediction systems is to use training material from the same domain; \citeA{verberne+12} show that trying to predict Wikipedia text, tweets, transcriptions of conversational speech and Frequencty Asked Questions all worked best when using texts from the same type (i.e. training on Wikipedia text to predict Wikipedia text). Furthermore, they show that questions about neurological issues, for which little training material was available, could best be predicted with the corpus that was closest in terms of topics discussed: the medical pages from Wikipedia. 
+
+\citeA{vandenbosch11} takes a completely different approach and tries to make a word prediction system learn about register and topic on the fly with a \emph{recency buffer}. This buffer stores the $n$ latest words; if a word the user is keying in matches one of the words in the recency buffer, this word is suggested. The idea behind this is that a word that has recently been used, it is likely that this word will be used again.
+
+An important thing to notice is that, although both approaches help to increase the number of keystrokes saved, they also have downsides: for the system by \citeA{verberne+12} training texts in the same genre are needed, which might not be available, whereas the system by \citeA{vandenbosch11} ignores context information that it should weigh more intelligently. For example, while a context-sensitive text-prediction system will probably be able to predict \emph{to} for the sentence \emph{Tommy was going t...}, the one with the recency buffer will predict \emph{Tommy}.
 
 % autocompletion
-%N. Garay-Vitoria and J. Abascal. 2006. Text prediction systems: a survey. Universal Access in the Information Society, 4(3):188–203.
-
 
 \subsection{Idiolects} \label{idiolects}
+Almost every claim done in the field of linguistics concerns language as a whole; whether the subject of investigation is a particular syntactic construction, phonological variable, or some other linguistic phenomenon, the results are always supposed to hold for an entire language variety. The concept of an idiolect, the language of only one person, is well-known, but rarely ever mentioned. According to \citeA{mollin09} it is a 'neglected area in corpus linguistics', and \citeA{barlow10} states that the term 'is distinguished by the fact that there is probably no other linguistic term in which there is such a large gap between the familiarity of the concept and lack of empirical data on the phenomenon.' This is remarkable, since 'idiolects are the only kind of language we can 
+collect data on', as \citeA{Haugen72} points out; a language variety essentially is nothing more than a collection of idiolects.
 
+Part of the of lack of research in this area can of course be explained by practical limitations (it is hard to collect a lot of data for one person, let alone doing this for multiple persons), but theoretical views have also played a role; for decades, most linguistists have focussed on \emph{langue} rather than \emph{parole}, and viewed deviations in actual usage as uninteresting exceptions to an otherwise perfect abstract system. As \citeA{labov89} put it: 'language is not a property of the individual, but of the community. Any description of a language must take the speech community as its object if it is to do justice to elegance and regularity of linguistic structure'.
 
-\subsection{Idiolects in word prediction} \label{link}
+Now that usage-based theories of language become increasingly more accepted, and the progress in technology and in particular the internet has facilitated collecting, storing and working with large amount of data, these objections to studying idiolects slowly vanish. One of the first publications investigating idiolects quantitatively is that of \citeA{mollin09}. She created a corpus of speech by the former Prime Minister of the United Kingdom Tony Blair, and compared this the British National Corpus. Focussing on maximisers ('absolutely', 'totally') and the adjectives, verbs and adverbs they cooccur with, she has compiled a list of collocations that are used much more by Blair than by the general language community. \citeA{barlow10} investigated speech patterns of five White House Press Secretaries, using transcripts of spoken language available on the internet and dividing them in samples of 200.000 words. He compared the frequencies of bigrams and trigrams (like \emph{of the}, \emph{that we} and \emph{and that's}) and discovered that there are significant differences between individual speakers. Interestingly, however, when frequencies from one sample were compared to frequencies from another sample by the same speaker, they were very consistent. For example, Ari Fleischer rarely uses the bigram \emph{we are} in sample 1, and this is also the case for samples 2, 3 and 4, while the opposite is the true for Scott McClellan. To make sure these differences cannot be attributed to lexical preferences, Barlow repeated his research with POS $n$-grams ([article, noun], [preposition, verb], etc) and 
+grammatical constructions ('\emph{noun} of the \emph{noun}',  'will' vs 'going to', usage of the passive, etc.), and got similar results.
 
+While the results of these studies are promising, there are some problems in the way they try to capture idiolects. For example, all of the language investigated here is that of people speaking to the press, but it unlikely that the speakers always speak like this; Tony Blair probably uses another style register when speaking to his friends and family. How should style registers be part of a theory about idiolects? Is a register a set of variables in an otherwise fixed system, are they completely seperate language varieties inside a person's mind, or something in between? Furthermore, \citeA{barlow10} points out that 'the samples from Mike McCurry's speeches seem to divide into two temporally distinct groups [...], suggesting a change in style over his long period of tenure as press secretary'. Apparently, idiolects are not time stable, but change over time. If idiolects are always changing, what should we call an idiolect? And if we have models for a particular person based on the idiolect of the last decade, last year, yesterday and a few minutes ago, to what extent do they overlap? And finally, both \citeA{barlow10} and \citeA{mollin09} try to capture idiolects by using the \emph{output} of persons. This of course makes sense (what comes out must have been inside), but this cannot be the whole story; wouldn't it be more logical to use the input for a particular person, in particular the things he or she hears very often?
+
+\subsection{Methodology: idiolects in word prediction} \label{link}
+As the previous two section have showed, in both academic fields discussed we have a problem: for word prediction, a technique is needed which is context-sensitive, but does not rely on many texts in the same genre, while for idiolects, we are looking for a good way to make concrete what an idiolect actually is. In this research project, these two concepts will be linked to help each other: a word prediction system will be built which will rely on text written by the user earlier (idiolects), while incorperating the latest insights on the field of word prediction, as described in \ref{wordprediction}. This way, the system will be able to capture a user's vocabulary, writing style, favorite topics, etc., which according to \citeA{vandenbosch11} is 'likely to have a major impact on the percentages of keystrokes saved'.
+
+As our dataset, we plan to use tweets, as Twitter essentially is nothing more than a collection of language ordered by author. The expectation thus is that a model based on earlier tweets is much better at predicting future tweets than a model based random tweets in the same language. Furthermore, tweets are annotated for time, which allows us to make models for a particular period, and in a lot of cases explicitly mention the addressee (with the \emph{@addressee} syntax). This not only allows us to make an approximation of register (different models could be made depending on to whom the author was talking), but also gives us some insight in social relations between the Twitter users. The expectation is that our word prediction will be able to do more accurate predictions for a particular twitter user when using a model based on the tweets produced by people that user communicates with a lot.
+
+The goal of this research thus is to improve word prediction and define idiolects at the same time. Several language models will be created by systematically manipulating a number of factors; for example, a model with the tweets of friends and a model without the tweets of friends, and a model with the tweets of this year, and a model with the tweets of last year. For each of these models, it will be calculated how much keystrokes can be saved when the algorithm uses it. Knowledge of which model works best can be used to improve word prediction technology, but also gives us useful insights on how we can best define an idiolect.
 
 \section{Summary in keywords}
+Word prediction; idiolects; language models; context-sensitivity
+
+\bibliography{thesisbib}{}
+\bibliographystyle{apacite}
 
 \end{document}
