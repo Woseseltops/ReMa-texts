@@ -5,7 +5,7 @@
 
 \usepackage{covington}
 \usepackage{graphicx}
-\usepackage{natbib}
+\usepackage{apacite}
 \usepackage{float}
 
 \renewcommand{\familydefault}{\sfdefault}
@@ -23,17 +23,27 @@
 
 \section{Problems}
 
-With regard to elections, some authors have taken the opposite stance [[ref]]. Most fierce in this respect is [[x]], who says 'No, you cannot predict elections with Twitter'. He goes on to point out a number 'flaws' in research on doing predictions with Twitter. A summary of his most important points:
+With regard to elections, some authors have taken the opposite stance [[ref]]. Most fierce in this respect is \citeA{gayo12}, who claims 'No, you cannot predict elections with Twitter'. He goes on to point out a number 'flaws' in research on doing predictions with Twitter. A summary of his most important points:
 
 \begin{enumerate}
-\item Scholars should actually predict something, instead of doing \emph{post-hoc} analyses. As [[x]] put it: 'if you are claiming you have a prediction method you should predict an election in the future!'
-\item 'Not all tweets are trustworthy.' That is, some might be jokes or sarcasm and some might have been placed by the political leaders themselves.
-\item 'Demographics are neglected.' Twitter users are likely to be higher-educated people interested in social media, which might not be a representative sample of the population . According to [[x]], all research on predicting elections with Twitter should take this into account.
+\item Scholars should actually predict something, instead of doing \emph{post-hoc} analyses. As \citeA{gayo12} put it: 'if you are claiming you have a prediction method you should predict an election in the future!'
+\item 'Not all tweets are trustworthy.' That is, some might be jokes or sarcasm and some might have been placed by the political leaders themselves. These tweets should not be taken into account.
+\item 'Demographics are neglected.' Twitter users are likely to be younger, higher-educated people interested in social media, which might not be a representative sample of the population . Researchers should correct for this bias somehow.
 \item 'There is not a commonly accepted way of “counting votes” in Twitter'. Whereas some authors use tweet volumes, others use tweet rate, and again other focus on the results of some kind of sentiment analyses.
 \end{enumerate}
 
-I am convinced all of these points are not really flaws in the research, but more general problems related to predicting with Twitter. As for the first point, you cannot evaluate a prediction system if you do not use past events; a paper saying 'sytem X predicts event Y', without the information where Y actually happened is meaningless. As long as the authors only used material available \emph{before} event Y, their result are perfectly valid. Arguments 2 and 3 claim there might be noise in the data, which I think is not only a general problem in Twitter research, but a problem in science in general: datasets which are 100\% representative of thing they were created to be representative of are scarce. The task of predicting events with Twitter is to do accurate predictions \emph{despite} these problems. If researchers can even report positive results by ignoring them, why bother? Finally, the last 'flaw' is actually the main goal of this research field: finding which way of 'counting votes' has the best correllation to the actual election results. Because it is not clear yet what technique consistently has the best results, various ideas will be proposed.
+However, I am convinced all of these points are not really flaws in the research, but more general problems related to predicting the future with Twitter. As for the first point, you cannot evaluate a prediction system if you do not use past events; a paper claiming 'system X predicts event Y', without the information where Y actually happened, is meaningless. As long as the authors only used material available \emph{before} event Y, their results are perfectly valid. Arguments 2 and 3 are about noise in the data, which I think is not only a general problem in Twitter research, but a problem in science in general; datasets which are 100\% representative of thing they were created to be representative of are scarce. The task of predicting events with Twitter is to do accurate predictions \emph{despite} these problems. If researchers can even build useful systems and report positive results by ignoring them, why bother? Finally, the last 'flaw' is actually the main goal of this research field: finding which way of 'counting votes' has the best correlation to the actual election results. Because it is not clear yet what technique consistently has the best results, various ideas will be proposed. The fact that everybody uses another way to count votes thus is not a problem, but an attempt for a solution.
 
-I therefore feel it would be more appropriate to rephrase the critique of [[x]] as problems common to this research field. Attempts to solve them might improve the result, and might even be research questions on their own. For example, [[x]] investigated Twitter demographics, and concluded that .
+I therefore feel it would be more appropriate to rephrase the first three points of critique of \citeA{gayo12} as problems common to this research field:
+
+\begin{enumerate}
+\item To be able to tell whether a prediction system works, one is mostly limited to events of the past. If a prediction is done on the basis of very recent tweets, it might take some time before one can be sure this prediction was accurate.
+\item Some tweets might use figurative language or be misleading in another way, and this way put automated systems on the wrong track.
+\item Twitter users are probably not representative of the population. Although it is hard to retrieve exact numbers, \shortciteA{mislove+11} are able to do some estimates on the basis of the data available. Among other things, they (1) discovered that more populous areas are overrepresented on Twitter (so the percentage of the population that uses Twitter is much higher in these areas) and (2) estimated, on the basis of self-reported first names, that 72\% of the Twitter users are male, although this percentage seems to decrease over the years.
+\end{enumerate}
+
+
+\bibliography{twitbib}{}
+\bibliographystyle{apacite}
 
 \end{document}
